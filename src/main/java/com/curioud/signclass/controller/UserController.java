@@ -1,5 +1,6 @@
 package com.curioud.signclass.controller;
 
+import com.curioud.signclass.domain.project.ProjectVO;
 import com.curioud.signclass.domain.user.UserVO;
 import com.curioud.signclass.dto.MessageDTO;
 import com.curioud.signclass.dto.UserDTO;
@@ -15,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api")
 public class UserController {
@@ -28,6 +31,11 @@ public class UserController {
 
         UserVO registeredUserVO = userService.signUp(userDTO);
         UserDTO convertedUserDTO = ObjectConverter.UserVOToDTO(registeredUserVO);
+
+        List<ProjectVO> projects = registeredUserVO.getProjects();
+        registeredUserVO.setPassword("12323");
+
+        registeredUserVO.getProjects().get(1).getProjectObjectSigns();
 
         return new ResponseEntity<>(convertedUserDTO, HttpStatus.OK);
     }

@@ -10,6 +10,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import javax.transaction.NotSupportedException;
+
 @RestControllerAdvice
 @Slf4j
 public class GlobalExceptionHandler {
@@ -22,6 +24,11 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(DuplicateMemberException.class)
     public ResponseEntity<MessageDTO> DuplicateMemberException(DuplicateMemberException e){
+        return new ResponseEntity<>(new MessageDTO(e.getMessage()), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(NotSupportedException.class)
+    public ResponseEntity<MessageDTO> NotSupportedException(DuplicateMemberException e){
         return new ResponseEntity<>(new MessageDTO(e.getMessage()), HttpStatus.BAD_REQUEST);
     }
 

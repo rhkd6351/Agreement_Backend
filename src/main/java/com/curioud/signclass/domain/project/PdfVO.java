@@ -30,7 +30,7 @@ public class PdfVO {
     String saveName;
 
     @Column(name = "size")
-    int size;
+    Long size;
 
     @Column(name = "total_page")
     int totalPage;
