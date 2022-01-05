@@ -9,7 +9,6 @@ import javax.persistence.*;
 @Entity
 @Getter
 @Setter
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "SUBMITTEE_OBJECT_TB")
