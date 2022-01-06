@@ -24,5 +24,7 @@ public class PdfDTO {
 
     String uploadPath;
 
+    String extension;
+
     LocalDateTime regDate;
 }

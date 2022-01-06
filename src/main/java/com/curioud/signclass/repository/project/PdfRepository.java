@@ -1,4 +1,4 @@
-package com.curioud.signclass.repository.etc;
+package com.curioud.signclass.repository.project;
 
 import com.curioud.signclass.domain.project.PdfVO;
 import org.springframework.data.jpa.repository.JpaRepository;

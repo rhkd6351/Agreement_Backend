@@ -38,6 +38,9 @@ public class PdfVO {
     @Column(name = "upload_path")
     String uploadPath;
 
+    @Column(name = "extension")
+    String extension;
+
     @Column(name = "reg_date")
     @CreationTimestamp
     LocalDateTime regDate;

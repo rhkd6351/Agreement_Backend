@@ -1,8 +1,8 @@
-package com.curioud.signclass.service.etc;
+package com.curioud.signclass.service.project;
 
 import com.curioud.signclass.domain.project.PdfVO;
 import com.curioud.signclass.dto.PdfDTO;
-import com.curioud.signclass.repository.etc.PdfRepository;
+import com.curioud.signclass.repository.project.PdfRepository;
 import com.curioud.signclass.util.FileUtil;
 import javassist.NotFoundException;
 import org.apache.pdfbox.pdmodel.PDDocument;
@@ -14,6 +14,7 @@ import javax.transaction.NotSupportedException;
 import java.io.File;
 import java.io.IOException;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -85,8 +86,26 @@ public class PdfService {
                 .size(mf.getSize())
                 .totalPage(doc.getNumberOfPages())
                 .uploadPath("/pdf")
+                .extension(extension)
                 .build();
 
         return this.save(pdf);
     }
+
+    public PdfVO getByName(String name) throws NotFoundException {
+        Optional<PdfVO> pdfOptional = pdfRepository.findOneByName(name);
+
+        if(pdfOptional.isEmpty())
+            throw new NotFoundException("Invalid pdf name");
+
+        return pdfOptional.get();
+    }
+
+    public byte[] getByteByName(String name) throws NotFoundException, IOException {
+
+        PdfVO pdf = this.getByName(name);
+
+        return fileUtil.getFile(pdf);
+    }
+
 }

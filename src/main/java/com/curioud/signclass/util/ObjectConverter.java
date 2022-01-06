@@ -30,6 +30,7 @@ public class ObjectConverter {
                 .saveName(vo.getSaveName())
                 .size(vo.getSize())
                 .totalPage(vo.getTotalPage())
+                .extension(vo.getExtension())
                 .regDate(vo.getRegDate())
                 .build();
     }

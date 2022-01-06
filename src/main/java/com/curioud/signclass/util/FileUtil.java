@@ -19,8 +19,7 @@ public class FileUtil {
         this.originPath = originPath;
     }
 
-    public byte[] getFile(PdfVO fvo)
-            throws IOException {
+    public byte[] getFile(PdfVO fvo) throws IOException {
         File file = new File(originPath + fvo.getUploadPath() +"/"+ fvo.getSaveName());
         byte[] byfile = null;
 
