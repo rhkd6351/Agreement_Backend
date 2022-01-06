@@ -8,6 +8,7 @@ import com.curioud.signclass.util.FileUtil;
 import com.curioud.signclass.util.ObjectConverter;
 import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -22,8 +23,13 @@ import java.io.IOException;
 @RequestMapping("/api")
 public class FileController {
 
-    @Autowired
     PdfService pdfService;
+    String serverUrl;
+
+    public FileController(PdfService pdfService, @Value("${server.url}") String serverUrl) {
+        this.pdfService = pdfService;
+        this.serverUrl = serverUrl;
+    }
 
     @PostMapping("/project/pdf")
     @PreAuthorize("hasRole('ROLE_USER')")
@@ -32,12 +38,13 @@ public class FileController {
 
         PdfVO savedPdf = pdfService.save(mf);
         PdfDTO pdfDTO = ObjectConverter.PdfVOToDTO(savedPdf);
+        pdfDTO.setUrl(serverUrl + "/api/project/pdf/" + pdfDTO.getName());
 
         return new ResponseEntity<>(pdfDTO, HttpStatus.OK);
     }
 
     @GetMapping(path = "/project/pdf/{pdf-name}", produces = MediaType.APPLICATION_PDF_VALUE)
-    @PreAuthorize("hasRole('ROLE_USER')")
+//    @PreAuthorize("hasRole('ROLE_USER')")
     public byte[] savePdf(@PathVariable(name = "pdf-name") String pdfName) throws NotFoundException, IOException {
         return pdfService.getByteByName(pdfName);
     }

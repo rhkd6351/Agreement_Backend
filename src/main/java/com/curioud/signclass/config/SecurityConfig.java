@@ -60,6 +60,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.POST, "/api/user").permitAll() //회원가입
                 .antMatchers(HttpMethod.POST, "/api/user/login").permitAll() // 로그인
 
+                .antMatchers(HttpMethod.GET, "/api/project/pdf/**").permitAll() //pdf 다운로드
+
                 .anyRequest().authenticated()
                 .and()
                 .apply(new JwtSecurityConfig(tokenProvider));

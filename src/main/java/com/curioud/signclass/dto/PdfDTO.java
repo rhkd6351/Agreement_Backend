@@ -26,5 +26,7 @@ public class PdfDTO {
 
     String extension;
 
+    String url;
+
     LocalDateTime regDate;
 }
