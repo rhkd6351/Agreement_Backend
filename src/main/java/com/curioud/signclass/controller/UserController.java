@@ -2,8 +2,7 @@ package com.curioud.signclass.controller;
 
 import com.curioud.signclass.domain.project.ProjectVO;
 import com.curioud.signclass.domain.user.UserVO;
-import com.curioud.signclass.dto.MessageDTO;
-import com.curioud.signclass.dto.UserDTO;
+import com.curioud.signclass.dto.user.UserDTO;
 import com.curioud.signclass.service.user.UserService;
 import com.curioud.signclass.util.ObjectConverter;
 import javassist.NotFoundException;

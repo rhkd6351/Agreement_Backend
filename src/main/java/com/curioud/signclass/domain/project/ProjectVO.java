@@ -5,6 +5,7 @@ import com.curioud.signclass.domain.submittee.SubmitteeVO;
 import com.curioud.signclass.domain.user.UserVO;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -23,8 +24,8 @@ public class ProjectVO {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long idx;
 
-    @Column(name = "identify_code")
-    String identifyCode;
+    @Column(name = "name")
+    String name;
 
     @Column(name = "title")
     String title;
@@ -40,6 +41,7 @@ public class ProjectVO {
     LocalDateTime endDate;
 
     @Column(name = "up_date")
+    @UpdateTimestamp
     LocalDateTime upDate;
 
     @Column(name="activated")

@@ -1,4 +1,4 @@
-package com.curioud.signclass.dto;
+package com.curioud.signclass.dto.project;
 
 import lombok.*;
 import java.time.LocalDateTime;

@@ -3,12 +3,14 @@ package com.curioud.signclass.domain.project;
 
 import com.curioud.signclass.domain.etc.ObjectTypeVO;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
 
 @Entity
 @Getter
 @Setter
+@SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "PROJECT_OBJECT_TB")
@@ -21,10 +23,10 @@ public class ProjectObjectVO {
     Long idx;
 
     @Column(name = "x_position")
-    int x_position;
+    int xPosition;
 
     @Column(name = "y_position")
-    int y_position;
+    int yPosition;
 
     @Column(name = "width")
     int width;

@@ -1,7 +1,7 @@
 package com.curioud.signclass.exception;
 
 
-import com.curioud.signclass.dto.MessageDTO;
+import com.curioud.signclass.dto.etc.MessageDTO;
 import javassist.NotFoundException;
 import javassist.bytecode.DuplicateMemberException;
 import lombok.extern.slf4j.Slf4j;

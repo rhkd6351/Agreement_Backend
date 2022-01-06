@@ -3,7 +3,7 @@ package com.curioud.signclass.service.user;
 
 import com.curioud.signclass.domain.user.AuthVO;
 import com.curioud.signclass.domain.user.UserVO;
-import com.curioud.signclass.dto.UserDTO;
+import com.curioud.signclass.dto.user.UserDTO;
 import com.curioud.signclass.repository.user.AuthRepository;
 import com.curioud.signclass.repository.user.UserRepository;
 import com.curioud.signclass.util.SecurityUtil;

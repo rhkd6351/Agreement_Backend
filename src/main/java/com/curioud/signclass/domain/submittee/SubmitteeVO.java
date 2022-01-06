@@ -7,6 +7,7 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Getter
@@ -31,5 +32,14 @@ public class SubmitteeVO {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "project_idx_fk")
     ProjectVO project;
+
+    @OneToMany(mappedBy = "submittee")
+    List<SubmitteeObjectCheckboxVO> submitteeObjectCheckboxes;
+
+    @OneToMany(mappedBy = "submittee")
+    List<SubmitteeObjectTextVO> submitteeObjectTexts;
+
+    @OneToMany(mappedBy = "submittee")
+    List<SubmitteeObjectSignVO> submitteeObjectSigns;
     
 }

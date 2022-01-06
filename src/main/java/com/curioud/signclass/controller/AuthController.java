@@ -1,8 +1,8 @@
 package com.curioud.signclass.controller;
 
-import com.curioud.signclass.dto.MessageDTO;
-import com.curioud.signclass.dto.TokenDTO;
-import com.curioud.signclass.dto.UserDTO;
+import com.curioud.signclass.dto.etc.MessageDTO;
+import com.curioud.signclass.dto.user.TokenDTO;
+import com.curioud.signclass.dto.user.UserDTO;
 import com.curioud.signclass.jwt.TokenProvider;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

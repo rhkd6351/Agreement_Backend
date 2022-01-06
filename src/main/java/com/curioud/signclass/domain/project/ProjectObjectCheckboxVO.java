@@ -2,13 +2,14 @@ package com.curioud.signclass.domain.project;
 
 
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
 
 @Entity
 @Getter
 @Setter
-@Builder
+@SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "PROJECT_OBJECT_CHECKBOX_TB")

@@ -1,13 +1,14 @@
 package com.curioud.signclass.service.project;
 
 import com.curioud.signclass.domain.project.PdfVO;
-import com.curioud.signclass.dto.PdfDTO;
+import com.curioud.signclass.dto.project.PdfDTO;
 import com.curioud.signclass.repository.project.PdfRepository;
 import com.curioud.signclass.util.FileUtil;
 import javassist.NotFoundException;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.NotSupportedException;
@@ -62,6 +63,7 @@ public class PdfService {
         return this.save(pdfVO);
     }
 
+    @Transactional
     public PdfVO save(MultipartFile mf) throws NotSupportedException, IOException {
 
         int i = Objects.requireNonNull(mf.getOriginalFilename()).lastIndexOf(".");
