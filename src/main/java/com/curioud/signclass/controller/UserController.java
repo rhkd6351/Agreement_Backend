@@ -24,6 +24,13 @@ public class UserController {
     @Autowired
     ObjectConverter objectConverter;
 
+    /**
+     *
+     * @param userDTO id, password, name을 입력받습니다.
+     * @return 가입한 user 정보를 리턴합니다.
+     * @throws DuplicateMemberException 이미 존재하는 id를 입력하였습니다.
+     * @throws NotFoundException 존재하지 않는 권한 정보입니다.
+     */
     @PostMapping("/user")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<UserDTO> getSignUp(@RequestBody UserDTO userDTO) throws DuplicateMemberException, NotFoundException {

@@ -25,6 +25,11 @@ public class AuthController {
         this.authenticationManagerBuilder = authenticationManagerBuilder;
     }
 
+    /**
+     *
+     * @param userDTO id, password 값을 입력받습니다.
+     * @return TokenDTO 생성된 jwt를 리턴합니다.
+     */
     @PostMapping("/user/login")
     public ResponseEntity<TokenDTO> authorize(@RequestBody UserDTO userDTO) {
 
@@ -39,6 +44,10 @@ public class AuthController {
         return new ResponseEntity<>(new TokenDTO(jwt), HttpStatus.OK);
     }
 
+    /**
+     *
+     * @return MessageDTO 토큰값이 유효한지 확인하여 결과값을 리턴합니다.
+     */
     @GetMapping("/user")
     @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<MessageDTO> validCheck(){

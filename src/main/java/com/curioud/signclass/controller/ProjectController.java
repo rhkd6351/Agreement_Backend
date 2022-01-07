@@ -39,15 +39,19 @@ public class ProjectController {
      * @param mf multipart-File 형식 pdf 파일입니다.
      * @param projectDTO dto.description만 optional로 입력받습니다.
      * @return ProjectDTO를 리턴합니다.
-     * @throws IOException pdf byte를 저장하는데 오류가 발생하였습니다.
+     * @throws IOException pdf 파일를 저장하는데 오류가 발생하였습니다.
      * @throws NotSupportedException 확장자가 pdf 이외의 타입입니다.
      * @throws NotFoundException pdf 등록 후 project가 등록되는데, pdf의 name값이 유효하지 않습니다.
+     * 또는 mf 변수가 비어있습니다.
      * @throws AuthException 토큰 및 권한 정보가 유효하지 않습니다.
      */
     @PostMapping("/project")
     @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<ProjectDTO> save
             (@RequestParam("pdfFile") MultipartFile mf, ProjectDTO projectDTO) throws IOException, NotSupportedException, NotFoundException, AuthException {
+
+        if(mf.isEmpty())
+            throw new NotFoundException("Empty file"); //TODO 예외 바꾸기
 
         PdfVO savedPdf = pdfService.save(mf);
         PdfDTO pdfDTO = objectConverter.PdfVOToDTO(savedPdf);
@@ -59,6 +63,11 @@ public class ProjectController {
         return new ResponseEntity<>(resultDTO, HttpStatus.OK);
     }
 
+    /**
+     *
+     * @return List:ProjectDTO 토큰 계정 소유 프로젝트 리스트를 반환
+     * @throws AuthException  토큰 및 권한 정보가 유효하지 않습니다.
+     */
     @GetMapping("/projects")
     @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<List<ProjectDTO>> getMyProjects() throws AuthException {
