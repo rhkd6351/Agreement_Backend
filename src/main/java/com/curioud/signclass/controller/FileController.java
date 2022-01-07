@@ -23,10 +23,12 @@ public class FileController {
 
     PdfService pdfService;
     String serverUrl;
+    ObjectConverter objectConverter;
 
-    public FileController(PdfService pdfService, @Value("${server.url}") String serverUrl) {
+    public FileController(PdfService pdfService, @Value("${server.url}") String serverUrl, ObjectConverter objectConverter) {
         this.pdfService = pdfService;
         this.serverUrl = serverUrl;
+        this.objectConverter = objectConverter;
     }
 
     @PostMapping("/project/pdf")
@@ -38,8 +40,7 @@ public class FileController {
             throw new NotFoundException("Empty file"); //TODO 예외 바꾸기
 
         PdfVO savedPdf = pdfService.save(mf);
-        PdfDTO pdfDTO = ObjectConverter.PdfVOToDTO(savedPdf);
-        pdfDTO.setUrl(serverUrl + "/api/project/pdf/" + pdfDTO.getName());
+        PdfDTO pdfDTO = objectConverter.PdfVOToDTO(savedPdf);
 
         return new ResponseEntity<>(pdfDTO, HttpStatus.OK);
     }

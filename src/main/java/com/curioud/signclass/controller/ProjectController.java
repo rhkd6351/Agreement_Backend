@@ -24,10 +24,12 @@ public class ProjectController {
 
     PdfService pdfService;
     ProjectService projectService;
+    ObjectConverter objectConverter;
 
-    public ProjectController(PdfService pdfService, ProjectService projectService) {
+    public ProjectController(PdfService pdfService, ProjectService projectService, ObjectConverter objectConverter) {
         this.pdfService = pdfService;
         this.projectService = projectService;
+        this.objectConverter = objectConverter;
     }
 
     @PostMapping("/project")
@@ -36,11 +38,11 @@ public class ProjectController {
             (@RequestParam("pdfFile") MultipartFile mf, ProjectDTO projectDTO) throws IOException, NotSupportedException, NotFoundException, AuthException {
 
         PdfVO savedPdf = pdfService.save(mf);
-        PdfDTO pdfDTO = ObjectConverter.PdfVOToDTO(savedPdf);
+        PdfDTO pdfDTO = objectConverter.PdfVOToDTO(savedPdf);
 
         projectDTO.setPdf(pdfDTO);
         ProjectVO projectVO = projectService.save(projectDTO);
-        ProjectDTO resultDTO = ObjectConverter.ProjectVOToDTO(projectVO);
+        ProjectDTO resultDTO = objectConverter.ProjectVOToDTO(projectVO);
 
         return new ResponseEntity<>(resultDTO, HttpStatus.OK);
     }

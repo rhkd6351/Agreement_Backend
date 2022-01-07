@@ -6,12 +6,20 @@ import com.curioud.signclass.domain.user.UserVO;
 import com.curioud.signclass.dto.project.PdfDTO;
 import com.curioud.signclass.dto.project.ProjectDTO;
 import com.curioud.signclass.dto.user.UserDTO;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
-//@Component
+@Component
 public class ObjectConverter {
 
+    String serverUrl;
 
-    public static UserDTO UserVOToDTO(UserVO vo) {
+    public ObjectConverter(@Value("${server.url}") String serverUrl) {
+        this.serverUrl = serverUrl;
+    }
+
+
+    public UserDTO UserVOToDTO(UserVO vo) {
         return UserDTO.builder()
                 .idx(vo.getIdx())
                 .id(vo.getId())
@@ -22,7 +30,7 @@ public class ObjectConverter {
                 .build();
     }
 
-    public static PdfDTO PdfVOToDTO(PdfVO vo) {
+    public PdfDTO PdfVOToDTO(PdfVO vo) {
         return PdfDTO.builder()
                 .idx(vo.getIdx())
                 .name(vo.getName())
@@ -32,10 +40,11 @@ public class ObjectConverter {
                 .totalPage(vo.getTotalPage())
                 .extension(vo.getExtension())
                 .regDate(vo.getRegDate())
+                .url(serverUrl + "/api/project/pdf/" + vo.getName())
                 .build();
     }
 
-    public static ProjectDTO ProjectVOToDTO(ProjectVO vo){
+    public ProjectDTO ProjectVOToDTO(ProjectVO vo){
         return ProjectDTO.builder()
                 .idx(vo.getIdx())
                 .name(vo.getName())
@@ -45,8 +54,8 @@ public class ObjectConverter {
                 .endDate(vo.getEndDate())
                 .upDate(vo.getUpDate())
                 .activated(vo.isActivated())
-                .pdf(ObjectConverter.PdfVOToDTO(vo.getPdf()))
-                .user(ObjectConverter.UserVOToDTO(vo.getUser()))
+                .pdf(this.PdfVOToDTO(vo.getPdf()))
+                .user(this.UserVOToDTO(vo.getUser()))
                 .build();
     }
 

@@ -21,14 +21,15 @@ public class UserController {
 
     @Autowired
     UserService userService;
-//    ObjectConverter objectConverter;
+    @Autowired
+    ObjectConverter objectConverter;
 
     @PostMapping("/user")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<UserDTO> getSignUp(@RequestBody UserDTO userDTO) throws DuplicateMemberException, NotFoundException {
 
         UserVO registeredUserVO = userService.signUp(userDTO);
-        UserDTO convertedUserDTO = ObjectConverter.UserVOToDTO(registeredUserVO);
+        UserDTO convertedUserDTO = objectConverter.UserVOToDTO(registeredUserVO);
 
         return new ResponseEntity<>(convertedUserDTO, HttpStatus.OK);
     }
