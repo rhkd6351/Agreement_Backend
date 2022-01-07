@@ -32,7 +32,10 @@ public class FileController {
     @PostMapping("/project/pdf")
     @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<PdfDTO> savePdf(
-            @RequestParam("pdf") MultipartFile mf) throws IOException, NotSupportedException {
+            @RequestParam("pdfFile") MultipartFile mf) throws IOException, NotSupportedException, NotFoundException {
+
+        if(mf.isEmpty())
+            throw new NotFoundException("Empty file"); //TODO 예외 바꾸기
 
         PdfVO savedPdf = pdfService.save(mf);
         PdfDTO pdfDTO = ObjectConverter.PdfVOToDTO(savedPdf);

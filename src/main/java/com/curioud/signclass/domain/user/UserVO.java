@@ -42,7 +42,7 @@ public class UserVO {
     @JoinColumn(name = "auth_fk")
     AuthVO auth;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", orphanRemoval = true)
     List<ProjectVO> projects;
     
 }

@@ -28,13 +28,13 @@ public class UserRepositoryTest {
     void saveUserTest() {
         //given
 
-        Optional<AuthVO> authVO = authRepository.findById("AUTH_USER");
+        Optional<AuthVO> authVO = authRepository.findById("ROLE_USER");
         if(authVO.isEmpty())
             Assertions.fail();
 
         UserVO userVO = UserVO.builder()
-                .id("testId")
-                .password("testPassword")
+                .id("testId##")
+                .password("testPassword##")
                 .name("test name")
                 .activated(true)
                 .auth(authVO.get())

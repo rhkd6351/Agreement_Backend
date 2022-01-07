@@ -51,13 +51,14 @@ public class ProjectService {
                     .pdf(pdf)
                     .name(UUID.randomUUID().toString())
                     .title(pdf.getOriginalName().split("\\.")[0]) //TODO 수정할것
+//                    .description(" ")
                     .description(dto.getDescription())
                     .activated(true)
                     .build();
 
         } else {
             projectVO = this.getByIdx(dto.getIdx());
-//            projectVO.setName(dto.getName()); 이름 수정못함
+//            projectVO.setName(dto.getName()); 이름 수정불가
             projectVO.setTitle(dto.getTitle());
             projectVO.setDescription(dto.getDescription());
             projectVO.setUpDate(LocalDateTime.now());

@@ -49,8 +49,7 @@ public class PdfService {
                     .uploadPath(pdfDTO.getUploadPath())
                     .build();
         }else{
-            pdfVO = pdfRepository.findById(pdfDTO.getIdx()).orElse(null);
-            if(pdfVO == null) throw new NotFoundException("Invalid pdf idx");
+            pdfVO = this.getByIdx(pdfDTO.getIdx());
 
             pdfVO.setName(pdfDTO.getName());
             pdfVO.setOriginalName(pdfDTO.getName());
@@ -91,6 +90,7 @@ public class PdfService {
                 .extension(extension)
                 .build();
 
+        doc.close();
         return this.save(pdf);
     }
 
@@ -99,6 +99,15 @@ public class PdfService {
 
         if(pdfOptional.isEmpty())
             throw new NotFoundException("Invalid pdf name");
+
+        return pdfOptional.get();
+    }
+
+    public PdfVO getByIdx(Long idx) throws NotFoundException {
+        Optional<PdfVO> pdfOptional = pdfRepository.findById(idx);
+
+        if(pdfOptional.isEmpty())
+            throw new NotFoundException("Invalid pdf idx");
 
         return pdfOptional.get();
     }

@@ -55,19 +55,16 @@ public class ProjectVO {
     @JoinColumn(name = "pdf_idx_fk")
     PdfVO pdf;
 
-//    @OneToMany(mappedBy = "project")
-//    List<ProjectObjectVO> projectObjects;
-
-    @OneToMany(mappedBy = "project", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "project", fetch = FetchType.LAZY, orphanRemoval = true)
     List<ProjectObjectCheckboxVO> projectObjectCheckboxes;
 
-    @OneToMany(mappedBy = "project", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "project", fetch = FetchType.LAZY, orphanRemoval = true)
     List<ProjectObjectTextVO> projectObjectTexts;
 
-    @OneToMany(mappedBy = "project", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "project", fetch = FetchType.LAZY, orphanRemoval = true)
     List<ProjectObjectSignVO> projectObjectSigns;
 
-    @OneToMany(mappedBy = "project")
+    @OneToMany(mappedBy = "project", orphanRemoval = true)
     List<SubmitteeVO> submittees;
     
 }

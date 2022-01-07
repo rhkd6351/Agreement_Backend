@@ -28,7 +28,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(NotSupportedException.class)
-    public ResponseEntity<MessageDTO> NotSupportedException(DuplicateMemberException e){
+    public ResponseEntity<MessageDTO> NotSupportedException(NotSupportedException e){
         return new ResponseEntity<>(new MessageDTO(e.getMessage()), HttpStatus.BAD_REQUEST);
     }
 
