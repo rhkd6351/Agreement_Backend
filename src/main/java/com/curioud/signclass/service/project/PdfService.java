@@ -49,14 +49,15 @@ public class PdfService {
                     .uploadPath(pdfDTO.getUploadPath())
                     .build();
         }else{
-            pdfVO = this.getByIdx(pdfDTO.getIdx());
-
-            pdfVO.setName(pdfDTO.getName());
-            pdfVO.setOriginalName(pdfDTO.getName());
-            pdfVO.setSaveName(pdfDTO.getSaveName());
-            pdfVO.setSize(pdfDTO.getSize());
-            pdfVO.setTotalPage(pdfDTO.getTotalPage());
-            pdfVO.setUploadPath(pdfDTO.getUploadPath());
+            throw new UnsupportedOperationException("you can't update exist project object");
+//            pdfVO = this.getByIdx(pdfDTO.getIdx());
+//
+//            pdfVO.setName(pdfDTO.getName());
+//            pdfVO.setOriginalName(pdfDTO.getName());
+//            pdfVO.setSaveName(pdfDTO.getSaveName());
+//            pdfVO.setSize(pdfDTO.getSize());
+//            pdfVO.setTotalPage(pdfDTO.getTotalPage());
+//            pdfVO.setUploadPath(pdfDTO.getUploadPath());
         }
 
         return this.save(pdfVO);

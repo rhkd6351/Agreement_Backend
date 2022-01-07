@@ -57,14 +57,15 @@ public class ProjectService {
                     .build();
 
         } else {
-            projectVO = this.getByIdx(dto.getIdx());
-//            projectVO.setName(dto.getName()); 이름 수정불가
-//            projectVO.setPdf(dto.getPdf()); pdf 수정불가
-//            projectVO.setUser(user); 유저 수정불가
-            projectVO.setTitle(dto.getTitle());
-            projectVO.setDescription(dto.getDescription());
-            projectVO.setUpDate(LocalDateTime.now());
-            projectVO.setActivated(0); // 0 -> 생성됨
+            throw new UnsupportedOperationException("you can't update exist project");
+//            projectVO = this.getByIdx(dto.getIdx());
+////            projectVO.setName(dto.getName()); 이름 수정불가
+////            projectVO.setPdf(dto.getPdf()); pdf 수정불가
+////            projectVO.setUser(user); 유저 수정불가
+//            projectVO.setTitle(dto.getTitle());
+//            projectVO.setDescription(dto.getDescription());
+//            projectVO.setUpDate(LocalDateTime.now());
+//            projectVO.setActivated(0); // 0 -> 생성됨
         }
 
         this.save(projectVO);

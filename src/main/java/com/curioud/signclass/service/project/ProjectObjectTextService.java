@@ -52,18 +52,19 @@ public class ProjectObjectTextService {
                     .build();
 
         }else{
-            vo = this.getByIdx(dto.getIdx());
-            vo.setXPosition(dto.getXPosition());
-            vo.setYPosition(dto.getYPosition());
-            vo.setWidth(dto.getWidth());
-            vo.setHeight(dto.getHeight());
-            vo.setRotate(dto.getRotate());
-            vo.setPage(dto.getPage());
-            vo.setObjectType(objectType);
-            vo.setType(dto.getType());
-            vo.setColor(dto.getColor());
-            vo.setFontSize(dto.getFontSize());
-//            vo.setProject(); 프로젝트 수정불가
+            throw new UnsupportedOperationException("you can't update exist project object");
+//            vo = this.getByIdx(dto.getIdx());
+//            vo.setXPosition(dto.getXPosition());
+//            vo.setYPosition(dto.getYPosition());
+//            vo.setWidth(dto.getWidth());
+//            vo.setHeight(dto.getHeight());
+//            vo.setRotate(dto.getRotate());
+//            vo.setPage(dto.getPage());
+//            vo.setObjectType(objectType);
+//            vo.setType(dto.getType());
+//            vo.setColor(dto.getColor());
+//            vo.setFontSize(dto.getFontSize());
+////            vo.setProject(); 프로젝트 수정불가
         }
 
         return this.save(vo);
