@@ -17,6 +17,8 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.security.auth.message.AuthException;
 import javax.transaction.NotSupportedException;
 import java.io.IOException;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api")
@@ -42,12 +44,20 @@ public class ProjectController {
 
         projectDTO.setPdf(pdfDTO);
         ProjectVO projectVO = projectService.save(projectDTO);
-        ProjectDTO resultDTO = objectConverter.ProjectVOToDTO(projectVO);
+        ProjectDTO resultDTO = objectConverter.ProjectVOToDTOWithUserAndPdf(projectVO);
 
         return new ResponseEntity<>(resultDTO, HttpStatus.OK);
     }
 
+    @GetMapping("/projects")
+    @PreAuthorize("hasRole('ROLE_USER')")
+    public ResponseEntity<List<ProjectDTO>> getMyProjects() throws AuthException {
 
+        List<ProjectVO> projects = projectService.getMyProjects();
+        List<ProjectDTO> projectDTOs = projects.stream().map(objectConverter::ProjectVOToDTOWithSubmittees).collect(Collectors.toList());
+
+        return new ResponseEntity<>(projectDTOs, HttpStatus.OK);
+    }
 }
 
 

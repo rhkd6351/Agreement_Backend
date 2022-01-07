@@ -3,10 +3,8 @@ package com.curioud.signclass.dto.submittee;
 
 import com.curioud.signclass.domain.project.ProjectVO;
 import lombok.*;
-import org.hibernate.annotations.CreationTimestamp;
-
-import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -22,5 +20,11 @@ public class SubmitteeDTO {
     LocalDateTime regDate;
 
     ProjectVO project;
+
+    List<SubmitteeObjectCheckboxDTO> submitteeObjectCheckboxes;
+
+    List<SubmitteeObjectTextDTO> submitteeObjectTexts;
+
+    List<SubmitteeObjectSignDTO> submitteeObjectSigns;
     
 }

@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.security.auth.message.AuthException;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -51,7 +52,6 @@ public class ProjectService {
                     .pdf(pdf)
                     .name(UUID.randomUUID().toString())
                     .title(pdf.getOriginalName().split("\\.")[0]) //TODO 수정할것
-//                    .description(" ")
                     .description(dto.getDescription())
                     .activated(true)
                     .build();
@@ -59,12 +59,12 @@ public class ProjectService {
         } else {
             projectVO = this.getByIdx(dto.getIdx());
 //            projectVO.setName(dto.getName()); 이름 수정불가
+//            projectVO.setPdf(dto.getPdf()); pdf 수정불가
+//            projectVO.setUser(user); 유저 수정불가
             projectVO.setTitle(dto.getTitle());
             projectVO.setDescription(dto.getDescription());
             projectVO.setUpDate(LocalDateTime.now());
             projectVO.setActivated(dto.isActivated());
-//            projectVO.setPdf(dto.getPdf()); pdf 수정못함
-//            projectVO.setUser(user); 유저 수정못함
         }
 
         this.save(projectVO);
@@ -113,6 +113,12 @@ public class ProjectService {
             throw new NotFoundException("invalid project idx");
 
         return optional.get();
+    }
+
+    public List<ProjectVO> getMyProjects() throws AuthException {
+
+        UserVO user = userService.getMyUserWithAuthorities();
+        return projectRepository.findWithSubmitteesByUser(user);
     }
 
 }
