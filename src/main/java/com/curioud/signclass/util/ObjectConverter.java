@@ -57,7 +57,7 @@ public class ObjectConverter {
                 .regDate(vo.getRegDate())
                 .endDate(vo.getEndDate())
                 .upDate(vo.getUpDate())
-                .activated(vo.isActivated())
+                .activated(vo.getActivated())
                 .build();
     }
 
@@ -70,7 +70,7 @@ public class ObjectConverter {
                 .regDate(vo.getRegDate())
                 .endDate(vo.getEndDate())
                 .upDate(vo.getUpDate())
-                .activated(vo.isActivated())
+                .activated(vo.getActivated())
                 .submittees(vo.getSubmittees().stream().map(this::SubmitteeVOToDTO).collect(Collectors.toList()))
                 .build();
     }
@@ -84,7 +84,7 @@ public class ObjectConverter {
                 .regDate(vo.getRegDate())
                 .endDate(vo.getEndDate())
                 .upDate(vo.getUpDate())
-                .activated(vo.isActivated())
+                .activated(vo.getActivated())
                 .user(this.UserVOToDTO(vo.getUser()))
                 .build();
     }
@@ -98,7 +98,7 @@ public class ObjectConverter {
                 .regDate(vo.getRegDate())
                 .endDate(vo.getEndDate())
                 .upDate(vo.getUpDate())
-                .activated(vo.isActivated())
+                .activated(vo.getActivated())
                 .pdf(this.PdfVOToDTO(vo.getPdf()))
                 .user(this.UserVOToDTO(vo.getUser()))
                 .build();

@@ -28,7 +28,7 @@ public class ProjectDTO {
 
     LocalDateTime upDate;
 
-    boolean activated;
+    int activated;
 
     PdfDTO pdf;
 

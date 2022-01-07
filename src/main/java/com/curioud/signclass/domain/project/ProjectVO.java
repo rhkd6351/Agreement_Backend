@@ -44,8 +44,9 @@ public class ProjectVO {
     @UpdateTimestamp
     LocalDateTime upDate;
 
+    //0: 생성됨 1: 공유됨 -1: 종료됨
     @Column(name="activated")
-    boolean activated;
+    int activated;
 
     @ManyToOne
     @JoinColumn(name = "user_idx_fk")

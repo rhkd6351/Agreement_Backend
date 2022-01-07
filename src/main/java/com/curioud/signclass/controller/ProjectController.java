@@ -34,6 +34,16 @@ public class ProjectController {
         this.objectConverter = objectConverter;
     }
 
+    /**
+     *
+     * @param mf multipart-File 형식 pdf 파일입니다.
+     * @param projectDTO dto.description만 optional로 입력받습니다.
+     * @return ProjectDTO를 리턴합니다.
+     * @throws IOException pdf byte를 저장하는데 오류가 발생하였습니다.
+     * @throws NotSupportedException 확장자가 pdf 이외의 타입입니다.
+     * @throws NotFoundException pdf 등록 후 project가 등록되는데, pdf의 name값이 유효하지 않습니다.
+     * @throws AuthException 토큰 및 권한 정보가 유효하지 않습니다.
+     */
     @PostMapping("/project")
     @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<ProjectDTO> save

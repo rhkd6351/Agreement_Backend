@@ -53,7 +53,7 @@ public class ProjectService {
                     .name(UUID.randomUUID().toString())
                     .title(pdf.getOriginalName().split("\\.")[0]) //TODO 수정할것
                     .description(dto.getDescription())
-                    .activated(true)
+                    .activated(0) // 0 -> 생성됨
                     .build();
 
         } else {
@@ -64,7 +64,7 @@ public class ProjectService {
             projectVO.setTitle(dto.getTitle());
             projectVO.setDescription(dto.getDescription());
             projectVO.setUpDate(LocalDateTime.now());
-            projectVO.setActivated(dto.isActivated());
+            projectVO.setActivated(0); // 0 -> 생성됨
         }
 
         this.save(projectVO);
