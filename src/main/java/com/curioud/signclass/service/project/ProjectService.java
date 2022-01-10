@@ -1,17 +1,19 @@
 package com.curioud.signclass.service.project;
 
-import com.curioud.signclass.domain.project.PdfVO;
-import com.curioud.signclass.domain.project.ProjectVO;
+import com.curioud.signclass.domain.project.*;
 import com.curioud.signclass.domain.user.UserVO;
-import com.curioud.signclass.dto.project.ProjectDTO;
+import com.curioud.signclass.dto.project.*;
 import com.curioud.signclass.repository.project.ProjectRepository;
 import com.curioud.signclass.service.user.UserService;
+import com.curioud.signclass.util.ObjectConverter;
 import javassist.NotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.security.auth.message.AuthException;
-import java.time.LocalDateTime;
+import javax.transaction.NotSupportedException;
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -23,50 +25,48 @@ public class ProjectService {
 
     UserService userService;
     PdfService pdfService;
-//    ProjectObjectCheckboxService projectObjectCheckboxService;
-//    ProjectObjectSignService projectObjectSignService;
-//    ProjectObjectTextService projectObjectTextService;
+    ProjectObjectCheckboxService projectObjectCheckboxService;
+    ProjectObjectSignService projectObjectSignService;
+    ProjectObjectTextService projectObjectTextService;
+    ObjectConverter objectConverter;
 
 
-    public ProjectService(ProjectRepository projectRepository, UserService userService, PdfService pdfService) {
+    public ProjectService(ProjectRepository projectRepository, UserService userService, PdfService pdfService, ProjectObjectCheckboxService projectObjectCheckboxService, ProjectObjectSignService projectObjectSignService, ProjectObjectTextService projectObjectTextService, ObjectConverter objectConverter) {
         this.projectRepository = projectRepository;
         this.userService = userService;
         this.pdfService = pdfService;
+        this.projectObjectCheckboxService = projectObjectCheckboxService;
+        this.projectObjectSignService = projectObjectSignService;
+        this.projectObjectTextService = projectObjectTextService;
+        this.objectConverter = objectConverter;
     }
 
+    @Transactional
     public ProjectVO save(ProjectVO vo) {
         return projectRepository.save(vo);
     }
 
     @Transactional
-    public ProjectVO save(ProjectDTO dto) throws NotFoundException, AuthException {
+    public ProjectVO saveWithPdf(ProjectDTO dto, MultipartFile mf) throws NotFoundException, AuthException, IOException, NotSupportedException {
+
+        PdfVO savedPdf = pdfService.save(mf);
         ProjectVO projectVO;
 
         if (dto.getIdx() == null) {
 
             UserVO user = userService.getMyUserWithAuthorities();
-            PdfVO pdf = pdfService.getByName(dto.getPdf().getName());
 
             projectVO = ProjectVO.builder()
                     .user(user)
-                    .pdf(pdf)
+                    .pdf(savedPdf)
                     .name(UUID.randomUUID().toString())
-                    .title(pdf.getOriginalName().split("\\.")[0]) //TODO 수정할것
+                    .title(savedPdf.getOriginalName().split("\\.pdf")[0]) //TODO 수정할것
                     .description(dto.getDescription())
                     .activated(0) // 0 -> 생성됨
                     .build();
 
-        } else {
+        } else
             throw new UnsupportedOperationException("you can't update exist project");
-//            projectVO = this.getByIdx(dto.getIdx());
-////            projectVO.setName(dto.getName()); 이름 수정불가
-////            projectVO.setPdf(dto.getPdf()); pdf 수정불가
-////            projectVO.setUser(user); 유저 수정불가
-//            projectVO.setTitle(dto.getTitle());
-//            projectVO.setDescription(dto.getDescription());
-//            projectVO.setUpDate(LocalDateTime.now());
-//            projectVO.setActivated(0); // 0 -> 생성됨
-        }
 
         this.save(projectVO);
 
@@ -74,30 +74,45 @@ public class ProjectService {
 
     }
 
-//    @Transactional
-//    public ProjectVO saveWithObjects(ProjectDTO dto) throws NotFoundException, AuthException {
-//
-//        ProjectVO project = this.save(dto);
-//        ProjectDTO idxInsertDTO = ProjectDTO.builder().idx(dto.getIdx()).build();
-//
-//        for(ProjectObjectSignDTO sign : dto.getProjectObjectSigns()){
-//            sign.setProject(idxInsertDTO);
-//            projectObjectSignService.save(sign);
-//        }
-//
-//        for(ProjectObjectCheckboxDTO checkbox : dto.getProjectObjectCheckboxes()){
-//            checkbox.setProject(idxInsertDTO);
-//            projectObjectCheckboxService.save(checkbox);
-//        }
-//
-//        for(ProjectObjectTextDTO text : dto.getProjectObjectTexts()){
-//            text.setProject(idxInsertDTO);
-//            projectObjectTextService.save(text);
-//        }
-//
-//        return project;
-//    }
+    @Transactional
+    public ProjectDTO saveObjects(ProjectDTO dto) throws NotFoundException, AuthException, IllegalAccessException {
 
+        UserVO user = userService.getMyUserWithAuthorities();
+
+        ProjectVO project = this.getByName(dto.getName());
+        project.setActivated(1);
+        this.save(project);
+
+        if(project.getUser() != user)
+            throw new AuthException("not owned project name");
+
+        if(project.getActivated() != 0)
+            throw new IllegalAccessException("already written project");
+
+        ProjectDTO projectDTO = objectConverter.projectVOToDTO(project);;
+
+        for(ProjectObjectSignDTO sign : dto.getProjectObjectSigns()){
+            sign.setProject(projectDTO);
+            ProjectObjectSignVO save = projectObjectSignService.save(sign, project);
+            projectDTO.getProjectObjectSigns().add(objectConverter.projectObjectSignVOToDTO(save));
+        }
+
+        for(ProjectObjectCheckboxDTO checkbox : dto.getProjectObjectCheckboxes()){
+            checkbox.setProject(projectDTO);
+            ProjectObjectCheckboxVO save = projectObjectCheckboxService.save(checkbox, project);
+            projectDTO.getProjectObjectCheckboxes().add(objectConverter.projectObjectCheckboxVOToDTO(save));
+        }
+
+        for(ProjectObjectTextDTO text : dto.getProjectObjectTexts()){
+            text.setProject(projectDTO);
+            ProjectObjectTextVO save = projectObjectTextService.save(text, project);
+            projectDTO.getProjectObjectTexts().add(objectConverter.projectObjectTextVOToDTO(save));
+        }
+
+        return projectDTO;
+    }
+
+    @Transactional(readOnly = true)
     public ProjectVO getByName(String name) throws NotFoundException {
         Optional<ProjectVO> optional = projectRepository.findOneByName(name);
 
@@ -107,6 +122,7 @@ public class ProjectService {
         return optional.get();
     }
 
+    @Transactional(readOnly = true)
     public ProjectVO getByIdx(Long idx) throws NotFoundException {
         Optional<ProjectVO> optional = projectRepository.findById(idx);
 
@@ -116,6 +132,7 @@ public class ProjectService {
         return optional.get();
     }
 
+    @Transactional(readOnly = true)
     public List<ProjectVO> getMyProjects() throws AuthException {
 
         UserVO user = userService.getMyUserWithAuthorities();

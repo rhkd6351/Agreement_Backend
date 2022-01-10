@@ -31,10 +31,12 @@ public class PdfService {
         this.maxFileSize = maxFileSize;
     }
 
+    @Transactional
     public PdfVO save(PdfVO pdfVO){
         return pdfRepository.save(pdfVO);
     }
 
+    @Transactional
     public PdfVO save(PdfDTO pdfDTO) throws NotFoundException {
 
         PdfVO pdfVO;
@@ -50,14 +52,6 @@ public class PdfService {
                     .build();
         }else{
             throw new UnsupportedOperationException("you can't update exist project object");
-//            pdfVO = this.getByIdx(pdfDTO.getIdx());
-//
-//            pdfVO.setName(pdfDTO.getName());
-//            pdfVO.setOriginalName(pdfDTO.getName());
-//            pdfVO.setSaveName(pdfDTO.getSaveName());
-//            pdfVO.setSize(pdfDTO.getSize());
-//            pdfVO.setTotalPage(pdfDTO.getTotalPage());
-//            pdfVO.setUploadPath(pdfDTO.getUploadPath());
         }
 
         return this.save(pdfVO);
@@ -94,7 +88,7 @@ public class PdfService {
         doc.close();
         return this.save(pdf);
     }
-
+    @Transactional(readOnly = true)
     public PdfVO getByName(String name) throws NotFoundException {
         Optional<PdfVO> pdfOptional = pdfRepository.findOneByName(name);
 
@@ -104,6 +98,7 @@ public class PdfService {
         return pdfOptional.get();
     }
 
+    @Transactional(readOnly = true)
     public PdfVO getByIdx(Long idx) throws NotFoundException {
         Optional<PdfVO> pdfOptional = pdfRepository.findById(idx);
 
@@ -113,6 +108,7 @@ public class PdfService {
         return pdfOptional.get();
     }
 
+    @Transactional(readOnly = true)
     public byte[] getByteByName(String name) throws NotFoundException, IOException {
 
         PdfVO pdf = this.getByName(name);

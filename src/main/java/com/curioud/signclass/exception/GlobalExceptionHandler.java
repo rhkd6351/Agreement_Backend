@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import javax.transaction.NotSupportedException;
+import java.nio.file.NoSuchFileException;
 
 @RestControllerAdvice
 @Slf4j
@@ -20,6 +21,16 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(NotFoundException.class)
     public ResponseEntity<MessageDTO> NotFoundException(NotFoundException e){
         return new ResponseEntity<>(new MessageDTO(e.getMessage()), HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(NoSuchFileException.class)
+    public ResponseEntity<MessageDTO> NoSuchFileException(NoSuchFileException e){
+        return new ResponseEntity<>(new MessageDTO(e.getMessage()), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(IllegalAccessException.class)
+    public ResponseEntity<MessageDTO> IllegalAccessException(IllegalAccessException e){
+        return new ResponseEntity<>(new MessageDTO(e.getMessage()), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(DuplicateMemberException.class)
@@ -34,7 +45,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<MessageDTO> Exception(Exception e){
-        e.printStackTrace();
+//        e.printStackTrace();
         return new ResponseEntity<>(new MessageDTO(e.getMessage()), HttpStatus.BAD_REQUEST);
     }
 

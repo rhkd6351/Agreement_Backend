@@ -16,7 +16,7 @@ import javax.persistence.*;
 @Table(name = "PROJECT_OBJECT_TB")
 @Inheritance(strategy = InheritanceType.JOINED)
 @DiscriminatorColumn(name="object_type_fk")
-public class ProjectObjectVO {
+public abstract class ProjectObjectVO {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -40,12 +40,15 @@ public class ProjectObjectVO {
     @Column(name = "page")
     int page;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @Column(name = "required")
+    boolean required;
+
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "project_idx_fk")
     ProjectVO project;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "object_type_fk")
+    @OneToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "object_type_fk", updatable = false, insertable = false) //TODO 이게 왜 동작하는지 알아낼것
     ObjectTypeVO objectType;
     
 }

@@ -4,10 +4,7 @@ package com.curioud.signclass.domain.project;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
-import javax.persistence.Column;
-import javax.persistence.DiscriminatorValue;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Getter
@@ -17,6 +14,7 @@ import javax.persistence.Table;
 @NoArgsConstructor
 @Table(name = "PROJECT_OBJECT_TEXT_TB")
 @DiscriminatorValue("OBJECT_TYPE_TEXT")
+@PrimaryKeyJoinColumn(name = "object_idx_fk")
 public class ProjectObjectTextVO extends ProjectObjectVO {
 
     @Column(name = "font_size")

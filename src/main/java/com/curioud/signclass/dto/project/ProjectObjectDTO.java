@@ -1,22 +1,23 @@
 package com.curioud.signclass.dto.project;
 
 
-import com.curioud.signclass.dto.etc.ObjectTypeDTO;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 @Getter
 @Setter
+@SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
 public class ProjectObjectDTO {
 
     Long idx;
 
+    @JsonProperty("x_position")
     int xPosition;
 
+    @JsonProperty("y_position")
     int yPosition;
 
     int width;
@@ -29,6 +30,6 @@ public class ProjectObjectDTO {
 
     ProjectDTO project;
 
-    ObjectTypeDTO objectType;
+    String objectType;
     
 }

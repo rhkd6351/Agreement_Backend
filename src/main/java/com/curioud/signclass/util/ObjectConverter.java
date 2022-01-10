@@ -1,16 +1,15 @@
 package com.curioud.signclass.util;
 
-import com.curioud.signclass.domain.project.PdfVO;
-import com.curioud.signclass.domain.project.ProjectVO;
+import com.curioud.signclass.domain.project.*;
 import com.curioud.signclass.domain.submittee.SubmitteeVO;
 import com.curioud.signclass.domain.user.UserVO;
-import com.curioud.signclass.dto.project.PdfDTO;
-import com.curioud.signclass.dto.project.ProjectDTO;
+import com.curioud.signclass.dto.project.*;
 import com.curioud.signclass.dto.submittee.SubmitteeDTO;
 import com.curioud.signclass.dto.user.UserDTO;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.stream.Collectors;
 
 @Component
@@ -23,7 +22,7 @@ public class ObjectConverter {
     }
 
 
-    public UserDTO UserVOToDTO(UserVO vo) {
+    public UserDTO userVOToDTO(UserVO vo) {
         return UserDTO.builder()
                 .idx(vo.getIdx())
                 .id(vo.getId())
@@ -34,7 +33,7 @@ public class ObjectConverter {
                 .build();
     }
 
-    public PdfDTO PdfVOToDTO(PdfVO vo) {
+    public PdfDTO pdfVOToDTO(PdfVO vo) {
         return PdfDTO.builder()
                 .idx(vo.getIdx())
                 .name(vo.getName())
@@ -48,7 +47,7 @@ public class ObjectConverter {
                 .build();
     }
 
-    public ProjectDTO ProjectVOToDTO(ProjectVO vo){
+    public ProjectDTO projectVOToDTO(ProjectVO vo) {
         return ProjectDTO.builder()
                 .idx(vo.getIdx())
                 .name(vo.getName())
@@ -58,53 +57,102 @@ public class ObjectConverter {
                 .endDate(vo.getEndDate())
                 .upDate(vo.getUpDate())
                 .activated(vo.getActivated())
+                .projectObjectCheckboxes(new ArrayList<>())
+                .projectObjectSigns(new ArrayList<>())
+                .projectObjectTexts(new ArrayList<>())
                 .build();
     }
 
-    public ProjectDTO ProjectVOToDTOWithSubmittees(ProjectVO vo){
-        return ProjectDTO.builder()
+    public ProjectDTO projectVOToDTOWithSubmittees(ProjectVO vo) {
+        ProjectDTO projectDTO = this.projectVOToDTO(vo);
+        projectDTO.setSubmittees(vo.getSubmittees().stream().map(this::submitteeVOToDTO).collect(Collectors.toList()));
+        return projectDTO;
+    }
+
+    public ProjectDTO projectVOToDTOWithUser(ProjectVO vo) {
+        ProjectDTO projectDTO = this.projectVOToDTO(vo);
+        projectDTO.setUser(this.userVOToDTO(vo.getUser()));
+        return projectDTO;
+    }
+
+    public ProjectDTO projectVOToDTOWithUserAndPdf(ProjectVO vo) {
+        ProjectDTO projectDTO = this.projectVOToDTO(vo);
+        projectDTO.setPdf(this.pdfVOToDTO(vo.getPdf()));
+        projectDTO.setUser(this.userVOToDTO(vo.getUser()));
+        return projectDTO;
+    }
+
+//    public ProjectDTO projectVOToDTOWithObjects(ProjectVO vo) {
+//        ProjectDTO projectDTO = this.projectVOToDTO(vo);
+//        projectDTO.setProjectObjectSigns(vo.getProjectObjects().stream().map(this::projectObjectSignVOToDTO).collect(Collectors.toList()));
+//        projectDTO.setProjectObjectTexts(vo.getProjectObjects().stream().map(this::projectObjectTextVOToDTO).collect(Collectors.toList()));
+//        projectDTO.setProjectObjectCheckboxes(vo.getProjectObjects().stream().map(this::projectObjectCheckboxVOToDTO).collect(Collectors.toList()));
+//
+//        return projectDTO;
+//    }
+
+
+
+    public ProjectObjectDTO projectObjectVOToDTO(ProjectObjectVO vo) {
+        return ProjectObjectDTO.builder()
                 .idx(vo.getIdx())
-                .name(vo.getName())
-                .title(vo.getTitle())
-                .description(vo.getDescription())
-                .regDate(vo.getRegDate())
-                .endDate(vo.getEndDate())
-                .upDate(vo.getUpDate())
-                .activated(vo.getActivated())
-                .submittees(vo.getSubmittees().stream().map(this::SubmitteeVOToDTO).collect(Collectors.toList()))
+                .xPosition(vo.getXPosition())
+                .yPosition(vo.getYPosition())
+                .width(vo.getWidth())
+                .height(vo.getHeight())
+                .rotate(vo.getRotate())
+                .page(vo.getPage())
+//                .objectType(vo.getObjectType().getName())
                 .build();
     }
 
-    public ProjectDTO ProjectVOToDTOWithUser(ProjectVO vo){
-        return ProjectDTO.builder()
+    public ProjectObjectSignDTO projectObjectSignVOToDTO(ProjectObjectSignVO vo) {
+        return ProjectObjectSignDTO.builder()
                 .idx(vo.getIdx())
-                .name(vo.getName())
-                .title(vo.getTitle())
-                .description(vo.getDescription())
-                .regDate(vo.getRegDate())
-                .endDate(vo.getEndDate())
-                .upDate(vo.getUpDate())
-                .activated(vo.getActivated())
-                .user(this.UserVOToDTO(vo.getUser()))
+                .xPosition(vo.getXPosition())
+                .yPosition(vo.getYPosition())
+                .width(vo.getWidth())
+                .height(vo.getHeight())
+                .rotate(vo.getRotate())
+                .page(vo.getPage())
+                .objectType(vo.getObjectType().getName())
+                .type(vo.getType())
                 .build();
     }
 
-    public ProjectDTO ProjectVOToDTOWithUserAndPdf(ProjectVO vo){
-        return ProjectDTO.builder()
+    public ProjectObjectTextDTO projectObjectTextVOToDTO(ProjectObjectTextVO vo) {
+        return ProjectObjectTextDTO.builder()
                 .idx(vo.getIdx())
-                .name(vo.getName())
-                .title(vo.getTitle())
-                .description(vo.getDescription())
-                .regDate(vo.getRegDate())
-                .endDate(vo.getEndDate())
-                .upDate(vo.getUpDate())
-                .activated(vo.getActivated())
-                .pdf(this.PdfVOToDTO(vo.getPdf()))
-                .user(this.UserVOToDTO(vo.getUser()))
+                .xPosition(vo.getXPosition())
+                .yPosition(vo.getYPosition())
+                .width(vo.getWidth())
+                .height(vo.getHeight())
+                .rotate(vo.getRotate())
+                .page(vo.getPage())
+                .type(vo.getType())
+                .color(vo.getColor())
+                .fontSize(vo.getFontSize())
+                .objectType(vo.getObjectType().getName())
                 .build();
     }
 
-    public SubmitteeDTO SubmitteeVOToDTO(SubmitteeVO vo){
+    public ProjectObjectCheckboxDTO projectObjectCheckboxVOToDTO(ProjectObjectCheckboxVO vo) {
+        return ProjectObjectCheckboxDTO.builder()
+                .idx(vo.getIdx())
+                .xPosition(vo.getXPosition())
+                .yPosition(vo.getYPosition())
+                .width(vo.getWidth())
+                .height(vo.getHeight())
+                .rotate(vo.getRotate())
+                .page(vo.getPage())
+                .objectType(vo.getObjectType().getName())
+                .color(vo.getColor())
+                .type(vo.getType())
+                .build();
+    }
+
+    public SubmitteeDTO submitteeVOToDTO(SubmitteeVO vo) {
+
         return SubmitteeDTO.builder()
                 .idx(vo.getIdx())
                 .name(vo.getName())

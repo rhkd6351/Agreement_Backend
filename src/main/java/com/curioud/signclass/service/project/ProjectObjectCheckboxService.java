@@ -20,22 +20,18 @@ public class ProjectObjectCheckboxService {
     ProjectObjectCheckboxRepository projectObjectCheckboxRepository;
 
     @Autowired
-    ProjectService projectService;
-
-    @Autowired
     ObjectTypeService objectTypeService;
 
     public ProjectObjectCheckboxVO save(ProjectObjectCheckboxVO vo){
         return projectObjectCheckboxRepository.save(vo);
     }
 
-    public ProjectObjectCheckboxVO save(ProjectObjectCheckboxDTO dto) throws NotFoundException {
+    public ProjectObjectCheckboxVO save(ProjectObjectCheckboxDTO dto, ProjectVO project) throws NotFoundException {
 
         ProjectObjectCheckboxVO vo;
-        ObjectTypeVO objectType = objectTypeService.getByName("OBJECT_TYPE_SIGN");
+        ObjectTypeVO objectType = objectTypeService.getByName("OBJECT_TYPE_CHECKBOX");
 
         if(dto.getIdx() == null){
-            ProjectVO project = projectService.getByName(dto.getProject().getName());
 
             vo = ProjectObjectCheckboxVO.builder()
                     .xPosition(dto.getXPosition())

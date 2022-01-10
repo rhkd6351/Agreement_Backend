@@ -57,6 +57,9 @@ public class ProjectVO {
     PdfVO pdf;
 
     @OneToMany(mappedBy = "project", fetch = FetchType.LAZY, orphanRemoval = true)
+    List<ProjectObjectVO> projectObjects;
+
+    @OneToMany(mappedBy = "project", fetch = FetchType.LAZY, orphanRemoval = true)
     List<ProjectObjectCheckboxVO> projectObjectCheckboxes;
 
     @OneToMany(mappedBy = "project", fetch = FetchType.LAZY, orphanRemoval = true)

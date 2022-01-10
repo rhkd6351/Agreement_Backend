@@ -20,22 +20,18 @@ public class ProjectObjectTextService {
     ProjectObjectTextRepository projectObjectTextRepository;
 
     @Autowired
-    ProjectService projectService;
-
-    @Autowired
     ObjectTypeService objectTypeService;
 
     public ProjectObjectTextVO save(ProjectObjectTextVO vo){
         return projectObjectTextRepository.save(vo);
     }
 
-    public ProjectObjectTextVO save(ProjectObjectTextDTO dto) throws NotFoundException {
+    public ProjectObjectTextVO save(ProjectObjectTextDTO dto, ProjectVO project) throws NotFoundException {
 
         ProjectObjectTextVO vo;
         ObjectTypeVO objectType = objectTypeService.getByName("OBJECT_TYPE_TEXT");
 
         if(dto.getIdx() == null){
-            ProjectVO project = projectService.getByName(dto.getProject().getName());
 
             vo = ProjectObjectTextVO.builder()
                     .xPosition(dto.getXPosition())

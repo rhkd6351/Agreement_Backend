@@ -2,11 +2,12 @@ package com.curioud.signclass.dto.project;
 
 
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 
 @Getter
 @Setter
-@Builder
+@SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
 public class ProjectObjectTextDTO extends ProjectObjectDTO {

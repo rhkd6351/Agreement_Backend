@@ -2,9 +2,11 @@ package com.curioud.signclass.dto.project;
 
 import com.curioud.signclass.dto.submittee.SubmitteeDTO;
 import com.curioud.signclass.dto.user.UserDTO;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -34,12 +36,15 @@ public class ProjectDTO {
 
     UserDTO user;
 
-    List<ProjectObjectCheckboxDTO> projectObjectCheckboxes;
+    @JsonProperty("project_object_checkboxes")
+    List<ProjectObjectCheckboxDTO> projectObjectCheckboxes = new ArrayList<>();
 
-    List<ProjectObjectTextDTO> projectObjectTexts;
+    @JsonProperty("project_object_texts")
+    List<ProjectObjectTextDTO> projectObjectTexts = new ArrayList<>();
 
-    List<ProjectObjectSignDTO> projectObjectSigns;
+    @JsonProperty("project_object_signs")
+    List<ProjectObjectSignDTO> projectObjectSigns = new ArrayList<>();
 
-    List<SubmitteeDTO> submittees;
+    List<SubmitteeDTO> submittees = new ArrayList<>();
 
 }

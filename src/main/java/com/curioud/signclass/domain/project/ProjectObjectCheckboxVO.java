@@ -14,6 +14,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Table(name = "PROJECT_OBJECT_CHECKBOX_TB")
 @DiscriminatorValue("OBJECT_TYPE_CHECKBOX")
+@PrimaryKeyJoinColumn(name = "object_idx_fk")
 public class ProjectObjectCheckboxVO extends ProjectObjectVO {
 
     @Column(name = "color")

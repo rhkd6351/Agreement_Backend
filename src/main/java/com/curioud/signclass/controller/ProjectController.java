@@ -16,7 +16,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.security.auth.message.AuthException;
 import javax.transaction.NotSupportedException;
+import javax.transaction.Transactional;
 import java.io.IOException;
+import java.nio.file.NoSuchFileException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -37,45 +39,63 @@ public class ProjectController {
     /**
      *
      * @param mf multipart-File 형식 pdf 파일입니다.
-     * @param projectDTO dto.description만 optional로 입력받습니다.
-     * @return ProjectDTO를 리턴합니다.
-     * @throws IOException pdf 파일를 저장하는데 오류가 발생하였습니다.
-     * @throws NotSupportedException 확장자가 pdf 이외의 타입입니다.
-     * @throws NotFoundException pdf 등록 후 project가 등록되는데, pdf의 name값이 유효하지 않습니다.
+     * @param projectDTO
+     * description 프로젝트 설명
+     *
+     * @return 등록된 프로젝트
+     * @throws IOException pdf file IO 오류
+     * @throws NotSupportedException pdf 이외의 확장자
+     * @throws NotFoundException 유효하지 않은 pdf name
      * 또는 mf 변수가 비어있습니다.
-     * @throws AuthException 토큰 및 권한 정보가 유효하지 않습니다.
+     * @throws AuthException 유효하지 않은 토큰정보
      */
     @PostMapping("/project")
     @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<ProjectDTO> save
             (@RequestParam("pdfFile") MultipartFile mf, ProjectDTO projectDTO) throws IOException, NotSupportedException, NotFoundException, AuthException {
 
-        if(mf.isEmpty())
-            throw new NotFoundException("Empty file"); //TODO 예외 바꾸기
-
-        PdfVO savedPdf = pdfService.save(mf);
-        PdfDTO pdfDTO = objectConverter.PdfVOToDTO(savedPdf);
-
-        projectDTO.setPdf(pdfDTO);
-        ProjectVO projectVO = projectService.save(projectDTO);
-        ProjectDTO resultDTO = objectConverter.ProjectVOToDTOWithUserAndPdf(projectVO);
+        ProjectVO projectVO = projectService.saveWithPdf(projectDTO, mf);
+        ProjectDTO resultDTO = objectConverter.projectVOToDTOWithUserAndPdf(projectVO);
 
         return new ResponseEntity<>(resultDTO, HttpStatus.OK);
     }
 
     /**
      *
-     * @return List:ProjectDTO 토큰 계정 소유 프로젝트 리스트를 반환
-     * @throws AuthException  토큰 및 권한 정보가 유효하지 않습니다.
+     * @return
+     * List:ProjectDTO 소유 프로젝트 리스트
+     * @throws AuthException 유효하지 않은 토큰정보
      */
     @GetMapping("/projects")
     @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<List<ProjectDTO>> getMyProjects() throws AuthException {
 
         List<ProjectVO> projects = projectService.getMyProjects();
-        List<ProjectDTO> projectDTOs = projects.stream().map(objectConverter::ProjectVOToDTOWithSubmittees).collect(Collectors.toList());
+        List<ProjectDTO> projectDTOs = projects.stream().map(objectConverter::projectVOToDTOWithSubmittees).collect(Collectors.toList());
 
         return new ResponseEntity<>(projectDTOs, HttpStatus.OK);
+    }
+
+    /**
+     *
+     * @param projectDTO
+     * name 프로젝트 이름
+     * List:ProjectObjectTextVO Text 오브젝트 리스트
+     * List:ProjectObjectCheckboxVO Checkbox 오브젝트 리스트
+     * List:ProjectObjectSignVO Sign 오브젝트 리스트
+     * @return 프로젝트와 등록된 오브젝트
+     * @throws NotFoundException 유효하지 않은 프로젝트 이름
+     * @throws AuthException 소유하지 않은 프로젝트
+     * @throws IllegalAccessException 이미 작성된 프로젝트
+     */
+    @PostMapping("/project/objects")
+    @PreAuthorize("hasRole('ROLE_USER')")
+    public ResponseEntity<ProjectDTO> saveObjects(
+            @RequestBody ProjectDTO projectDTO) throws NotFoundException, AuthException, IllegalAccessException {
+
+        ProjectDTO resultProjectDTO = projectService.saveObjects(projectDTO);
+
+        return new ResponseEntity<>(resultProjectDTO, HttpStatus.OK);
     }
 }
 

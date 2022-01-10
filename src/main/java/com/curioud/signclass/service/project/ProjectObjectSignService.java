@@ -22,20 +22,16 @@ public class ProjectObjectSignService {
     @Autowired
     ObjectTypeService objectTypeService;
 
-    @Autowired
-    ProjectService projectService;
-
     public ProjectObjectSignVO save(ProjectObjectSignVO vo){
         return projectObjectSignRepository.save(vo);
     }
 
-    public ProjectObjectSignVO save(ProjectObjectSignDTO dto) throws NotFoundException {
+    public ProjectObjectSignVO save(ProjectObjectSignDTO dto, ProjectVO project) throws NotFoundException {
 
         ProjectObjectSignVO vo;
         ObjectTypeVO objectType = objectTypeService.getByName("OBJECT_TYPE_SIGN");
 
         if(dto.getIdx() == null){
-            ProjectVO project = projectService.getByName(dto.getProject().getName());
 
             vo = ProjectObjectSignVO.builder()
                     .xPosition(dto.getXPosition())
@@ -43,9 +39,9 @@ public class ProjectObjectSignService {
                     .width(dto.getWidth())
                     .height(dto.getHeight())
                     .rotate(dto.getRotate())
+                    .objectType(objectType)
                     .page(dto.getPage())
                     .project(project)
-                    .objectType(objectType)
                     .type(dto.getType())
                     .build();
 
