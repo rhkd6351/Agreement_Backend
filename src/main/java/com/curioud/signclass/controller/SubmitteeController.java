@@ -8,8 +8,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.security.auth.message.AuthException;
-
 @RestController
 @RequestMapping("/api")
 public class SubmitteeController {
@@ -21,9 +19,9 @@ public class SubmitteeController {
 
     /**
      *
-     * @param projectName
-     * @return
-     * @throws NotFoundException
+     * @param projectName project name
+     * @return project with objects, pdf
+     * @throws NotFoundException 유효하지 않은 project name
      */
     @GetMapping("/submittee/project/{project-name}")
     public ResponseEntity<ProjectDTO> getProjectByName(@PathVariable("project-name")String projectName) throws NotFoundException {
