@@ -10,6 +10,7 @@ import com.curioud.signclass.service.etc.ObjectTypeService;
 import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -22,10 +23,12 @@ public class ProjectObjectTextService {
     @Autowired
     ObjectTypeService objectTypeService;
 
+    @Transactional
     public ProjectObjectTextVO save(ProjectObjectTextVO vo){
         return projectObjectTextRepository.save(vo);
     }
 
+    @Transactional
     public ProjectObjectTextVO save(ProjectObjectTextDTO dto, ProjectVO project) throws NotFoundException {
 
         ProjectObjectTextVO vo;
@@ -66,6 +69,7 @@ public class ProjectObjectTextService {
         return this.save(vo);
     }
 
+    @Transactional(readOnly = true)
     public ProjectObjectTextVO getByIdx(Long idx) throws NotFoundException {
         Optional<ProjectObjectTextVO> optional = projectObjectTextRepository.findById(idx);
         if(optional.isEmpty())

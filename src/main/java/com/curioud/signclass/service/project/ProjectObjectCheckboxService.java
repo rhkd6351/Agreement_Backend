@@ -10,6 +10,7 @@ import com.curioud.signclass.service.etc.ObjectTypeService;
 import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -22,10 +23,12 @@ public class ProjectObjectCheckboxService {
     @Autowired
     ObjectTypeService objectTypeService;
 
+    @Transactional
     public ProjectObjectCheckboxVO save(ProjectObjectCheckboxVO vo){
         return projectObjectCheckboxRepository.save(vo);
     }
 
+    @Transactional
     public ProjectObjectCheckboxVO save(ProjectObjectCheckboxDTO dto, ProjectVO project) throws NotFoundException {
 
         ProjectObjectCheckboxVO vo;
@@ -64,6 +67,7 @@ public class ProjectObjectCheckboxService {
         return this.save(vo);
     }
 
+    @Transactional(readOnly = true)
     public ProjectObjectCheckboxVO getByIdx(Long idx) throws NotFoundException {
         Optional<ProjectObjectCheckboxVO> optional = projectObjectCheckboxRepository.findById(idx);
         if(optional.isEmpty())
