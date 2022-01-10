@@ -80,14 +80,15 @@ public class ProjectService {
         UserVO user = userService.getMyUserWithAuthorities();
 
         ProjectVO project = this.getByName(dto.getName());
-        project.setActivated(1);
-        this.save(project);
+
+        if(project.getActivated() != 0)
+            throw new IllegalAccessException("already written project");
 
         if(project.getUser() != user)
             throw new AuthException("not owned project name");
 
-        if(project.getActivated() != 0)
-            throw new IllegalAccessException("already written project");
+        project.setActivated(1);
+        this.save(project);
 
         ProjectDTO projectDTO = objectConverter.projectVOToDTO(project);;
 
