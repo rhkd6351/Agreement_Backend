@@ -24,10 +24,13 @@ public class ProjectDTO {
 
     String description;
 
+    @JsonProperty("reg_date")
     LocalDateTime regDate;
 
+    @JsonProperty("end_date")
     LocalDateTime endDate;
 
+    @JsonProperty("up_date")
     LocalDateTime upDate;
 
     int activated;

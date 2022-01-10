@@ -1,5 +1,6 @@
 package com.curioud.signclass.dto.project;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 import java.time.LocalDateTime;
 
@@ -14,19 +15,24 @@ public class PdfDTO {
 
     String name;
 
+    @JsonProperty("original_name")
     String originalName;
 
+    @JsonProperty("save_name")
     String saveName;
 
     Long size;
 
+    @JsonProperty("total_page")
     int totalPage;
 
+    @JsonProperty("upload_path")
     String uploadPath;
 
     String extension;
 
     String url;
 
+    @JsonProperty("reg_date")
     LocalDateTime regDate;
 }

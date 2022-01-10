@@ -43,7 +43,7 @@ public class FileController {
     @PostMapping("/project/pdf")
     @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<PdfDTO> savePdf(
-            @RequestParam(value = "pdfFile") MultipartFile mf) throws IOException, NotSupportedException {
+            @RequestParam(value = "file_pdf") MultipartFile mf) throws IOException, NotSupportedException {
 
         if(mf.isEmpty())
             throw new NoSuchFileException("Empty file"); //TODO 예외 바꾸기

@@ -52,7 +52,7 @@ public class ProjectController {
     @PostMapping("/project")
     @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<ProjectDTO> save
-            (@RequestParam("pdfFile") MultipartFile mf, ProjectDTO projectDTO) throws IOException, NotSupportedException, NotFoundException, AuthException {
+            (@RequestParam("file_pdf") MultipartFile mf, ProjectDTO projectDTO) throws IOException, NotSupportedException, NotFoundException, AuthException {
 
         ProjectVO projectVO = projectService.saveWithPdf(projectDTO, mf);
         ProjectDTO resultDTO = objectConverter.projectVOToDTOWithUserAndPdf(projectVO);

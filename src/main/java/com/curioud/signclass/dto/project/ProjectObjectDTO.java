@@ -30,6 +30,7 @@ public class ProjectObjectDTO {
 
     ProjectDTO project;
 
+    @JsonProperty("object_type")
     String objectType;
     
 }
