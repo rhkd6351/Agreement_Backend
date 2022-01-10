@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.server.NotAcceptableStatusException;
 
 import javax.transaction.NotSupportedException;
 import java.nio.file.NoSuchFileException;
@@ -42,12 +43,18 @@ public class GlobalExceptionHandler {
     public ResponseEntity<MessageDTO> NotSupportedException(NotSupportedException e){
         return new ResponseEntity<>(new MessageDTO(e.getMessage()), HttpStatus.BAD_REQUEST);
     }
+    @ExceptionHandler(NotAcceptableStatusException.class)
+    public ResponseEntity<MessageDTO> NotAcceptableStatusException(NotAcceptableStatusException e){
+        return new ResponseEntity<>(new MessageDTO(e.getMessage()), HttpStatus.BAD_REQUEST);
+    }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<MessageDTO> Exception(Exception e){
         e.printStackTrace();
         return new ResponseEntity<>(new MessageDTO(e.getMessage()), HttpStatus.BAD_REQUEST);
     }
+
+
 
 
 

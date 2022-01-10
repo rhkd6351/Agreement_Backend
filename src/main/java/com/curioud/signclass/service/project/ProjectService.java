@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.NotAcceptableStatusException;
 
 import javax.security.auth.message.AuthException;
 import javax.transaction.NotSupportedException;
@@ -144,6 +145,38 @@ public class ProjectService {
         }
         projectDTO.setPdf(objectConverter.pdfVOToDTO(project.getPdf()));
         projectDTO.getSubmittees().addAll(project.getSubmittees().stream().map(objectConverter::submitteeVOToDTO).collect(Collectors.toList()));
+
+        return projectDTO;
+    }
+
+    @Transactional(readOnly = true)
+    public ProjectDTO getWithProjectObjectsAndPdfByName(String name) throws NotFoundException {
+
+        ProjectVO project = projectRepository.findWithProjectObjectsAndPdfByName(name);
+
+        if(project.getActivated() != 1)
+            throw new NotAcceptableStatusException("project is not public");
+
+        ProjectDTO projectDTO = objectConverter.projectVOToDTO(project);
+
+        Set<ProjectObjectVO> projectObjects = project.getProjectObjects();
+        for (ProjectObjectVO em: projectObjects) {
+            switch (em.getObjectType().getName()){
+                case "OBJECT_TYPE_SIGN":
+                    ProjectObjectSignVO signEm = projectObjectSignService.getByIdx(em.getIdx());
+                    projectDTO.getProjectObjectSigns().add(objectConverter.projectObjectSignVOToDTO(signEm));
+                    break;
+                case "OBJECT_TYPE_CHECKBOX":
+                    ProjectObjectCheckboxVO checkboxEm = projectObjectCheckboxService.getByIdx(em.getIdx());
+                    projectDTO.getProjectObjectCheckboxes().add(objectConverter.projectObjectCheckboxVOToDTO(checkboxEm));
+                    break;
+                case "OBJECT_TYPE_TEXT":
+                    ProjectObjectTextVO textEm = projectObjectTextService.getByIdx(em.getIdx());
+                    projectDTO.getProjectObjectTexts().add(objectConverter.projectObjectTextVOToDTO(textEm));
+                    break;
+            }
+        }
+        projectDTO.setPdf(objectConverter.pdfVOToDTO(project.getPdf()));
 
         return projectDTO;
     }

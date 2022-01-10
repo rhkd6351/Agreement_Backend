@@ -18,6 +18,9 @@ public interface ProjectRepository extends JpaRepository<ProjectVO, Long> {
     @EntityGraph(attributePaths = {"submittees", "projectObjects", "pdf"})
     public ProjectVO findWithSubmitteesAndProjectObjectsAndPdfByName(String name);
 
+    @EntityGraph(attributePaths = {"projectObjects", "pdf"})
+    public ProjectVO findWithProjectObjectsAndPdfByName(String name);
+
 //    @EntityGraph(attributePaths = "projectObjects")
 //    public Optional<ProjectVO> findWithProjectObjectsByName(String name);
 

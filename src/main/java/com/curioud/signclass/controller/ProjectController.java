@@ -1,8 +1,6 @@
 package com.curioud.signclass.controller;
 
-import com.curioud.signclass.domain.project.PdfVO;
 import com.curioud.signclass.domain.project.ProjectVO;
-import com.curioud.signclass.dto.project.PdfDTO;
 import com.curioud.signclass.dto.project.ProjectDTO;
 import com.curioud.signclass.service.project.PdfService;
 import com.curioud.signclass.service.project.ProjectService;
@@ -16,9 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.security.auth.message.AuthException;
 import javax.transaction.NotSupportedException;
-import javax.transaction.Transactional;
 import java.io.IOException;
-import java.nio.file.NoSuchFileException;
 import java.util.List;
 import java.util.stream.Collectors;
 
