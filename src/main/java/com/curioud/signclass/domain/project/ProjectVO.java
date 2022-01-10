@@ -9,7 +9,10 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -57,18 +60,18 @@ public class ProjectVO {
     PdfVO pdf;
 
     @OneToMany(mappedBy = "project", fetch = FetchType.LAZY, orphanRemoval = true)
-    List<ProjectObjectVO> projectObjects;
+    Set<ProjectObjectVO> projectObjects = new HashSet<>();
 
-    @OneToMany(mappedBy = "project", fetch = FetchType.LAZY, orphanRemoval = true)
-    List<ProjectObjectCheckboxVO> projectObjectCheckboxes;
-
-    @OneToMany(mappedBy = "project", fetch = FetchType.LAZY, orphanRemoval = true)
-    List<ProjectObjectTextVO> projectObjectTexts;
-
-    @OneToMany(mappedBy = "project", fetch = FetchType.LAZY, orphanRemoval = true)
-    List<ProjectObjectSignVO> projectObjectSigns;
+//    @OneToMany(mappedBy = "project", fetch = FetchType.LAZY, orphanRemoval = true)
+//    Set<ProjectObjectCheckboxVO> projectObjectCheckboxes = new HashSet<>();
+//
+//    @OneToMany(mappedBy = "project", fetch = FetchType.LAZY, orphanRemoval = true)
+//    Set<ProjectObjectTextVO> projectObjectTexts = new HashSet<>();
+//
+//    @OneToMany(mappedBy = "project", fetch = FetchType.LAZY, orphanRemoval = true)
+//    Set<ProjectObjectSignVO> projectObjectSigns = new HashSet<>();
 
     @OneToMany(mappedBy = "project", orphanRemoval = true)
-    List<SubmitteeVO> submittees;
+    List<SubmitteeVO> submittees = new ArrayList<>();
     
 }

@@ -14,7 +14,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Table(name = "PROJECT_OBJECT_TEXT_TB")
 @DiscriminatorValue("OBJECT_TYPE_TEXT")
-@PrimaryKeyJoinColumn(name = "object_idx_fk")
+@PrimaryKeyJoinColumn(name = "idx", referencedColumnName = "idx")
 public class ProjectObjectTextVO extends ProjectObjectVO {
 
     @Column(name = "font_size")

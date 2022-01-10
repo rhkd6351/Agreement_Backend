@@ -39,6 +39,9 @@ public class ProjectDTO {
 
     UserDTO user;
 
+    @JsonProperty("project_objects")
+    List<ProjectObjectDTO> projectObjects = new ArrayList<>();
+
     @JsonProperty("project_object_checkboxes")
     List<ProjectObjectCheckboxDTO> projectObjectCheckboxes = new ArrayList<>();
 

@@ -76,6 +76,15 @@ public class ProjectController {
         return new ResponseEntity<>(projectDTOs, HttpStatus.OK);
     }
 
+    @GetMapping("/project/{project-name}")
+    @PreAuthorize("hasRole('ROLE_USER')")
+    public ResponseEntity<ProjectDTO> getProjectByName(@PathVariable(value = "project-name")String projectName) throws AuthException, NotFoundException {
+
+        ProjectDTO projectDTO = projectService.getWithSubmitteesAndProjectObjectsAndPdfByName(projectName);
+
+        return new ResponseEntity<>(projectDTO, HttpStatus.OK);
+    }
+
     /**
      *
      * @param projectDTO
@@ -98,6 +107,9 @@ public class ProjectController {
 
         return new ResponseEntity<>(resultProjectDTO, HttpStatus.OK);
     }
+
+
+
 }
 
 

@@ -60,6 +60,7 @@ public class ObjectConverter {
                 .projectObjectCheckboxes(new ArrayList<>())
                 .projectObjectSigns(new ArrayList<>())
                 .projectObjectTexts(new ArrayList<>())
+                .submittees(new ArrayList<>())
                 .build();
     }
 

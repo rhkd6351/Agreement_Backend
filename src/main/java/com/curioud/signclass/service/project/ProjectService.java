@@ -7,6 +7,7 @@ import com.curioud.signclass.repository.project.ProjectRepository;
 import com.curioud.signclass.service.user.UserService;
 import com.curioud.signclass.util.ObjectConverter;
 import javassist.NotFoundException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -14,11 +15,11 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.security.auth.message.AuthException;
 import javax.transaction.NotSupportedException;
 import java.io.IOException;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 public class ProjectService {
 
     ProjectRepository projectRepository;
@@ -47,7 +48,7 @@ public class ProjectService {
     }
 
     @Transactional
-    public ProjectVO saveWithPdf(ProjectDTO dto, MultipartFile mf) throws NotFoundException, AuthException, IOException, NotSupportedException {
+    public ProjectVO saveWithPdf(ProjectDTO dto, MultipartFile mf) throws AuthException, IOException, NotSupportedException {
 
         PdfVO savedPdf = pdfService.save(mf);
         ProjectVO projectVO;
@@ -114,6 +115,40 @@ public class ProjectService {
     }
 
     @Transactional(readOnly = true)
+    public ProjectDTO getWithSubmitteesAndProjectObjectsAndPdfByName(String name) throws AuthException, NotFoundException {
+
+        UserVO user = userService.getMyUserWithAuthorities();
+        ProjectVO project = projectRepository.findWithSubmitteesAndProjectObjectsAndPdfByName(name);
+
+        if(user != project.getUser())
+            throw new AuthException("not owned project name");
+
+        ProjectDTO projectDTO = objectConverter.projectVOToDTO(project);
+
+        Set<ProjectObjectVO> projectObjects = project.getProjectObjects();
+        for (ProjectObjectVO em: projectObjects) {
+            switch (em.getObjectType().getName()){
+                case "OBJECT_TYPE_SIGN":
+                    ProjectObjectSignVO signEm = projectObjectSignService.getByIdx(em.getIdx());
+                    projectDTO.getProjectObjectSigns().add(objectConverter.projectObjectSignVOToDTO(signEm));
+                    break;
+                case "OBJECT_TYPE_CHECKBOX":
+                    ProjectObjectCheckboxVO checkboxEm = projectObjectCheckboxService.getByIdx(em.getIdx());
+                    projectDTO.getProjectObjectCheckboxes().add(objectConverter.projectObjectCheckboxVOToDTO(checkboxEm));
+                    break;
+                case "OBJECT_TYPE_TEXT":
+                    ProjectObjectTextVO textEm = projectObjectTextService.getByIdx(em.getIdx());
+                    projectDTO.getProjectObjectTexts().add(objectConverter.projectObjectTextVOToDTO(textEm));
+                    break;
+            }
+        }
+        projectDTO.setPdf(objectConverter.pdfVOToDTO(project.getPdf()));
+        projectDTO.getSubmittees().addAll(project.getSubmittees().stream().map(objectConverter::submitteeVOToDTO).collect(Collectors.toList()));
+
+        return projectDTO;
+    }
+
+    @Transactional(readOnly = true)
     public ProjectVO getByName(String name) throws NotFoundException {
         Optional<ProjectVO> optional = projectRepository.findOneByName(name);
 
@@ -141,7 +176,3 @@ public class ProjectService {
     }
 
 }
-
-
-
-
