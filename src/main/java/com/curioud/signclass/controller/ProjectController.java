@@ -88,11 +88,12 @@ public class ProjectController {
      * @throws AuthException 소유하지 않은 프로젝트
      * @throws IllegalAccessException 이미 작성된 프로젝트
      */
-    @PostMapping("/project/objects")
+    @PostMapping("/project/{project-name}/objects")
     @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<ProjectDTO> saveObjects(
-            @RequestBody ProjectDTO projectDTO) throws NotFoundException, AuthException, IllegalAccessException {
+            @RequestBody ProjectDTO projectDTO, @PathVariable("project-name") String projectName) throws NotFoundException, AuthException, IllegalAccessException {
 
+        projectDTO.setName(projectName);
         ProjectDTO resultProjectDTO = projectService.saveObjects(projectDTO);
 
         return new ResponseEntity<>(resultProjectDTO, HttpStatus.OK);
