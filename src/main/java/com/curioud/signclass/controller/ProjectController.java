@@ -38,7 +38,7 @@ public class ProjectController {
 
     /**
      *
-     * @param mf multipart-File 형식 pdf 파일입니다.
+     * @param mf pdf
      * @param projectDTO
      * description 프로젝트 설명
      *
@@ -76,6 +76,13 @@ public class ProjectController {
         return new ResponseEntity<>(projectDTOs, HttpStatus.OK);
     }
 
+    /**
+     *
+     * @param projectName 프로젝트 이름
+     * @return 프로젝트 (objects, pdf, submittee 가 포함된)
+     * @throws AuthException 소유하지 않은 프로젝트
+     * @throws NotFoundException
+     */
     @GetMapping("/project/{project-name}")
     @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<ProjectDTO> getProjectByName(@PathVariable(value = "project-name")String projectName) throws AuthException, NotFoundException {
