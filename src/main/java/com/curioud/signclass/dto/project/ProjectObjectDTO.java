@@ -14,6 +14,8 @@ public class ProjectObjectDTO {
 
     Long idx;
 
+    String name;
+
     @JsonProperty("x_position")
     int xPosition;
 

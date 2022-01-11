@@ -37,6 +37,7 @@ public class ProjectObjectCheckboxService {
         if(dto.getIdx() == null){
 
             vo = ProjectObjectCheckboxVO.builder()
+                    .name(dto.getName())
                     .xPosition(dto.getXPosition())
                     .yPosition(dto.getYPosition())
                     .width(dto.getWidth())

@@ -97,6 +97,7 @@ public class ObjectConverter {
     public ProjectObjectDTO projectObjectVOToDTO(ProjectObjectVO vo) {
         return ProjectObjectDTO.builder()
                 .idx(vo.getIdx())
+                .name(vo.getName())
                 .xPosition(vo.getXPosition())
                 .yPosition(vo.getYPosition())
                 .width(vo.getWidth())
@@ -110,6 +111,7 @@ public class ObjectConverter {
     public ProjectObjectSignDTO projectObjectSignVOToDTO(ProjectObjectSignVO vo) {
         return ProjectObjectSignDTO.builder()
                 .idx(vo.getIdx())
+                .name(vo.getName())
                 .xPosition(vo.getXPosition())
                 .yPosition(vo.getYPosition())
                 .width(vo.getWidth())
@@ -124,6 +126,7 @@ public class ObjectConverter {
     public ProjectObjectTextDTO projectObjectTextVOToDTO(ProjectObjectTextVO vo) {
         return ProjectObjectTextDTO.builder()
                 .idx(vo.getIdx())
+                .name(vo.getName())
                 .xPosition(vo.getXPosition())
                 .yPosition(vo.getYPosition())
                 .width(vo.getWidth())

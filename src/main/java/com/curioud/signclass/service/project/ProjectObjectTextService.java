@@ -37,6 +37,7 @@ public class ProjectObjectTextService {
         if(dto.getIdx() == null){
 
             vo = ProjectObjectTextVO.builder()
+                    .name(dto.getName())
                     .xPosition(dto.getXPosition())
                     .yPosition(dto.getYPosition())
                     .width(dto.getWidth())
