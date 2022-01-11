@@ -1,10 +1,10 @@
 package com.curioud.signclass.util;
 
 import com.curioud.signclass.domain.project.*;
-import com.curioud.signclass.domain.submittee.SubmitteeVO;
+import com.curioud.signclass.domain.submittee.*;
 import com.curioud.signclass.domain.user.UserVO;
 import com.curioud.signclass.dto.project.*;
-import com.curioud.signclass.dto.submittee.SubmitteeDTO;
+import com.curioud.signclass.dto.submittee.*;
 import com.curioud.signclass.dto.user.UserDTO;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -83,17 +83,6 @@ public class ObjectConverter {
         return projectDTO;
     }
 
-//    public ProjectDTO projectVOToDTOWithObjects(ProjectVO vo) {
-//        ProjectDTO projectDTO = this.projectVOToDTO(vo);
-//        projectDTO.setProjectObjectSigns(vo.getProjectObjects().stream().map(this::projectObjectSignVOToDTO).collect(Collectors.toList()));
-//        projectDTO.setProjectObjectTexts(vo.getProjectObjects().stream().map(this::projectObjectTextVOToDTO).collect(Collectors.toList()));
-//        projectDTO.setProjectObjectCheckboxes(vo.getProjectObjects().stream().map(this::projectObjectCheckboxVOToDTO).collect(Collectors.toList()));
-//
-//        return projectDTO;
-//    }
-
-
-
     public ProjectObjectDTO projectObjectVOToDTO(ProjectObjectVO vo) {
         return ProjectObjectDTO.builder()
                 .idx(vo.getIdx())
@@ -160,6 +149,71 @@ public class ObjectConverter {
         return SubmitteeDTO.builder()
                 .idx(vo.getIdx())
                 .name(vo.getName())
+                .studentId(vo.getStudentId())
+                .activated(vo.getActivated())
+                .regDate(vo.getRegDate())
+                .submitteeObjectSigns(new ArrayList<>())
+                .submitteeObjectTexts(new ArrayList<>())
+                .submitteeObjectCheckboxes(new ArrayList<>())
+                .build();
+    }
+
+    public SubmitteeObjectSignDTO submitteeObjectSignVOToDTO(SubmitteeObjectSignVO vo){
+        return SubmitteeObjectSignDTO.builder()
+                .name(vo.getName())
+                .xPosition(vo.getXPosition())
+                .yPosition(vo.getYPosition())
+                .width(vo.getWidth())
+                .height(vo.getHeight())
+                .rotate(vo.getRotate())
+                .page(vo.getPage())
+                .objectType(vo.getObjectType())
+                .type(vo.getType())
+                .build();
+    }
+
+    public SubmitteeObjectCheckboxDTO submitteeObjectCheckboxVOToDTO(SubmitteeObjectCheckboxVO vo){
+        return SubmitteeObjectCheckboxDTO.builder()
+                .name(vo.getName())
+                .xPosition(vo.getXPosition())
+                .yPosition(vo.getYPosition())
+                .width(vo.getWidth())
+                .height(vo.getHeight())
+                .rotate(vo.getRotate())
+                .page(vo.getPage())
+                .objectType(vo.getObjectType())
+                .type(vo.getType())
+                .checked(vo.isChecked())
+                .color(vo.getColor())
+                .build();
+    }
+
+    public SubmitteeObjectTextDTO submitteeObjectTextVOToDTO(SubmitteeObjectTextVO vo){
+        return SubmitteeObjectTextDTO.builder()
+                .name(vo.getName())
+                .xPosition(vo.getXPosition())
+                .yPosition(vo.getYPosition())
+                .width(vo.getWidth())
+                .height(vo.getHeight())
+                .rotate(vo.getRotate())
+                .page(vo.getPage())
+                .objectType(vo.getObjectType())
+                .type(vo.getType())
+                .content(vo.getContent())
+                .fontSize(vo.getFontSize())
+                .color(vo.getColor())
+                .build();
+    }
+
+    public SubmitteeObjectSignImgDTO submitteeObjectSignImgVOToDTO(SubmitteeObjectSignImgVO vo){
+        return SubmitteeObjectSignImgDTO.builder()
+                .name(vo.getName())
+                .originalName(vo.getOriginalName())
+                .saveName(vo.getSaveName())
+                .size(vo.getSize())
+                .uploadPath("*")
+                .extension(vo.getExtension())
+                .url(serverUrl + "/api/submittee/object/img/" + vo.getName())
                 .regDate(vo.getRegDate())
                 .build();
     }

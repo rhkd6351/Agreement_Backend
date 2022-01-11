@@ -2,13 +2,14 @@ package com.curioud.signclass.domain.submittee;
 
 
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
 
 @Entity
 @Getter
 @Setter
-@Builder
+@SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "SUBMITTEE_OBJECT_TEXT_TB")

@@ -43,6 +43,11 @@ public class GlobalExceptionHandler {
     public ResponseEntity<MessageDTO> NotSupportedException(NotSupportedException e){
         return new ResponseEntity<>(new MessageDTO(e.getMessage()), HttpStatus.BAD_REQUEST);
     }
+    @ExceptionHandler(BadRequestException.class)
+    public ResponseEntity<MessageDTO> BadRequestException(BadRequestException e){
+        return new ResponseEntity<>(new MessageDTO(e.getMessage()), HttpStatus.BAD_REQUEST);
+    }
+
     @ExceptionHandler(NotAcceptableStatusException.class)
     public ResponseEntity<MessageDTO> NotAcceptableStatusException(NotAcceptableStatusException e){
         return new ResponseEntity<>(new MessageDTO(e.getMessage()), HttpStatus.NOT_ACCEPTABLE);

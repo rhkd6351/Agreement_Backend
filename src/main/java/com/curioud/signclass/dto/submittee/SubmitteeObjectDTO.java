@@ -3,6 +3,7 @@ package com.curioud.signclass.dto.submittee;
 
 import com.curioud.signclass.domain.etc.ObjectTypeVO;
 import com.curioud.signclass.domain.submittee.SubmitteeVO;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,9 +21,11 @@ public class SubmitteeObjectDTO {
 
     String name;
 
-    int x_position;
+    @JsonProperty("x_position")
+    int xPosition;
 
-    int y_position;
+    @JsonProperty("y_position")
+    int yPosition;
 
     int width;
 

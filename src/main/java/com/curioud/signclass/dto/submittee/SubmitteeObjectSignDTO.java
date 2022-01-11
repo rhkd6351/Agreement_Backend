@@ -2,6 +2,7 @@ package com.curioud.signclass.dto.submittee;
 
 
 import com.curioud.signclass.domain.submittee.SubmitteeObjectSignImgVO;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
@@ -15,6 +16,6 @@ public class SubmitteeObjectSignDTO extends SubmitteeObjectDTO {
 
     String type;
 
-    SubmitteeObjectSignImgVO submitteeObjectSignImg;
+    SubmitteeObjectSignImgDTO submitteeObjectSignImg;
 
 }

@@ -95,19 +95,16 @@ public class ProjectService {
         ProjectDTO projectDTO = objectConverter.projectVOToDTO(project);;
 
         for(ProjectObjectSignDTO sign : dto.getProjectObjectSigns()){
-            sign.setProject(projectDTO);
             ProjectObjectSignVO save = projectObjectSignService.save(sign, project);
             projectDTO.getProjectObjectSigns().add(objectConverter.projectObjectSignVOToDTO(save));
         }
 
         for(ProjectObjectCheckboxDTO checkbox : dto.getProjectObjectCheckboxes()){
-            checkbox.setProject(projectDTO);
             ProjectObjectCheckboxVO save = projectObjectCheckboxService.save(checkbox, project);
             projectDTO.getProjectObjectCheckboxes().add(objectConverter.projectObjectCheckboxVOToDTO(save));
         }
 
         for(ProjectObjectTextDTO text : dto.getProjectObjectTexts()){
-            text.setProject(projectDTO);
             ProjectObjectTextVO save = projectObjectTextService.save(text, project);
             projectDTO.getProjectObjectTexts().add(objectConverter.projectObjectTextVOToDTO(save));
         }

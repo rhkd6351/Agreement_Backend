@@ -2,6 +2,7 @@ package com.curioud.signclass.domain.submittee;
 
 
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;
@@ -11,7 +12,7 @@ import javax.persistence.Table;
 @Entity
 @Getter
 @Setter
-@Builder
+@SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "SUBMITTEE_OBJECT_CHECKBOX_TB")

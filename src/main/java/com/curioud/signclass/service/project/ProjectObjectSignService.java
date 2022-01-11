@@ -31,12 +31,10 @@ public class ProjectObjectSignService {
     @Transactional
     public ProjectObjectSignVO save(ProjectObjectSignDTO dto, ProjectVO project) throws NotFoundException {
 
-        ProjectObjectSignVO vo;
         ObjectTypeVO objectType = objectTypeService.getByName("OBJECT_TYPE_SIGN");
 
         if(dto.getIdx() == null){
-
-            vo = ProjectObjectSignVO.builder()
+            ProjectObjectSignVO vo = ProjectObjectSignVO.builder()
                     .name(dto.getName())
                     .xPosition(dto.getXPosition())
                     .yPosition(dto.getYPosition())
@@ -49,21 +47,11 @@ public class ProjectObjectSignService {
                     .type(dto.getType())
                     .build();
 
-        }else{
-            throw new UnsupportedOperationException("you can't update exist project object");
-//            vo = this.getByIdx(dto.getIdx());
-//            vo.setXPosition(dto.getXPosition());
-//            vo.setYPosition(dto.getYPosition());
-//            vo.setWidth(dto.getWidth());
-//            vo.setHeight(dto.getHeight());
-//            vo.setRotate(dto.getRotate());
-//            vo.setPage(dto.getPage());
-//            vo.setObjectType(objectType);
-//            vo.setType(dto.getType());
-////            vo.setProject(); 프로젝트 수정불가
-        }
+            return this.save(vo);
 
-        return this.save(vo);
+        }else{
+            throw new UnsupportedOperationException("you can't update project");
+        }
     }
 
     @Transactional(readOnly = true)

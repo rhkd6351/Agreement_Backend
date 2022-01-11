@@ -1,7 +1,6 @@
 package com.curioud.signclass.domain.submittee;
 
 
-import com.curioud.signclass.domain.project.ProjectVO;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -31,7 +30,7 @@ public class SubmitteeObjectSignImgVO {
     String saveName;
 
     @Column(name = "size")
-    int size;
+    Long size;
 
     @Column(name = "upload_path")
     String uploadPath;
@@ -42,8 +41,5 @@ public class SubmitteeObjectSignImgVO {
     @Column(name = "reg_date")
     @CreationTimestamp
     LocalDateTime regDate;
-
-    @OneToOne(mappedBy = "pdf")
-    ProjectVO project;
 
 }
