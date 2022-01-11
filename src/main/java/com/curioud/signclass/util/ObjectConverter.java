@@ -160,6 +160,7 @@ public class ObjectConverter {
 
     public SubmitteeObjectSignDTO submitteeObjectSignVOToDTO(SubmitteeObjectSignVO vo){
         return SubmitteeObjectSignDTO.builder()
+                .idx(vo.getIdx())
                 .name(vo.getName())
                 .xPosition(vo.getXPosition())
                 .yPosition(vo.getYPosition())
@@ -174,6 +175,7 @@ public class ObjectConverter {
 
     public SubmitteeObjectCheckboxDTO submitteeObjectCheckboxVOToDTO(SubmitteeObjectCheckboxVO vo){
         return SubmitteeObjectCheckboxDTO.builder()
+                .idx(vo.getIdx())
                 .name(vo.getName())
                 .xPosition(vo.getXPosition())
                 .yPosition(vo.getYPosition())
@@ -190,6 +192,7 @@ public class ObjectConverter {
 
     public SubmitteeObjectTextDTO submitteeObjectTextVOToDTO(SubmitteeObjectTextVO vo){
         return SubmitteeObjectTextDTO.builder()
+                .idx(vo.getIdx())
                 .name(vo.getName())
                 .xPosition(vo.getXPosition())
                 .yPosition(vo.getYPosition())
@@ -207,6 +210,7 @@ public class ObjectConverter {
 
     public SubmitteeObjectSignImgDTO submitteeObjectSignImgVOToDTO(SubmitteeObjectSignImgVO vo){
         return SubmitteeObjectSignImgDTO.builder()
+                .idx(vo.getIdx())
                 .name(vo.getName())
                 .originalName(vo.getOriginalName())
                 .saveName(vo.getSaveName())

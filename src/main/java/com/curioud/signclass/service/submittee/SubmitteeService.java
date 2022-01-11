@@ -10,6 +10,7 @@ import com.curioud.signclass.dto.submittee.SubmitteeDTO;
 import com.curioud.signclass.dto.submittee.SubmitteeObjectCheckboxDTO;
 import com.curioud.signclass.dto.submittee.SubmitteeObjectSignDTO;
 import com.curioud.signclass.dto.submittee.SubmitteeObjectTextDTO;
+import com.curioud.signclass.exception.BadRequestException;
 import com.curioud.signclass.repository.submittee.SubmitteeRepository;
 import com.curioud.signclass.service.project.ProjectService;
 import com.curioud.signclass.util.ObjectConverter;
@@ -51,7 +52,7 @@ public class SubmitteeService {
     }
 
     @Transactional
-    public SubmitteeDTO saveWithObjects(String projectName, SubmitteeDTO dto, List<MultipartFile> mfList) throws NotFoundException, IOException, NotSupportedException {
+    public SubmitteeDTO saveWithObjects(String projectName, SubmitteeDTO dto, List<MultipartFile> mfList) throws NotFoundException, IOException, NotSupportedException, BadRequestException {
 
         ProjectVO project = projectService.getByName(projectName);
         if(project.getActivated() != 1) throw new NotAcceptableStatusException("project is closed");
@@ -85,7 +86,7 @@ public class SubmitteeService {
             }
 
             if(!isPresent)
-                throw new NotFoundException("there's no connection between file and data");
+                throw new BadRequestException("there's no connection between file and data");
         }
 
         for(SubmitteeObjectTextDTO textDTO : dto.getSubmitteeObjectTexts()){

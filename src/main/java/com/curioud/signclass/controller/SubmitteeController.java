@@ -48,6 +48,22 @@ public class SubmitteeController {
         return new ResponseEntity<>(projectDTO, HttpStatus.OK);
     }
 
+    /**
+     *
+     * @param projectName 프로젝트 이름
+     * @param mfList sign image 리스트
+     * @param submitteeDTO
+     * name
+     * studentId
+     * objects(sign, text, checkbox)
+     *
+     * @return 제출된 동의서
+     * @throws NotFoundException 유효하지 않은 project name
+     * @throws IOException 이미지 저장 오류
+     * @throws NotSupportedException 이미지 확장자 및 크기 예외처리
+     * @throws BadRequestException 이미지 및 sign object 파일명 규칙 위반
+     * (서로 같은 이름의 파일과 sign, 단 같은 파일끼리 또는 sign 끼리 이름이 동일하지 않아야 한다.)
+     */
     @PostMapping("/project/{project-name}")
     public ResponseEntity<SubmitteeDTO> submitProject(
             @PathVariable("project-name")String projectName,
