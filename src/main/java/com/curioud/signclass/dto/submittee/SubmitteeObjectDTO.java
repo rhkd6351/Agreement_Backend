@@ -18,6 +18,8 @@ public class SubmitteeObjectDTO {
 
     Long idx;
 
+    String name;
+
     int x_position;
 
     int y_position;

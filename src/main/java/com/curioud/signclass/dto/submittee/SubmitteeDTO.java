@@ -17,6 +17,10 @@ public class SubmitteeDTO {
 
     String name;
 
+    int studentId;
+
+    int activated;
+
     LocalDateTime regDate;
 
     ProjectVO project;

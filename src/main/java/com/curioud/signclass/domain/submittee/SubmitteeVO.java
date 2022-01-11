@@ -25,6 +25,12 @@ public class SubmitteeVO {
     @Column(name = "name")
     String name;
 
+    @Column(name = "student_id")
+    int studentId;
+
+    @Column(name = "activated")
+    int activated;
+
     @Column(name = "reg_date")
     @CreationTimestamp
     LocalDateTime regDate;

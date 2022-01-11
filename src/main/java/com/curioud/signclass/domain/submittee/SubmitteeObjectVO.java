@@ -20,6 +20,9 @@ public class SubmitteeObjectVO {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long idx;
 
+    @Column(name = "name")
+    String name;
+
     @Column(name = "x_position")
     int x_position;
 
