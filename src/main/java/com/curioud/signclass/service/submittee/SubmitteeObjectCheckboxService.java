@@ -8,10 +8,11 @@ import com.curioud.signclass.repository.submittee.SubmitteeObjectCheckboxReposit
 import com.curioud.signclass.service.etc.ObjectTypeService;
 import javassist.NotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.transaction.NotSupportedException;
-import javax.transaction.Transactional;
 import java.io.IOException;
+import java.util.Optional;
 
 
 @Service
@@ -59,6 +60,16 @@ public class SubmitteeObjectCheckboxService {
             throw new UnsupportedOperationException("you can't update submitted project");
         }
 
+    }
+
+    @Transactional(readOnly = true)
+    public SubmitteeObjectCheckboxVO getByIdx(Long idx) throws NotFoundException {
+        Optional<SubmitteeObjectCheckboxVO> optional = submitteeObjectCheckboxRepository.findById(idx);
+
+        if(optional.isEmpty())
+            throw new NotFoundException("invalid submitteeObjectCheckbox idx");
+
+        return optional.get();
     }
 
 }

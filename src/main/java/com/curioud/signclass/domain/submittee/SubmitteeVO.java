@@ -8,6 +8,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -43,12 +44,15 @@ public class SubmitteeVO {
     ProjectVO project;
 
     @OneToMany(mappedBy = "submittee")
-    List<SubmitteeObjectCheckboxVO> submitteeObjectCheckboxes;
+    List<SubmitteeObjectVO> submitteeObjects;
 
-    @OneToMany(mappedBy = "submittee")
-    List<SubmitteeObjectTextVO> submitteeObjectTexts;
-
-    @OneToMany(mappedBy = "submittee")
-    List<SubmitteeObjectSignVO> submitteeObjectSigns;
+//    @OneToMany(mappedBy = "submittee")
+//    Set<SubmitteeObjectCheckboxVO> submitteeObjectCheckboxes;
+//
+//    @OneToMany(mappedBy = "submittee")
+//    Set<SubmitteeObjectTextVO> submitteeObjectTexts;
+//
+//    @OneToMany(mappedBy = "submittee")
+//    List<SubmitteeObjectSignVO> submitteeObjectSigns;
     
 }

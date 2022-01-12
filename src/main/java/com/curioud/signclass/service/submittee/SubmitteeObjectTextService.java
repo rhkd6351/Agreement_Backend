@@ -1,6 +1,7 @@
 package com.curioud.signclass.service.submittee;
 
 import com.curioud.signclass.domain.etc.ObjectTypeVO;
+import com.curioud.signclass.domain.submittee.SubmitteeObjectCheckboxVO;
 import com.curioud.signclass.domain.submittee.SubmitteeObjectTextVO;
 import com.curioud.signclass.domain.submittee.SubmitteeVO;
 import com.curioud.signclass.dto.submittee.SubmitteeObjectTextDTO;
@@ -8,10 +9,11 @@ import com.curioud.signclass.repository.submittee.SubmitteeObjectTextRepository;
 import com.curioud.signclass.service.etc.ObjectTypeService;
 import javassist.NotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.transaction.NotSupportedException;
-import javax.transaction.Transactional;
 import java.io.IOException;
+import java.util.Optional;
 
 
 @Service
@@ -60,6 +62,16 @@ public class SubmitteeObjectTextService {
             throw new UnsupportedOperationException("you can't update submitted project");
         }
 
+    }
+
+    @Transactional(readOnly = true)
+    public SubmitteeObjectTextVO getByIdx(Long idx) throws NotFoundException {
+        Optional<SubmitteeObjectTextVO> optional = submitteeObjectTextRepository.findById(idx);
+
+        if(optional.isEmpty())
+            throw new NotFoundException("invalid submitteeObjectText idx");
+
+        return optional.get();
     }
 
 }

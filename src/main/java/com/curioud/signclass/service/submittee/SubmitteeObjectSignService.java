@@ -1,7 +1,6 @@
 package com.curioud.signclass.service.submittee;
 
 import com.curioud.signclass.domain.etc.ObjectTypeVO;
-import com.curioud.signclass.domain.project.ProjectObjectSignVO;
 import com.curioud.signclass.domain.submittee.SubmitteeObjectSignImgVO;
 import com.curioud.signclass.domain.submittee.SubmitteeObjectSignVO;
 import com.curioud.signclass.domain.submittee.SubmitteeVO;
@@ -11,10 +10,11 @@ import com.curioud.signclass.service.etc.ObjectTypeService;
 import javassist.NotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.transaction.NotSupportedException;
-import javax.transaction.Transactional;
 import java.io.IOException;
+import java.util.Optional;
 
 
 @Service
@@ -64,6 +64,16 @@ public class SubmitteeObjectSignService {
             throw new UnsupportedOperationException("you can't update submitted project");
         }
 
+    }
+
+    @Transactional(readOnly = true)
+    public SubmitteeObjectSignVO getByIdx(Long idx) throws NotFoundException {
+        Optional<SubmitteeObjectSignVO> optional = submitteeObjectSignRepository.findById(idx);
+
+        if(optional.isEmpty())
+            throw new NotFoundException("invalid submitteeObjectSign idx");
+
+        return optional.get();
     }
 
 }

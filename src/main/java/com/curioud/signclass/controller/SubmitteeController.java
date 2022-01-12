@@ -7,18 +7,19 @@ import com.curioud.signclass.service.project.ProjectService;
 import com.curioud.signclass.service.submittee.SubmitteeObjectSignImgService;
 import com.curioud.signclass.service.submittee.SubmitteeService;
 import javassist.NotFoundException;
-import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+
+import javax.security.auth.message.AuthException;
 import javax.transaction.NotSupportedException;
 import java.io.IOException;
 import java.util.List;
-import java.util.Objects;
 
 @RestController
 @RequestMapping("/api/submittee")
@@ -30,6 +31,7 @@ public class SubmitteeController {
 
     @Autowired
     SubmitteeService submitteeService;
+
     @Autowired
     SubmitteeObjectSignImgService submitteeObjectSignImgService;
 
@@ -46,6 +48,23 @@ public class SubmitteeController {
         ProjectDTO projectDTO = projectService.getWithProjectObjectsAndPdfByName(projectName);
 
         return new ResponseEntity<>(projectDTO, HttpStatus.OK);
+    }
+
+    /**
+     *
+     * @param name 제출자 이름(난수)
+     * @return
+     * SubmitteeDTO 제출본 정보 (with pdf, objects)
+     * @throws AuthException 열람 권한 없음 (본인이 등록한 프로젝트의 제출본이 아님)
+     * @throws NotFoundException 유효하지 않은 submittee-name
+     */
+    @GetMapping("/{submittee-name}")
+    @PreAuthorize("hasAnyRole('ROLE_USER')")
+    public ResponseEntity<SubmitteeDTO> getSubmitByName(@PathVariable("submittee-name") String name) throws AuthException, NotFoundException {
+
+        SubmitteeDTO dto = submitteeService.getWithPdfAndObjectsByName(name);
+
+        return new ResponseEntity<>(dto, HttpStatus.OK);
     }
 
     /**
@@ -69,24 +88,6 @@ public class SubmitteeController {
             @PathVariable("project-name")String projectName,
             @RequestPart(value = "sign_img") List<MultipartFile> mfList,
             @RequestPart(value = "data") SubmitteeDTO submitteeDTO) throws NotFoundException, IOException, NotSupportedException, BadRequestException {
-
-        //이미지 갯수, sign 오브젝트 갯수 비교
-        if(mfList.size() != submitteeDTO.getSubmitteeObjectSigns().size())
-            throw new BadRequestException("img size and sign objects size should be same");
-
-        //이미지 이름 동일여부 확인
-        for(int i = 0; i < mfList.size(); i++){
-            MultipartFile imf = mfList.get(i);
-            int p = Objects.requireNonNull(imf.getOriginalFilename()).lastIndexOf(".");
-            String iFileName = imf.getOriginalFilename().substring(0, p);
-            for(int k = i + 1; k < mfList.size(); k++){
-                MultipartFile kmf = mfList.get(k);
-                int t = Objects.requireNonNull(kmf.getOriginalFilename()).lastIndexOf(".");
-                String kFileName = kmf.getOriginalFilename().substring(0, t);
-                if(iFileName.equals(kFileName))
-                    throw new BadRequestException("file name should be different to each other");
-            }
-        }
 
         SubmitteeDTO savedSubmittee = submitteeService.saveWithObjects(projectName, submitteeDTO, mfList);
 

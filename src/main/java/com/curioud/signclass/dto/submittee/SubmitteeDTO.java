@@ -2,6 +2,7 @@ package com.curioud.signclass.dto.submittee;
 
 
 import com.curioud.signclass.domain.project.ProjectVO;
+import com.curioud.signclass.dto.project.PdfDTO;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 import java.time.LocalDateTime;
@@ -30,6 +31,8 @@ public class SubmitteeDTO {
     LocalDateTime regDate;
 
     ProjectVO project;
+
+    PdfDTO pdf;
 
     @JsonProperty("submittee_object_checkboxes")
     List<SubmitteeObjectCheckboxDTO> submitteeObjectCheckboxes;

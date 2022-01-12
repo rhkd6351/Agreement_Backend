@@ -169,7 +169,7 @@ public class ObjectConverter {
                 .height(vo.getHeight())
                 .rotate(vo.getRotate())
                 .page(vo.getPage())
-                .objectType(vo.getObjectType())
+                .objectType(vo.getObjectType().getName())
                 .type(vo.getType())
                 .build();
     }
@@ -184,7 +184,7 @@ public class ObjectConverter {
                 .height(vo.getHeight())
                 .rotate(vo.getRotate())
                 .page(vo.getPage())
-                .objectType(vo.getObjectType())
+                .objectType(vo.getObjectType().getName())
                 .type(vo.getType())
                 .checked(vo.isChecked())
                 .color(vo.getColor())
@@ -201,7 +201,7 @@ public class ObjectConverter {
                 .height(vo.getHeight())
                 .rotate(vo.getRotate())
                 .page(vo.getPage())
-                .objectType(vo.getObjectType())
+                .objectType(vo.getObjectType().getName())
                 .type(vo.getType())
                 .content(vo.getContent())
                 .fontSize(vo.getFontSize())
