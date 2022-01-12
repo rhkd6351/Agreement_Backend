@@ -38,6 +38,7 @@ public class SubmitteeObjectDTO {
 
     SubmitteeDTO submittee;
 
+    @JsonProperty("object_type")
     String objectType;
     
 }

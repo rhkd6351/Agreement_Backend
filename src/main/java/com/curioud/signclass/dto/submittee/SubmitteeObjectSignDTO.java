@@ -16,6 +16,7 @@ public class SubmitteeObjectSignDTO extends SubmitteeObjectDTO {
 
     String type;
 
+    @JsonProperty("submittee_object_sign_img")
     SubmitteeObjectSignImgDTO submitteeObjectSignImg;
 
 }
