@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class SubmitteeService {
@@ -59,7 +60,8 @@ public class SubmitteeService {
 
 
         SubmitteeVO submittee = SubmitteeVO.builder()
-                .name(dto.getName())
+                .name(UUID.randomUUID().toString())
+                .studentName(dto.getStudentName())
                 .studentId(dto.getStudentId())
                 .activated(1)
                 .project(project)

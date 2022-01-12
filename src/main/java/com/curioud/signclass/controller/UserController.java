@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
+
 @RestController
 @RequestMapping("/api")
 public class UserController {
@@ -37,7 +39,7 @@ public class UserController {
      */
     @PostMapping("/user")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<UserDTO> getSignUp(@RequestBody UserDTO userDTO) throws DuplicateMemberException, NotFoundException {
+    public ResponseEntity<UserDTO> getSignUp(@Valid @RequestBody UserDTO userDTO) throws DuplicateMemberException, NotFoundException {
 
         UserVO registeredUserVO = userService.signUp(userDTO);
         UserDTO convertedUserDTO = objectConverter.userVOToDTO(registeredUserVO);

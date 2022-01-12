@@ -25,6 +25,9 @@ public class SubmitteeVO {
     @Column(name = "name")
     String name;
 
+    @Column(name = "student_name")
+    String studentName;
+
     @Column(name = "student_id")
     int studentId;
 

@@ -149,6 +149,7 @@ public class ObjectConverter {
         return SubmitteeDTO.builder()
                 .idx(vo.getIdx())
                 .name(vo.getName())
+                .studentName(vo.getStudentName())
                 .studentId(vo.getStudentId())
                 .activated(vo.getActivated())
                 .regDate(vo.getRegDate())

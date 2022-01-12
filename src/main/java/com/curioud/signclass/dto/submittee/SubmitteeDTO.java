@@ -18,6 +18,9 @@ public class SubmitteeDTO {
 
     String name;
 
+    @JsonProperty("student_name")
+    String studentName;
+
     @JsonProperty("student_id")
     int studentId;
 

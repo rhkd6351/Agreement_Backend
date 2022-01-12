@@ -141,7 +141,7 @@ public class ProjectService {
             }
         }
         projectDTO.setPdf(objectConverter.pdfVOToDTO(project.getPdf()));
-        projectDTO.getSubmittees().addAll(project.getSubmittees().stream().map(objectConverter::submitteeVOToDTO).collect(Collectors.toList()));
+        projectDTO.setSubmittees(project.getSubmittees().stream().map(objectConverter::submitteeVOToDTO).collect(Collectors.toList()));
 
         return projectDTO;
     }
