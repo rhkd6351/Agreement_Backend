@@ -88,8 +88,8 @@ public class SubmitteeController {
     @PostMapping(path = "/project/{project-name}", produces = MediaType.APPLICATION_PDF_VALUE)
     public byte[] submitProject(
             @PathVariable("project-name")String projectName,
-            @RequestPart(value = "sign_img") List<MultipartFile> mfList,
-            @RequestPart(value = "file_pdf") MultipartFile pdf,
+            @RequestPart(value = "sign_img", required = false) List<MultipartFile> mfList,
+            @RequestPart(value = "file_pdf", required = true) MultipartFile pdf,
             @RequestPart(value = "data") SubmitteeDTO submitteeDTO) throws NotFoundException, IOException, NotSupportedException, BadRequestException {
 
         return submitteeService.saveWithObjectsAndPdf(projectName, submitteeDTO, mfList, pdf);
