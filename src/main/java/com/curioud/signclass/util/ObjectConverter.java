@@ -47,6 +47,20 @@ public class ObjectConverter {
                 .build();
     }
 
+    public SubmitteePdfDTO submitteePdfDTOVOToDTO(PdfVO vo) {
+        return SubmitteePdfDTO.builder()
+                .idx(vo.getIdx())
+                .name(vo.getName())
+                .originalName(vo.getOriginalName())
+                .saveName(vo.getSaveName())
+                .size(vo.getSize())
+                .totalPage(vo.getTotalPage())
+                .extension(vo.getExtension())
+                .regDate(vo.getRegDate())
+                .url(serverUrl + "/api/submittee/pdf/" + vo.getName())
+                .build();
+    }
+
     public ProjectDTO projectVOToDTO(ProjectVO vo) {
         return ProjectDTO.builder()
                 .idx(vo.getIdx())

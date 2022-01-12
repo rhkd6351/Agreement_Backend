@@ -5,6 +5,7 @@ import com.curioud.signclass.dto.submittee.SubmitteeDTO;
 import com.curioud.signclass.exception.BadRequestException;
 import com.curioud.signclass.service.project.ProjectService;
 import com.curioud.signclass.service.submittee.SubmitteeObjectSignImgService;
+import com.curioud.signclass.service.submittee.SubmitteePdfService;
 import com.curioud.signclass.service.submittee.SubmitteeService;
 import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,7 +61,7 @@ public class SubmitteeController {
      */
     @GetMapping("/{submittee-name}")
     @PreAuthorize("hasAnyRole('ROLE_USER')")
-    public ResponseEntity<SubmitteeDTO> getSubmitWithPdfAndObjectsByName(@PathVariable("submittee-name") String name) throws AuthException, NotFoundException {
+    public ResponseEntity<SubmitteeDTO> getSubmitteeWithPdfAndObjectsByName(@PathVariable("submittee-name") String name) throws AuthException, NotFoundException {
 
         SubmitteeDTO dto = submitteeService.getWithPdfAndObjectsByName(name);
 
@@ -71,27 +72,27 @@ public class SubmitteeController {
      *
      * @param projectName 프로젝트 이름
      * @param mfList sign image 리스트
+     * @param pdf 작성 완료된 pdf 저장
      * @param submitteeDTO
      * name
      * studentId
      * objects(sign, text, checkbox)
      *
-     * @return 제출된 동의서
+     * @return 제출된 동의서의 pdf파일
      * @throws NotFoundException 유효하지 않은 project name
      * @throws IOException 이미지 저장 오류
      * @throws NotSupportedException 이미지 확장자 및 크기 예외처리
      * @throws BadRequestException 이미지 및 sign object 파일명 규칙 위반
      * (서로 같은 이름의 파일과 sign, 단 같은 파일끼리 또는 sign 끼리 이름이 동일하지 않아야 한다.)
      */
-    @PostMapping("/project/{project-name}")
-    public ResponseEntity<SubmitteeDTO> submitProject(
+    @PostMapping(path = "/project/{project-name}", produces = MediaType.APPLICATION_PDF_VALUE)
+    public byte[] submitProject(
             @PathVariable("project-name")String projectName,
             @RequestPart(value = "sign_img") List<MultipartFile> mfList,
+            @RequestPart(value = "file_pdf") MultipartFile pdf,
             @RequestPart(value = "data") SubmitteeDTO submitteeDTO) throws NotFoundException, IOException, NotSupportedException, BadRequestException {
 
-        SubmitteeDTO savedSubmittee = submitteeService.saveWithObjects(projectName, submitteeDTO, mfList);
-
-        return ResponseEntity.ok(savedSubmittee);
+        return submitteeService.saveWithObjectsAndPdf(projectName, submitteeDTO, mfList, pdf);
     }
 
     @GetMapping(path = "/object/img/{img-name}", produces = MediaType.IMAGE_JPEG_VALUE)

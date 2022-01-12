@@ -3,6 +3,7 @@ package com.curioud.signclass.util;
 
 import com.curioud.signclass.domain.project.PdfVO;
 import com.curioud.signclass.domain.submittee.SubmitteeObjectSignImgVO;
+import com.curioud.signclass.domain.submittee.SubmitteePdfVO;
 import com.curioud.signclass.dto.submittee.SubmitteeObjectSignImgDTO;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -22,6 +23,15 @@ public class FileUtil {
     }
 
     public byte[] getFile(PdfVO fvo) throws IOException {
+        File file = new File(originPath + fvo.getUploadPath() +"/"+ fvo.getSaveName());
+        byte[] byfile = null;
+
+        byfile = Files.readAllBytes(file.toPath());
+
+        return byfile;
+    }
+
+    public byte[] getFile(SubmitteePdfVO fvo) throws IOException {
         File file = new File(originPath + fvo.getUploadPath() +"/"+ fvo.getSaveName());
         byte[] byfile = null;
 

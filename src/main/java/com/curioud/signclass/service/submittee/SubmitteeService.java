@@ -39,8 +39,9 @@ public class SubmitteeService {
     ProjectService projectService;
     ObjectConverter objectConverter;
     UserService userService;
+    SubmitteePdfService submitteePdfService;
 
-    public SubmitteeService(SubmitteeRepository submitteeRepository, SubmitteeObjectSignService submitteeObjectSignService, SubmitteeObjectTextService submitteeObjectTextService, SubmitteeObjectCheckboxService submitteeObjectCheckboxService, ProjectService projectService, ObjectConverter objectConverter, UserService userService) {
+    public SubmitteeService(SubmitteeRepository submitteeRepository, SubmitteeObjectSignService submitteeObjectSignService, SubmitteeObjectTextService submitteeObjectTextService, SubmitteeObjectCheckboxService submitteeObjectCheckboxService, ProjectService projectService, ObjectConverter objectConverter, UserService userService, SubmitteePdfService submitteePdfService) {
         this.submitteeRepository = submitteeRepository;
         this.submitteeObjectSignService = submitteeObjectSignService;
         this.submitteeObjectTextService = submitteeObjectTextService;
@@ -48,6 +49,7 @@ public class SubmitteeService {
         this.projectService = projectService;
         this.objectConverter = objectConverter;
         this.userService = userService;
+        this.submitteePdfService = submitteePdfService;
     }
 
     @Transactional
@@ -56,7 +58,7 @@ public class SubmitteeService {
     }
 
     @Transactional
-    public SubmitteeDTO saveWithObjects(String projectName, SubmitteeDTO dto, List<MultipartFile> mfList) throws NotFoundException, IOException, NotSupportedException, BadRequestException {
+    public byte[] saveWithObjectsAndPdf(String projectName, SubmitteeDTO dto, List<MultipartFile> mfList, MultipartFile pdf) throws NotFoundException, IOException, NotSupportedException, BadRequestException {
 
         //project 활성화 여부 확인
         ProjectVO project = projectService.getByName(projectName);
@@ -87,6 +89,10 @@ public class SubmitteeService {
                 .activated(1)
                 .project(project)
                 .build();
+
+        //pdf 등록
+        SubmitteePdfVO savedPdf = submitteePdfService.save(pdf);
+        submittee.setSubmitteePdf(savedPdf);
 
         SubmitteeVO submitteeVO = this.save(submittee);
         SubmitteeDTO submitteeDTO = objectConverter.submitteeVOToDTO(submitteeVO);
@@ -122,7 +128,7 @@ public class SubmitteeService {
             submitteeDTO.getSubmitteeObjectCheckboxes().add(objectConverter.submitteeObjectCheckboxVOToDTO(savedCheckboxDTO));
         }
 
-        return submitteeDTO;
+        return submitteePdfService.getByteByName(savedPdf.getName());
     }
 
     @Transactional(readOnly = true)

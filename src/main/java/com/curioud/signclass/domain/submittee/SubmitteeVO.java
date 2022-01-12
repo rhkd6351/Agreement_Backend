@@ -46,6 +46,10 @@ public class SubmitteeVO {
     @OneToMany(mappedBy = "submittee")
     List<SubmitteeObjectVO> submitteeObjects;
 
+    @OneToOne
+    @JoinColumn(name = "submittee_pdf_idx_fk")
+    SubmitteePdfVO submitteePdf;
+
 //    @OneToMany(mappedBy = "submittee")
 //    Set<SubmitteeObjectCheckboxVO> submitteeObjectCheckboxes;
 //
