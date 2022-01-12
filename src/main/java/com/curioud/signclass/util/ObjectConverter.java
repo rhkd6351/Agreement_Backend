@@ -171,6 +171,7 @@ public class ObjectConverter {
                 .page(vo.getPage())
                 .objectType(vo.getObjectType().getName())
                 .type(vo.getType())
+                .submitteeObjectSignImg(this.submitteeObjectSignImgVOToDTO(vo.getSubmitteeObjectSignImg()))
                 .build();
     }
 

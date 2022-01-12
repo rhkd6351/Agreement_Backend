@@ -19,7 +19,7 @@ public class SubmitteeObjectSignVO extends SubmitteeObjectVO {
     @Column(name = "type")
     String type;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "img_idx_fk")
     SubmitteeObjectSignImgVO submitteeObjectSignImg;
 
