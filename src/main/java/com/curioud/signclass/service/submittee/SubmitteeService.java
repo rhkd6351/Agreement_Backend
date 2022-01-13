@@ -131,6 +131,18 @@ public class SubmitteeService {
         return submitteePdfService.getByteByName(savedPdf.getName());
     }
 
+
+    @Transactional(readOnly = true)
+    public byte[] getSubmitteePdfFileByNameWithAuthority(String name) throws NotFoundException, AuthException, IOException {
+
+        UserVO user = userService.getMyUserWithAuthorities();
+        SubmitteeVO submittee = this.getByName(name);
+        if(submittee.getProject().getUser() != user)
+            throw new AuthException("it's not your own project's submittee");
+
+        return submitteePdfService.getByteByName(submittee.getSubmitteePdf().getName());
+    }
+
     @Transactional(readOnly = true)
     public SubmitteeVO getByIdx(Long idx) throws NotFoundException {
         Optional<SubmitteeVO> optional = submitteeRepository.findById(idx);

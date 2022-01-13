@@ -4,9 +4,11 @@ import com.curioud.signclass.domain.project.ProjectVO;
 import com.curioud.signclass.dto.project.ProjectDTO;
 import com.curioud.signclass.service.project.PdfService;
 import com.curioud.signclass.service.project.ProjectService;
+import com.curioud.signclass.service.submittee.SubmitteeService;
 import com.curioud.signclass.util.ObjectConverter;
 import javassist.NotFoundException;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -24,12 +26,14 @@ public class ProjectController {
 
     PdfService pdfService;
     ProjectService projectService;
+    SubmitteeService submitteeService;
     ObjectConverter objectConverter;
 
-    public ProjectController(PdfService pdfService, ProjectService projectService, ObjectConverter objectConverter) {
+    public ProjectController(PdfService pdfService, ProjectService projectService, ObjectConverter objectConverter, SubmitteeService submitteeService) {
         this.pdfService = pdfService;
         this.projectService = projectService;
         this.objectConverter = objectConverter;
+        this.submitteeService = submitteeService;
     }
 
     /**
@@ -109,6 +113,26 @@ public class ProjectController {
         ProjectDTO resultProjectDTO = projectService.saveObjects(projectDTO);
 
         return new ResponseEntity<>(resultProjectDTO, HttpStatus.OK);
+    }
+
+    /**
+     *
+     * @param submitteeName submittee 이름
+     * @return submittee pdf
+     * @throws NotFoundException
+     * 유효하지 않은 submittee name
+     * 유효하지 않은 submittee pdf name
+     * @throws AuthException
+     * 소유하지 않은 submittee
+     * 유효하지 않은 토큰
+     * @throws IOException
+     * 파일 입출력 오류
+     */
+    @GetMapping(path = "/project/submittee/{submittee-name}/pdf", produces = MediaType.APPLICATION_PDF_VALUE)
+    @PreAuthorize("hasRole('ROLE_USER')")
+    public byte[] getSubmitteePdf(@PathVariable("submittee-name")String submitteeName) throws NotFoundException, AuthException, IOException {
+
+        return submitteeService.getSubmitteePdfFileByNameWithAuthority(submitteeName);
     }
 
 }
