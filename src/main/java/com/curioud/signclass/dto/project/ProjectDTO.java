@@ -54,4 +54,7 @@ public class ProjectDTO {
 
     List<SubmitteeDTO> submittees = new ArrayList<>();
 
+    @JsonProperty("submittee_count")
+    int submitteeCount;
+
 }

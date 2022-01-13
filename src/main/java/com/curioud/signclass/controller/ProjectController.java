@@ -7,6 +7,7 @@ import com.curioud.signclass.exception.BadRequestException;
 import com.curioud.signclass.service.project.PdfService;
 import com.curioud.signclass.service.project.ProjectService;
 import com.curioud.signclass.service.submittee.SubmitteeService;
+import com.curioud.signclass.service.user.UserService;
 import com.curioud.signclass.util.ObjectConverter;
 import javassist.NotFoundException;
 import org.springframework.http.HttpStatus;
@@ -73,7 +74,7 @@ public class ProjectController {
     public ResponseEntity<List<ProjectDTO>> getMyProjects() throws AuthException {
 
         List<ProjectVO> projects = projectService.getMyProjects();
-        List<ProjectDTO> projectDTOs = projects.stream().map(objectConverter::projectVOToDTOWithSubmittees).collect(Collectors.toList());
+        List<ProjectDTO> projectDTOs = projects.stream().map(objectConverter::projectVOToDTO).collect(Collectors.toList());
 
         return new ResponseEntity<>(projectDTOs, HttpStatus.OK);
     }
@@ -89,7 +90,10 @@ public class ProjectController {
     @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<ProjectDTO> getProjectByName(@PathVariable(value = "project-name")String projectName) throws AuthException, NotFoundException {
 
-        ProjectDTO projectDTO = projectService.getWithSubmitteesAndProjectObjectsAndPdfByName(projectName);
+//        ProjectDTO projectDTO = projectService.getWithSubmitteesAndProjectObjectsAndPdfByName(projectName);
+
+
+        ProjectDTO projectDTO = projectService.getWithProjectObjectsAndPdfByName(projectName);
 
         return new ResponseEntity<>(projectDTO, HttpStatus.OK);
     }

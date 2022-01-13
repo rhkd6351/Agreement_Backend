@@ -71,7 +71,7 @@ public class ProjectVO {
 //    @OneToMany(mappedBy = "project", fetch = FetchType.LAZY, orphanRemoval = true)
 //    Set<ProjectObjectSignVO> projectObjectSigns = new HashSet<>();
 
-    @OneToMany(mappedBy = "project", orphanRemoval = true)
-    List<SubmitteeVO> submittees = new ArrayList<>();
+    @OneToMany(mappedBy = "project",fetch = FetchType.LAZY, orphanRemoval = true)
+    Set<SubmitteeVO> submittees = new HashSet<>();
     
 }

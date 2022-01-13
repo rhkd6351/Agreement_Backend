@@ -197,7 +197,41 @@ public class ProjectService {
     }
 
     @Transactional(readOnly = true)
-    public ProjectDTO getWithProjectObjectsAndPdfByName(String name) throws NotFoundException {
+    public ProjectDTO getWithProjectObjectsAndPdfByName(String name) throws AuthException, NotFoundException {
+
+        UserVO user = userService.getMyUserWithAuthorities();
+        ProjectVO project = projectRepository.findWithSubmitteesAndProjectObjectsAndPdfByName(name);
+
+        if(user != project.getUser())
+            throw new AuthException("not owned project name");
+
+        ProjectDTO projectDTO = objectConverter.projectVOToDTO(project);
+
+        Set<ProjectObjectVO> projectObjects = project.getProjectObjects();
+        for (ProjectObjectVO em: projectObjects) {
+            switch (em.getObjectType().getName()){
+                case "OBJECT_TYPE_SIGN":
+                    ProjectObjectSignVO signEm = projectObjectSignService.getByIdx(em.getIdx());
+                    projectDTO.getProjectObjectSigns().add(objectConverter.projectObjectSignVOToDTO(signEm));
+                    break;
+                case "OBJECT_TYPE_CHECKBOX":
+                    ProjectObjectCheckboxVO checkboxEm = projectObjectCheckboxService.getByIdx(em.getIdx());
+                    projectDTO.getProjectObjectCheckboxes().add(objectConverter.projectObjectCheckboxVOToDTO(checkboxEm));
+                    break;
+                case "OBJECT_TYPE_TEXT":
+                    ProjectObjectTextVO textEm = projectObjectTextService.getByIdx(em.getIdx());
+                    projectDTO.getProjectObjectTexts().add(objectConverter.projectObjectTextVOToDTO(textEm));
+                    break;
+            }
+        }
+        projectDTO.setPdf(objectConverter.pdfVOToDTO(project.getPdf()));
+        projectDTO.setSubmitteeCount(project.getSubmittees().size());
+
+        return projectDTO;
+    }
+
+    @Transactional(readOnly = true)
+    public ProjectDTO getWithProjectObjectsAndPdfByNameWithoutAuthority(String name) throws NotFoundException {
 
         ProjectVO project = projectRepository.findWithProjectObjectsAndPdfByName(name);
 

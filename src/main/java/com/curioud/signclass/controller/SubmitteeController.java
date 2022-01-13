@@ -1,5 +1,6 @@
 package com.curioud.signclass.controller;
 
+import com.curioud.signclass.domain.project.ProjectVO;
 import com.curioud.signclass.dto.project.ProjectDTO;
 import com.curioud.signclass.dto.submittee.SubmitteeDTO;
 import com.curioud.signclass.exception.BadRequestException;
@@ -15,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.NotAcceptableStatusException;
 
 
 import javax.security.auth.message.AuthException;
@@ -46,7 +48,7 @@ public class SubmitteeController {
     @GetMapping("/project/{project-name}")
     public ResponseEntity<ProjectDTO> getProjectByNameWithoutAuthority(@PathVariable("project-name")String projectName) throws NotFoundException {
 
-        ProjectDTO projectDTO = projectService.getWithProjectObjectsAndPdfByName(projectName);
+        ProjectDTO projectDTO = projectService.getWithProjectObjectsAndPdfByNameWithoutAuthority(projectName);
 
         return new ResponseEntity<>(projectDTO, HttpStatus.OK);
     }

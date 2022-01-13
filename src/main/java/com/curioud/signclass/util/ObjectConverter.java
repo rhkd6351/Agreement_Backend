@@ -75,6 +75,7 @@ public class ObjectConverter {
                 .projectObjectSigns(new ArrayList<>())
                 .projectObjectTexts(new ArrayList<>())
                 .submittees(new ArrayList<>())
+                .submitteeCount(vo.getSubmittees().size())
                 .build();
     }
 
@@ -94,6 +95,7 @@ public class ObjectConverter {
         ProjectDTO projectDTO = this.projectVOToDTO(vo);
         projectDTO.setPdf(this.pdfVOToDTO(vo.getPdf()));
         projectDTO.setUser(this.userVOToDTO(vo.getUser()));
+
         return projectDTO;
     }
 
