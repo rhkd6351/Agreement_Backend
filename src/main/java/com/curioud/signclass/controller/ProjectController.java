@@ -1,13 +1,14 @@
 package com.curioud.signclass.controller;
 
 import com.curioud.signclass.domain.project.ProjectVO;
+import com.curioud.signclass.domain.submittee.SubmitteeVO;
 import com.curioud.signclass.dto.etc.MessageDTO;
 import com.curioud.signclass.dto.project.ProjectDTO;
+import com.curioud.signclass.dto.submittee.SubmitteeDTO;
 import com.curioud.signclass.exception.BadRequestException;
 import com.curioud.signclass.service.project.PdfService;
 import com.curioud.signclass.service.project.ProjectService;
 import com.curioud.signclass.service.submittee.SubmitteeService;
-import com.curioud.signclass.service.user.UserService;
 import com.curioud.signclass.util.ObjectConverter;
 import javassist.NotFoundException;
 import org.springframework.http.HttpStatus;
@@ -166,6 +167,14 @@ public class ProjectController {
     public byte[] getSubmitteePdf(@PathVariable("submittee-name")String submitteeName) throws NotFoundException, AuthException, IOException {
 
         return submitteeService.getSubmitteePdfFileByNameWithAuthority(submitteeName);
+    }
+
+    @GetMapping("/project/{project-name}/submittees")
+    @PreAuthorize("hasRole('ROLE_USER')")
+    public List<SubmitteeDTO> getSubmitteeListByProjectName(
+            @PathVariable("project-name") String projectName) throws NotFoundException, AuthException {
+
+        return projectService.getSubmitteesByProjectName(projectName);
     }
 
 

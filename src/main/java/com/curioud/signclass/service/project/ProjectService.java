@@ -3,6 +3,7 @@ package com.curioud.signclass.service.project;
 import com.curioud.signclass.domain.project.*;
 import com.curioud.signclass.domain.user.UserVO;
 import com.curioud.signclass.dto.project.*;
+import com.curioud.signclass.dto.submittee.SubmitteeDTO;
 import com.curioud.signclass.exception.BadRequestException;
 import com.curioud.signclass.repository.project.ProjectRepository;
 import com.curioud.signclass.service.user.UserService;
@@ -260,6 +261,19 @@ public class ProjectService {
         projectDTO.setPdf(objectConverter.pdfVOToDTO(project.getPdf()));
 
         return projectDTO;
+    }
+
+    @Transactional(readOnly = true)
+    public List<SubmitteeDTO> getSubmitteesByProjectName(String projectName) throws NotFoundException, AuthException {
+
+        ProjectVO project = this.getByName(projectName);
+        UserVO user = userService.getMyUserWithAuthorities();
+
+        if(project.getUser() != user)
+            throw new AuthException("not your own project");
+
+        return project.getSubmittees().stream().map(objectConverter::submitteeVOToDTO).collect(Collectors.toList());
+
     }
 
     @Transactional(readOnly = true)
