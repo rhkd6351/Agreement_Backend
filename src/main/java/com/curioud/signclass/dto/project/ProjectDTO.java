@@ -33,6 +33,7 @@ public class ProjectDTO {
     @JsonProperty("up_date")
     LocalDateTime upDate;
 
+    @JsonProperty("state")
     int activated;
 
     PdfDTO pdf;

@@ -47,7 +47,7 @@ public class ProjectVO {
     @UpdateTimestamp
     LocalDateTime upDate;
 
-    //0: 생성됨 1: 공유됨 -1: 종료됨
+    //0: 생성됨, 1: 생성 후 1회 이상 작성됨, 2: 공유됨, 3: 공유 중단됨
     @Column(name="activated")
     int activated;
 

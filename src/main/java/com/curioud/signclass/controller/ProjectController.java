@@ -1,7 +1,9 @@
 package com.curioud.signclass.controller;
 
 import com.curioud.signclass.domain.project.ProjectVO;
+import com.curioud.signclass.dto.etc.MessageDTO;
 import com.curioud.signclass.dto.project.ProjectDTO;
+import com.curioud.signclass.exception.BadRequestException;
 import com.curioud.signclass.service.project.PdfService;
 import com.curioud.signclass.service.project.ProjectService;
 import com.curioud.signclass.service.submittee.SubmitteeService;
@@ -107,12 +109,39 @@ public class ProjectController {
     @PostMapping("/project/{project-name}/objects")
     @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<ProjectDTO> saveObjects(
-            @RequestBody ProjectDTO projectDTO, @PathVariable("project-name") String projectName) throws NotFoundException, AuthException, IllegalAccessException {
+            @RequestBody ProjectDTO projectDTO, @PathVariable("project-name") String projectName) throws NotFoundException, AuthException, IllegalAccessException, BadRequestException {
 
         projectDTO.setName(projectName);
         ProjectDTO resultProjectDTO = projectService.saveObjects(projectDTO);
 
         return new ResponseEntity<>(resultProjectDTO, HttpStatus.OK);
+    }
+
+    /**
+     *
+     * @param state 변경 하고자 하는 state
+     * @param projectName 변경 하고자 하는 project
+     * @return
+     *
+     *
+     * @throws NotFoundException
+     * 유효하지 않은 project name
+     * @throws AuthException
+     * 소유하지 않은 project
+     * @throws BadRequestException
+     * 상태변경 규칙 위반
+     */
+    @PutMapping("/project/{project-name}/state")
+    @PreAuthorize("hasRole('ROLE_USER')")
+    public ResponseEntity<MessageDTO> changeState(
+            @RequestParam int state,
+            @PathVariable("project-name")String projectName) throws NotFoundException, AuthException, BadRequestException {
+
+        ProjectVO project = projectService.getByName(projectName);
+        projectService.changeState(project, state);
+
+        return new ResponseEntity<>(new MessageDTO("state changed"), HttpStatus.OK);
+
     }
 
     /**
@@ -134,6 +163,8 @@ public class ProjectController {
 
         return submitteeService.getSubmitteePdfFileByNameWithAuthority(submitteeName);
     }
+
+
 
 }
 

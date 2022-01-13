@@ -3,11 +3,13 @@ package com.curioud.signclass.service.project;
 import com.curioud.signclass.domain.project.*;
 import com.curioud.signclass.domain.user.UserVO;
 import com.curioud.signclass.dto.project.*;
+import com.curioud.signclass.exception.BadRequestException;
 import com.curioud.signclass.repository.project.ProjectRepository;
 import com.curioud.signclass.service.user.UserService;
 import com.curioud.signclass.util.ObjectConverter;
 import javassist.NotFoundException;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.catalina.User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -31,9 +33,9 @@ public class ProjectService {
     ProjectObjectSignService projectObjectSignService;
     ProjectObjectTextService projectObjectTextService;
     ObjectConverter objectConverter;
+    ProjectObjectService projectObjectService;
 
-
-    public ProjectService(ProjectRepository projectRepository, UserService userService, PdfService pdfService, ProjectObjectCheckboxService projectObjectCheckboxService, ProjectObjectSignService projectObjectSignService, ProjectObjectTextService projectObjectTextService, ObjectConverter objectConverter) {
+    public ProjectService(ProjectRepository projectRepository, UserService userService, PdfService pdfService, ProjectObjectCheckboxService projectObjectCheckboxService, ProjectObjectSignService projectObjectSignService, ProjectObjectTextService projectObjectTextService, ObjectConverter objectConverter, ProjectObjectService projectObjectService) {
         this.projectRepository = projectRepository;
         this.userService = userService;
         this.pdfService = pdfService;
@@ -41,6 +43,7 @@ public class ProjectService {
         this.projectObjectSignService = projectObjectSignService;
         this.projectObjectTextService = projectObjectTextService;
         this.objectConverter = objectConverter;
+        this.projectObjectService = projectObjectService;
     }
 
     @Transactional
@@ -77,20 +80,33 @@ public class ProjectService {
     }
 
     @Transactional
-    public ProjectDTO saveObjects(ProjectDTO dto) throws NotFoundException, AuthException, IllegalAccessException {
+    public ProjectDTO saveObjects(ProjectDTO dto) throws NotFoundException, AuthException, IllegalAccessException, BadRequestException {
 
         UserVO user = userService.getMyUserWithAuthorities();
 
         ProjectVO project = this.getByName(dto.getName());
 
-        if(project.getActivated() != 0)
-            throw new IllegalAccessException("already written project");
+        //0: 생성됨, 1: 생성 후 1회 이상 작성됨, 2: 공유됨, 3: 공유 중단됨
+        if(project.getActivated() == 2){
+            throw new IllegalAccessException("Editing is not possible while sharing.");
+        }else if(project.getActivated() == 3 && project.getSubmittees().size() >= 1){
+            throw new IllegalAccessException("Sharing is not allowed if there is more than one submitter.");
+        }
+
+        //상태변경
+        //1, 3일 때 수정은 상태변경이 없음
+        if(project.getActivated() == 0)
+            this.setActivated(project, 1);
+
 
         if(project.getUser() != user)
             throw new AuthException("not owned project name");
 
-        project.setActivated(1);
-        this.save(project);
+        Set<ProjectObjectVO> projectObjects = project.getProjectObjects();
+        for(ProjectObjectVO object : projectObjects){
+            log.warn(object.getName() + "삭제됨");
+            projectObjectService.remove(object);
+        }
 
         ProjectDTO projectDTO = objectConverter.projectVOToDTO(project);;
 
@@ -110,6 +126,40 @@ public class ProjectService {
         }
 
         return projectDTO;
+    }
+
+    @Transactional
+    public void changeState(ProjectVO project, int state) throws BadRequestException, AuthException {
+
+        if(state < 0 || state > 3)
+            throw new BadRequestException("state should be between 0 and 3");
+
+        if(state == 0 || state == 1)
+            throw new BadRequestException("project state can't be changed to 0 or 1");
+
+        if(project.getActivated() == 0)
+            throw new BadRequestException("unwritten project can't be shared");
+
+        if(state == 3 && project.getActivated() == 1){
+            throw new BadRequestException("only shared project can be interrupted");
+        }
+
+        this.setActivated(project, state);
+    }
+
+    @Transactional
+    public void setActivated(ProjectVO vo, int state) throws AuthException, BadRequestException {
+
+        UserVO user = userService.getMyUserWithAuthorities();
+
+        if(vo.getUser().getIdx() != user.getIdx())
+            throw new AuthException("not your own project");
+
+        if(vo.getActivated() == state)
+            throw new BadRequestException("current state and changed state are the same");
+
+        vo.setActivated(state);
+        this.save(vo);
     }
 
     @Transactional(readOnly = true)
@@ -151,7 +201,7 @@ public class ProjectService {
 
         ProjectVO project = projectRepository.findWithProjectObjectsAndPdfByName(name);
 
-        if(project.getActivated() != 1)
+        if(project.getActivated() != 2)
             throw new NotAcceptableStatusException("project is not public");
 
         ProjectDTO projectDTO = objectConverter.projectVOToDTO(project);
