@@ -63,7 +63,7 @@ public class SubmitteeController {
      */
     @GetMapping("/{submittee-name}")
     @PreAuthorize("hasAnyRole('ROLE_USER')")
-    public ResponseEntity<SubmitteeDTO> getSubmitteeWithPdfAndObjectsByName(@PathVariable("submittee-name") String name) throws AuthException, NotFoundException {
+    public ResponseEntity<SubmitteeDTO> getSubmitteeWithPdfAndObjectsByName(@PathVariable("submittee-name") String name) throws AuthException, NotFoundException, IOException {
 
         SubmitteeDTO dto = submitteeService.getWithPdfAndObjectsByName(name);
 

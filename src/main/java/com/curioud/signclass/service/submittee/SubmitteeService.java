@@ -5,12 +5,14 @@ import com.curioud.signclass.domain.project.PdfVO;
 import com.curioud.signclass.domain.project.ProjectVO;
 import com.curioud.signclass.domain.submittee.*;
 import com.curioud.signclass.domain.user.UserVO;
+import com.curioud.signclass.dto.project.PdfDTO;
 import com.curioud.signclass.dto.submittee.SubmitteeDTO;
 import com.curioud.signclass.dto.submittee.SubmitteeObjectCheckboxDTO;
 import com.curioud.signclass.dto.submittee.SubmitteeObjectSignDTO;
 import com.curioud.signclass.dto.submittee.SubmitteeObjectTextDTO;
 import com.curioud.signclass.exception.BadRequestException;
 import com.curioud.signclass.repository.submittee.SubmitteeRepository;
+import com.curioud.signclass.service.project.PdfService;
 import com.curioud.signclass.service.project.ProjectService;
 import com.curioud.signclass.service.user.UserService;
 import com.curioud.signclass.util.ObjectConverter;
@@ -40,8 +42,9 @@ public class SubmitteeService {
     ObjectConverter objectConverter;
     UserService userService;
     SubmitteePdfService submitteePdfService;
+    PdfService pdfService;
 
-    public SubmitteeService(SubmitteeRepository submitteeRepository, SubmitteeObjectSignService submitteeObjectSignService, SubmitteeObjectTextService submitteeObjectTextService, SubmitteeObjectCheckboxService submitteeObjectCheckboxService, ProjectService projectService, ObjectConverter objectConverter, UserService userService, SubmitteePdfService submitteePdfService) {
+    public SubmitteeService(SubmitteeRepository submitteeRepository, SubmitteeObjectSignService submitteeObjectSignService, SubmitteeObjectTextService submitteeObjectTextService, SubmitteeObjectCheckboxService submitteeObjectCheckboxService, ProjectService projectService, ObjectConverter objectConverter, UserService userService, SubmitteePdfService submitteePdfService, PdfService pdfService) {
         this.submitteeRepository = submitteeRepository;
         this.submitteeObjectSignService = submitteeObjectSignService;
         this.submitteeObjectTextService = submitteeObjectTextService;
@@ -50,6 +53,7 @@ public class SubmitteeService {
         this.objectConverter = objectConverter;
         this.userService = userService;
         this.submitteePdfService = submitteePdfService;
+        this.pdfService = pdfService;
     }
 
     @Transactional
@@ -154,7 +158,7 @@ public class SubmitteeService {
     }
 
     @Transactional(readOnly = true)
-    public SubmitteeDTO getWithPdfAndObjectsByName(String name) throws AuthException, NotFoundException {
+    public SubmitteeDTO getWithPdfAndObjectsByName(String name) throws AuthException, NotFoundException, IOException {
 
         UserVO user = userService.getMyUserWithAuthorities();
         SubmitteeVO submittee = this.getByName(name);
@@ -164,7 +168,12 @@ public class SubmitteeService {
             throw new AuthException("not your own submittee");
 
         PdfVO pdfVO = submittee.getProject().getPdf();
-        submitteeDTO.setPdf(objectConverter.pdfVOToDTO(pdfVO));
+        PdfDTO pdfDTO = objectConverter.pdfVOToDTO(pdfVO);
+
+        float[] originalWidthArray = pdfService.getOriginalWidthArray(pdfVO);
+        pdfDTO.setOriginalWidth(originalWidthArray);
+
+        submitteeDTO.setPdf(pdfDTO);
 
         List<SubmitteeObjectVO> submitteeObjects = submittee.getSubmitteeObjects();
         for(SubmitteeObjectVO object : submitteeObjects){
