@@ -62,7 +62,7 @@ public class SubmitteeService {
 
         //project 활성화 여부 확인
         ProjectVO project = projectService.getByName(projectName);
-        if(project.getActivated() != 1) throw new NotAcceptableStatusException("project is closed");
+        if(project.getActivated() != 2) throw new NotAcceptableStatusException("project is closed");
 
         //이미지 갯수, sign 오브젝트 갯수 비교
         if(mfList.size() != dto.getSubmitteeObjectSigns().size())
