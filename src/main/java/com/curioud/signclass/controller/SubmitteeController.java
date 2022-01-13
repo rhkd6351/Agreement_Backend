@@ -46,7 +46,7 @@ public class SubmitteeController {
      * @throws NotFoundException 유효하지 않은 project name
      */
     @GetMapping("/project/{project-name}")
-    public ResponseEntity<ProjectDTO> getProjectByNameWithoutAuthority(@PathVariable("project-name")String projectName) throws NotFoundException {
+    public ResponseEntity<ProjectDTO> getProjectByNameWithoutAuthority(@PathVariable("project-name")String projectName) throws NotFoundException, IOException {
 
         ProjectDTO projectDTO = projectService.getWithProjectObjectsAndPdfByNameWithoutAuthority(projectName);
 

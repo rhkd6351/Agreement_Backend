@@ -198,7 +198,7 @@ public class ProjectService {
     }
 
     @Transactional(readOnly = true)
-    public ProjectDTO getWithProjectObjectsAndPdfByName(String name) throws AuthException, NotFoundException {
+    public ProjectDTO getWithProjectObjectsAndPdfByName(String name) throws AuthException, NotFoundException, IOException {
 
         UserVO user = userService.getMyUserWithAuthorities();
         ProjectVO project = projectRepository.findWithSubmitteesAndProjectObjectsAndPdfByName(name);
@@ -228,11 +228,15 @@ public class ProjectService {
         projectDTO.setPdf(objectConverter.pdfVOToDTO(project.getPdf()));
         projectDTO.setSubmitteeCount(project.getSubmittees().size());
 
+        //pdf 원본 width 길이 배열로 반환
+        float[] originalWidthArray = pdfService.getOriginalWidthArray(project.getPdf());
+        projectDTO.getPdf().setOriginalWidth(originalWidthArray);
+
         return projectDTO;
     }
 
     @Transactional(readOnly = true)
-    public ProjectDTO getWithProjectObjectsAndPdfByNameWithoutAuthority(String name) throws NotFoundException {
+    public ProjectDTO getWithProjectObjectsAndPdfByNameWithoutAuthority(String name) throws NotFoundException, IOException {
 
         ProjectVO project = projectRepository.findWithProjectObjectsAndPdfByName(name);
 
@@ -259,6 +263,8 @@ public class ProjectService {
             }
         }
         projectDTO.setPdf(objectConverter.pdfVOToDTO(project.getPdf()));
+        float[] originalWidthArray = pdfService.getOriginalWidthArray(project.getPdf());
+        projectDTO.getPdf().setOriginalWidth(originalWidthArray);
 
         return projectDTO;
     }
@@ -297,10 +303,17 @@ public class ProjectService {
     }
 
     @Transactional(readOnly = true)
-    public List<ProjectVO> getMyProjects() throws AuthException {
+    public List<ProjectDTO> getMyProjects() throws AuthException {
 
         UserVO user = userService.getMyUserWithAuthorities();
-        return projectRepository.findWithSubmitteesByUser(user);
+        List<ProjectVO> projects = projectRepository.findWithSubmitteesByUser(user);
+        List<ProjectDTO> projectDTOs = projects.stream().map(i -> {
+            ProjectDTO dto = objectConverter.projectVOToDTO(i);
+            dto.setSubmitteeCount(i.getSubmittees().size());
+            return dto;
+        }).collect(Collectors.toList());
+
+        return projectDTOs;
     }
 
 }

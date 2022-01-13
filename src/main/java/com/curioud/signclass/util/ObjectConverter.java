@@ -75,7 +75,6 @@ public class ObjectConverter {
                 .projectObjectSigns(new ArrayList<>())
                 .projectObjectTexts(new ArrayList<>())
                 .submittees(new ArrayList<>())
-                .submitteeCount(vo.getSubmittees().size())
                 .build();
     }
 

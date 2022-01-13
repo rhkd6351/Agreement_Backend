@@ -6,6 +6,8 @@ import com.curioud.signclass.repository.project.PdfRepository;
 import com.curioud.signclass.util.FileUtil;
 import javassist.NotFoundException;
 import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDPage;
+import org.apache.pdfbox.pdmodel.PDPageTree;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.transaction.NotSupportedException;
 import java.io.File;
 import java.io.IOException;
+import java.util.Iterator;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
@@ -117,4 +120,24 @@ public class PdfService {
         return fileUtil.getFile(pdf);
     }
 
+    public float[] getOriginalWidthArray(PdfVO pdf) throws NotFoundException, IOException {
+
+
+        byte[] byteFile = this.getByteByName(pdf.getName());
+        PDDocument doc = PDDocument.load(byteFile);
+        float[] widthArray = new float[doc.getNumberOfPages()];
+
+        PDPageTree pages = doc.getPages();
+        Iterator<PDPage> iterator = pages.iterator();
+
+        int index = 0;
+        while(iterator.hasNext()){
+            PDPage page = iterator.next();
+            widthArray[index] = page.getMediaBox().getWidth();
+            index += 1;
+        }
+
+        return widthArray;
+
+    }
 }

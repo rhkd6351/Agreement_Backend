@@ -35,4 +35,7 @@ public class PdfDTO {
 
     @JsonProperty("reg_date")
     LocalDateTime regDate;
+
+    @JsonProperty("original_width")
+    float[] originalWidth;
 }

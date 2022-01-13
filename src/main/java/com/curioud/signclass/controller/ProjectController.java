@@ -74,8 +74,7 @@ public class ProjectController {
     @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<List<ProjectDTO>> getMyProjects() throws AuthException {
 
-        List<ProjectVO> projects = projectService.getMyProjects();
-        List<ProjectDTO> projectDTOs = projects.stream().map(objectConverter::projectVOToDTO).collect(Collectors.toList());
+        List<ProjectDTO> projectDTOs = projectService.getMyProjects();
 
         return new ResponseEntity<>(projectDTOs, HttpStatus.OK);
     }
@@ -89,7 +88,7 @@ public class ProjectController {
      */
     @GetMapping("/project/{project-name}")
     @PreAuthorize("hasRole('ROLE_USER')")
-    public ResponseEntity<ProjectDTO> getProjectByName(@PathVariable(value = "project-name")String projectName) throws AuthException, NotFoundException {
+    public ResponseEntity<ProjectDTO> getProjectByName(@PathVariable(value = "project-name")String projectName) throws AuthException, NotFoundException, IOException {
 
 //        ProjectDTO projectDTO = projectService.getWithSubmitteesAndProjectObjectsAndPdfByName(projectName);
 
