@@ -1,6 +1,5 @@
 package com.curioud.signclass.controller;
 
-import com.curioud.signclass.domain.project.ProjectVO;
 import com.curioud.signclass.dto.project.ProjectDTO;
 import com.curioud.signclass.dto.submittee.SubmitteeDTO;
 import com.curioud.signclass.exception.BadRequestException;
@@ -37,7 +36,7 @@ public class SubmitteeController {
     SubmitteeObjectSignImgService submitteeObjectSignImgService;
 
 
-    /**
+    /** Get Project
      *
      * @param projectName 프로젝트 이름
      * @return 프로젝트 정보(오브젝트, pdf 포함)
@@ -52,24 +51,7 @@ public class SubmitteeController {
         return new ResponseEntity<>(projectDTO, HttpStatus.OK);
     }
 
-    /**
-     *
-     * @param name 제출자 이름
-     * @return 제출자 정보(pdf, object 포함)
-     * @throws AuthException 소유하지 않은 프로젝트의 제출자, 유효하지 않은 토큰
-     * @throws NotFoundException 유효하지 않은 pdf 혹은 object
-     * @throws IOException pdf file 입출력 오류
-     */
-    @GetMapping("/{submittee-name}")
-    @PreAuthorize("hasAnyRole('ROLE_USER')")
-    public ResponseEntity<SubmitteeDTO> getSubmitteeWithPdfAndObjectsByName(@PathVariable("submittee-name") String name) throws AuthException, NotFoundException, IOException {
-
-        SubmitteeDTO dto = submitteeService.getWithPdfAndObjectsByName(name);
-
-        return new ResponseEntity<>(dto, HttpStatus.OK);
-    }
-
-    /**
+    /** Submit
      *
      * @param projectName 프로젝트 이름
      * @param mfList sign object와 연결된 이미지 리스트(optional)

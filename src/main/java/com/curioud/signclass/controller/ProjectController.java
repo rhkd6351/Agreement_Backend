@@ -1,7 +1,6 @@
 package com.curioud.signclass.controller;
 
 import com.curioud.signclass.domain.project.ProjectVO;
-import com.curioud.signclass.domain.submittee.SubmitteeVO;
 import com.curioud.signclass.dto.etc.MessageDTO;
 import com.curioud.signclass.dto.project.ProjectDTO;
 import com.curioud.signclass.dto.submittee.SubmitteeDTO;
@@ -22,7 +21,6 @@ import javax.security.auth.message.AuthException;
 import javax.transaction.NotSupportedException;
 import java.io.IOException;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api")
@@ -40,7 +38,7 @@ public class ProjectController {
         this.submitteeService = submitteeService;
     }
 
-    /**
+    /** Post Project
      *
      * @param mf pdf 파일
      * @param projectDTO project의 description (optional)
@@ -60,7 +58,7 @@ public class ProjectController {
         return new ResponseEntity<>(resultDTO, HttpStatus.OK);
     }
 
-    /**
+    /** Get Project List
      *
      * @return 나의 프로젝트 리스트
      * @throws AuthException 유효하지 않은 토큰
@@ -74,7 +72,7 @@ public class ProjectController {
         return new ResponseEntity<>(projectDTOs, HttpStatus.OK);
     }
 
-    /**
+    /** Get Project
      *
      * @param projectName 프로젝트 이름
      * @return 프로젝트 정보, object 및 pdf 정보 포함
@@ -94,7 +92,7 @@ public class ProjectController {
         return new ResponseEntity<>(projectDTO, HttpStatus.OK);
     }
 
-    /**
+    /** Post Objects
      *
      * @param projectDTO 저장할 오브젝트 리스트
      * @param projectName 오브젝트를 저장할 프로젝트 이름
@@ -115,7 +113,7 @@ public class ProjectController {
         return new ResponseEntity<>(resultProjectDTO, HttpStatus.OK);
     }
 
-    /**
+    /** Change State
      *
      * @param state 변경하고자 하는 상태
      * @param projectName 프로젝트 이름
@@ -137,7 +135,7 @@ public class ProjectController {
 
     }
 
-    /**
+    /** Get Submittee PDF
      *
      * @param submitteeName 제출자 이름
      * @return 제출된 프로젝트 pdf
@@ -152,7 +150,7 @@ public class ProjectController {
         return submitteeService.getSubmitteePdfFileByNameWithAuthority(submitteeName);
     }
 
-    /**
+    /** Get Submittees
      *
      * @param projectName 프로젝트의 이름
      * @return 제출자 리스트
@@ -165,6 +163,23 @@ public class ProjectController {
             @PathVariable("project-name") String projectName) throws NotFoundException, AuthException {
 
         return projectService.getSubmitteesByProjectName(projectName);
+    }
+
+    /** Get Submittee
+     *
+     * @param name 제출자 이름
+     * @return 제출자 정보(pdf, object 포함)
+     * @throws AuthException 소유하지 않은 프로젝트의 제출자, 유효하지 않은 토큰
+     * @throws NotFoundException 유효하지 않은 pdf 혹은 object 혹은 submittee
+     * @throws IOException pdf file 입출력 오류
+     */
+    @GetMapping("/project/submittee/{submittee-name}")
+    @PreAuthorize("hasAnyRole('ROLE_USER')")
+    public ResponseEntity<SubmitteeDTO> getSubmitteeWithPdfAndObjectsByName(@PathVariable("submittee-name") String name) throws AuthException, NotFoundException, IOException {
+
+        SubmitteeDTO dto = submitteeService.getWithPdfAndObjectsByName(name);
+
+        return new ResponseEntity<>(dto, HttpStatus.OK);
     }
 
 

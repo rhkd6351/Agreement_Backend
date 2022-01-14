@@ -1,12 +1,10 @@
 package com.curioud.signclass.controller;
 
-import com.curioud.signclass.dto.etc.MessageDTO;
 import com.curioud.signclass.dto.user.TokenDTO;
 import com.curioud.signclass.dto.user.UserDTO;
 import com.curioud.signclass.jwt.TokenProvider;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
@@ -25,7 +23,7 @@ public class AuthController {
         this.authenticationManagerBuilder = authenticationManagerBuilder;
     }
 
-    /**
+    /** Login
      *
      * @param userDTO user id, password
      * @return access token (jwt)
