@@ -38,7 +38,7 @@ public class UserVO {
     @Column(name="activated")
     boolean activated;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "auth_fk")
     AuthVO auth;
 

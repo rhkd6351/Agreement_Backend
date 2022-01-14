@@ -43,14 +43,4 @@ public class AuthController {
 
         return new ResponseEntity<>(new TokenDTO(jwt), HttpStatus.OK);
     }
-
-    /**
-     *
-     * @return MessageDTO 토큰값이 유효한지 확인하여 결과값을 리턴합니다.
-     */
-    @GetMapping("/user")
-    @PreAuthorize("hasRole('ROLE_USER')")
-    public ResponseEntity<MessageDTO> validCheck(){
-        return ResponseEntity.ok(MessageDTO.builder().message("valid token").build());
-    }
 }

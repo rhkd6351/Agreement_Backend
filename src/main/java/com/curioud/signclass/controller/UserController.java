@@ -1,6 +1,7 @@
 package com.curioud.signclass.controller;
 
 import com.curioud.signclass.domain.user.UserVO;
+import com.curioud.signclass.dto.etc.MessageDTO;
 import com.curioud.signclass.dto.user.UserDTO;
 import com.curioud.signclass.service.user.UserService;
 import com.curioud.signclass.util.ObjectConverter;
@@ -10,11 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import javax.security.auth.message.AuthException;
 import javax.validation.Valid;
 
 @RestController
@@ -45,5 +44,15 @@ public class UserController {
         UserDTO convertedUserDTO = objectConverter.userVOToDTO(registeredUserVO);
 
         return new ResponseEntity<>(convertedUserDTO, HttpStatus.OK);
+    }
+
+    @GetMapping("/user")
+    @PreAuthorize("hasRole('ROLE_USER')")
+    public ResponseEntity<UserDTO> getUser() throws AuthException {
+
+        UserVO user = userService.getMyUserWithAuthorities();
+        UserDTO userDTO = objectConverter.userVOToDTO(user);
+
+        return new ResponseEntity<>(userDTO, HttpStatus.OK);
     }
 }
