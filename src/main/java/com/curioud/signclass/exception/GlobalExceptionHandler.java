@@ -12,12 +12,17 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.server.NotAcceptableStatusException;
 
 import javax.transaction.NotSupportedException;
+import java.io.IOException;
 import java.nio.file.NoSuchFileException;
 
 @RestControllerAdvice
 @Slf4j
 public class GlobalExceptionHandler {
 
+    @ExceptionHandler(IOException.class)
+    public ResponseEntity<MessageDTO> IOException(IOException e){
+        return new ResponseEntity<>(new MessageDTO(e.getMessage()), HttpStatus.NOT_FOUND);
+    }
 
     @ExceptionHandler(NotFoundException.class)
     public ResponseEntity<MessageDTO> NotFoundException(NotFoundException e){
