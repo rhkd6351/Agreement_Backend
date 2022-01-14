@@ -34,11 +34,10 @@ public class FileController {
 
     /**
      *
-     * @param mf multipart-File 형식 pdf 파일입니다.
-     * @return PdfVO 등록된 PDF 정보
-     * @throws IOException pdf file IO 오류
-     * @throws NotSupportedException pdf 이외의 확장자
-     * @throws NoSuchFileException multipartFile 오류
+     * @param mf pdf file
+     * @return 저장된 pdf 정보
+     * @throws IOException 파일 입출력 오류
+     * @throws NotSupportedException 승인되지 않은 파일 확장자
      */
     @PostMapping("/project/pdf")
     @PreAuthorize("hasRole('ROLE_USER')")
@@ -54,12 +53,13 @@ public class FileController {
         return new ResponseEntity<>(pdfDTO, HttpStatus.OK);
     }
 
+
     /**
      *
-     * @param pdfName pdf의 이름을 입력받습니다.
-     * @return pdf byte
-     * @throws NotFoundException 유효하지 않은 pdf name
-     * @throws IOException pdf file IO 오류
+     * @param pdfName pdf의 saveName
+     * @return pdf file
+     * @throws NotFoundException 존재하지 않는 pdf 파일(DB)
+     * @throws IOException 파일 입출력 오류
      */
     @GetMapping(path = "/project/pdf/{pdf-name}", produces = MediaType.APPLICATION_PDF_VALUE)
 //    @PreAuthorize("hasRole('ROLE_USER')")

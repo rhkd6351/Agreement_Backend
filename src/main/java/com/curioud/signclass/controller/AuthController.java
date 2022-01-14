@@ -27,8 +27,8 @@ public class AuthController {
 
     /**
      *
-     * @param userDTO id, password 값을 입력받습니다.
-     * @return TokenDTO 생성된 jwt를 리턴합니다.
+     * @param userDTO user id, password
+     * @return access token (jwt)
      */
     @PostMapping("/user/login")
     public ResponseEntity<TokenDTO> authorize(@RequestBody UserDTO userDTO) {

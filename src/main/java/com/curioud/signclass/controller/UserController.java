@@ -27,14 +27,10 @@ public class UserController {
 
     /**
      *
-     * @param userDTO
-     * id 아이디
-     * password 비밀번호
-     * name 유저이름
-     *
-     * @return 가입한 User 정보
-     * @throws DuplicateMemberException 이미 존재하는 ID
-     * @throws NotFoundException 유효하지 않은 유저 권한
+     * @param userDTO 유저 id, password, name
+     * @return 가입된 유저 정보
+     * @throws DuplicateMemberException 중복된 유저 id
+     * @throws NotFoundException 유효하지 않은 권한명
      */
     @PostMapping("/user")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -46,6 +42,11 @@ public class UserController {
         return new ResponseEntity<>(convertedUserDTO, HttpStatus.OK);
     }
 
+    /**
+     *
+     * @return 유저정보
+     * @throws AuthException 유효하지 않은 토큰
+     */
     @GetMapping("/user")
     @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<UserDTO> getUser() throws AuthException {

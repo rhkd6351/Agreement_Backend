@@ -39,9 +39,10 @@ public class SubmitteeController {
 
     /**
      *
-     * @param projectName project name
-     * @return project with objects, pdf
-     * @throws NotFoundException 유효하지 않은 project name
+     * @param projectName 프로젝트 이름
+     * @return 프로젝트 정보(오브젝트, pdf 포함)
+     * @throws NotFoundException 유효하지 않은 pdf 혹은 object
+     * @throws IOException pdf file 입출력 오류
      */
     @GetMapping("/project/{project-name}")
     public ResponseEntity<ProjectDTO> getProjectByNameWithoutAuthority(@PathVariable("project-name")String projectName) throws NotFoundException, IOException {
@@ -53,11 +54,11 @@ public class SubmitteeController {
 
     /**
      *
-     * @param name 제출자 이름(난수)
-     * @return
-     * SubmitteeDTO 제출본 정보 (with pdf, objects)
-     * @throws AuthException 열람 권한 없음 (본인이 등록한 프로젝트의 제출본이 아님)
-     * @throws NotFoundException 유효하지 않은 submittee-name
+     * @param name 제출자 이름
+     * @return 제출자 정보(pdf, object 포함)
+     * @throws AuthException 소유하지 않은 프로젝트의 제출자, 유효하지 않은 토큰
+     * @throws NotFoundException 유효하지 않은 pdf 혹은 object
+     * @throws IOException pdf file 입출력 오류
      */
     @GetMapping("/{submittee-name}")
     @PreAuthorize("hasAnyRole('ROLE_USER')")
@@ -71,19 +72,14 @@ public class SubmitteeController {
     /**
      *
      * @param projectName 프로젝트 이름
-     * @param mfList sign image 리스트
-     * @param pdf 작성 완료된 pdf 저장
-     * @param submitteeDTO
-     * name
-     * studentId
-     * objects(sign, text, checkbox)
-     *
-     * @return 제출된 동의서의 pdf파일
-     * @throws NotFoundException 유효하지 않은 project name
-     * @throws IOException 이미지 저장 오류
-     * @throws NotSupportedException 이미지 확장자 및 크기 예외처리
-     * @throws BadRequestException 이미지 및 sign object 파일명 규칙 위반
-     * (서로 같은 이름의 파일과 sign, 단 같은 파일끼리 또는 sign 끼리 이름이 동일하지 않아야 한다.)
+     * @param mfList sign object와 연결된 이미지 리스트(optional)
+     * @param pdf 작성 완료된 pdf파일
+     * @param submitteeDTO 제출자의 학생이름 및 학번, 작성 완료된 object 리스트
+     * @return 작성 완료된 pdf 파일
+     * @throws NotFoundException 유효하지 않은 프로젝트 이름
+     * @throws IOException 이미지 및 pdf 파일 입출력 오류
+     * @throws NotSupportedException 지원하지 않는 이미지 및 pdf 확장자
+     * @throws BadRequestException 이미지와 sign 오브젝트의 네이밍 규칙 위반
      */
     @PostMapping(path = "/project/{project-name}", produces = MediaType.APPLICATION_PDF_VALUE)
     public byte[] submitProject(
@@ -95,6 +91,13 @@ public class SubmitteeController {
         return submitteeService.saveWithObjectsAndPdf(projectName, submitteeDTO, mfList, pdf);
     }
 
+    /**
+     *
+     * @param imgName 이미지 이름
+     * @return 이미지 파일
+     * @throws NotFoundException 유효하지 않은 이미지
+     * @throws IOException 파일 입출력 오류
+     */
     @GetMapping(path = "/object/img/{img-name}", produces = MediaType.IMAGE_JPEG_VALUE)
 //    @PreAuthorize("hasRole('ROLE_USER')")
     public byte[] getObjectImage(@PathVariable(name = "img-name") String imgName) throws NotFoundException, IOException {
