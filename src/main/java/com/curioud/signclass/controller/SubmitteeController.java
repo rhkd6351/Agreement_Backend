@@ -6,7 +6,6 @@ import com.curioud.signclass.dto.submittee.SubmitteeDTO;
 import com.curioud.signclass.exception.BadRequestException;
 import com.curioud.signclass.service.project.ProjectService;
 import com.curioud.signclass.service.submittee.SubmitteeObjectSignImgService;
-import com.curioud.signclass.service.submittee.SubmitteePdfService;
 import com.curioud.signclass.service.submittee.SubmitteeService;
 import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +15,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.server.NotAcceptableStatusException;
 
 
 import javax.security.auth.message.AuthException;

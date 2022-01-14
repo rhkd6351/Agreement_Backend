@@ -68,7 +68,8 @@ public class ProjectService {
                     .name(UUID.randomUUID().toString())
                     .title(savedPdf.getOriginalName().split("\\.pdf")[0]) //TODO 수정할것
                     .description(dto.getDescription())
-                    .activated(0) // 0 -> 생성됨
+                    .activated(1) // 0 -> 생성됨, 1-> 1회 이상 작성됨
+                    // 현재 규정상 생성 즉시 공유 가능이므로 1로 생성
                     .build();
 
         } else
@@ -88,11 +89,13 @@ public class ProjectService {
         ProjectVO project = this.getByName(dto.getName());
 
         //0: 생성됨, 1: 생성 후 1회 이상 작성됨, 2: 공유됨, 3: 공유 중단됨
-        if(project.getActivated() == 2){
+        if(project.getActivated() == 2 || project.getActivated() == 3) {
             throw new IllegalAccessException("Editing is not possible while sharing.");
-        }else if(project.getActivated() == 3 && project.getSubmittees().size() >= 1){
-            throw new IllegalAccessException("Sharing is not allowed if there is more than one submitter.");
         }
+        //수정 규정 변경으로 activated가 2 또는 3이면 반드시 수정 불가
+//        }else if(project.getActivated() == 3 && project.getSubmittees().size() >= 1){
+//            throw new IllegalAccessException("Sharing is not allowed if there is more than one submitter.");
+//        }
 
         //상태변경
         //1, 3일 때 수정은 상태변경이 없음
