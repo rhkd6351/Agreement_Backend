@@ -59,7 +59,7 @@ public class ProjectController {
             (@RequestParam("file_pdf") MultipartFile mf, ProjectDTO projectDTO) throws IOException, NotSupportedException, NotFoundException, AuthException {
 
         ProjectVO projectVO = projectService.saveWithPdf(projectDTO, mf);
-        ProjectDTO resultDTO = objectConverter.projectVOToDTOWithUserAndPdf(projectVO);
+        ProjectDTO resultDTO = objectConverter.projectVOToDTOWithPdf(projectVO);
 
         return new ResponseEntity<>(resultDTO, HttpStatus.OK);
     }

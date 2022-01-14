@@ -90,10 +90,10 @@ public class ObjectConverter {
         return projectDTO;
     }
 
-    public ProjectDTO projectVOToDTOWithUserAndPdf(ProjectVO vo) {
+    public ProjectDTO projectVOToDTOWithPdf(ProjectVO vo) {
         ProjectDTO projectDTO = this.projectVOToDTO(vo);
         projectDTO.setPdf(this.pdfVOToDTO(vo.getPdf()));
-        projectDTO.setUser(this.userVOToDTO(vo.getUser()));
+//        projectDTO.setUser(this.userVOToDTO(vo.getUser()));
 
         return projectDTO;
     }
@@ -147,6 +147,7 @@ public class ObjectConverter {
     public ProjectObjectCheckboxDTO projectObjectCheckboxVOToDTO(ProjectObjectCheckboxVO vo) {
         return ProjectObjectCheckboxDTO.builder()
                 .idx(vo.getIdx())
+                .name(vo.getName())
                 .xPosition(vo.getXPosition())
                 .yPosition(vo.getYPosition())
                 .width(vo.getWidth())
