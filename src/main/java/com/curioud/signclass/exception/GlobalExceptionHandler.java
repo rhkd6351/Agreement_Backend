@@ -26,12 +26,12 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(NoSuchFileException.class)
     public ResponseEntity<MessageDTO> NoSuchFileException(NoSuchFileException e){
-        return new ResponseEntity<>(new MessageDTO(e.getMessage()), HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(new MessageDTO(e.getMessage()), HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(IllegalAccessException.class)
     public ResponseEntity<MessageDTO> IllegalAccessException(IllegalAccessException e){
-        return new ResponseEntity<>(new MessageDTO(e.getMessage()), HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(new MessageDTO(e.getMessage()), HttpStatus.FORBIDDEN);
     }
 
     @ExceptionHandler(DuplicateMemberException.class)
@@ -41,7 +41,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(NotSupportedException.class)
     public ResponseEntity<MessageDTO> NotSupportedException(NotSupportedException e){
-        return new ResponseEntity<>(new MessageDTO(e.getMessage()), HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(new MessageDTO(e.getMessage()), HttpStatus.UNSUPPORTED_MEDIA_TYPE);
     }
     @ExceptionHandler(BadRequestException.class)
     public ResponseEntity<MessageDTO> BadRequestException(BadRequestException e){
@@ -50,7 +50,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(NotAcceptableStatusException.class)
     public ResponseEntity<MessageDTO> NotAcceptableStatusException(NotAcceptableStatusException e){
-        return new ResponseEntity<>(new MessageDTO(e.getMessage()), HttpStatus.NOT_ACCEPTABLE);
+        return new ResponseEntity<>(new MessageDTO(e.getMessage()), HttpStatus.FORBIDDEN);
     }
 
     @ExceptionHandler(IOException.class)

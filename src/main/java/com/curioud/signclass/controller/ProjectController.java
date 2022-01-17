@@ -25,7 +25,6 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.security.auth.message.AuthException;
 import javax.transaction.NotSupportedException;
 import java.io.IOException;
-import java.util.List;
 
 @RestController
 @RequestMapping("/api")
@@ -60,7 +59,7 @@ public class ProjectController {
         ProjectVO projectVO = projectService.saveWithPdf(projectDTO, mf);
         ProjectDTO resultDTO = objectConverter.projectVOToDTOWithPdf(projectVO);
 
-        return new ResponseEntity<>(resultDTO, HttpStatus.OK);
+        return new ResponseEntity<>(resultDTO, HttpStatus.CREATED);
     }
 
     /** Get Project List
@@ -116,7 +115,7 @@ public class ProjectController {
         projectDTO.setName(projectName);
         ProjectDTO resultProjectDTO = projectService.saveObjects(projectDTO);
 
-        return new ResponseEntity<>(resultProjectDTO, HttpStatus.OK);
+        return new ResponseEntity<>(resultProjectDTO, HttpStatus.CREATED);
     }
 
     /** Change State
