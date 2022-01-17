@@ -7,6 +7,7 @@ import javassist.bytecode.DuplicateMemberException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.server.NotAcceptableStatusException;
@@ -51,6 +52,11 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(NotAcceptableStatusException.class)
     public ResponseEntity<MessageDTO> NotAcceptableStatusException(NotAcceptableStatusException e){
         return new ResponseEntity<>(new MessageDTO(e.getMessage()), HttpStatus.FORBIDDEN);
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<MessageDTO> MethodArgumentNotValidException(MethodArgumentNotValidException e){
+        return new ResponseEntity<>(new MessageDTO(e.getAllErrors().get(0).getDefaultMessage()), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(IOException.class)

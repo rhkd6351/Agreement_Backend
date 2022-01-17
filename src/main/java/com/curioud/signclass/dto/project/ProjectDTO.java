@@ -1,10 +1,12 @@
 package com.curioud.signclass.dto.project;
 
+import com.curioud.signclass.dto.ValidationGroups;
 import com.curioud.signclass.dto.submittee.SubmitteeDTO;
 import com.curioud.signclass.dto.user.UserDTO;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
+import javax.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;

@@ -1,5 +1,6 @@
 package com.curioud.signclass.controller;
 
+import com.curioud.signclass.dto.ValidationGroups;
 import com.curioud.signclass.dto.project.ProjectDTO;
 import com.curioud.signclass.dto.submittee.SubmitteeDTO;
 import com.curioud.signclass.exception.BadRequestException;
@@ -11,7 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -67,7 +68,7 @@ public class SubmitteeController {
             @PathVariable("project-name")String projectName,
             @RequestPart(value = "sign_img", required = false) List<MultipartFile> mfList,
             @RequestPart(value = "file_pdf", required = true) MultipartFile pdf,
-            @RequestPart(value = "data") SubmitteeDTO submitteeDTO) throws NotFoundException, IOException, NotSupportedException, BadRequestException {
+            @RequestPart(value = "data") @Validated(ValidationGroups.submitteeSubmitGroup.class) SubmitteeDTO submitteeDTO) throws NotFoundException, IOException, NotSupportedException, BadRequestException {
 
         return submitteeService.saveWithObjectsAndPdf(projectName, submitteeDTO, mfList, pdf);
     }

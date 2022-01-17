@@ -1,6 +1,7 @@
 package com.curioud.signclass.controller;
 
 import com.curioud.signclass.domain.project.ProjectVO;
+import com.curioud.signclass.dto.ValidationGroups;
 import com.curioud.signclass.dto.etc.MessageDTO;
 import com.curioud.signclass.dto.project.PagingProjectDTO;
 import com.curioud.signclass.dto.project.ProjectDTO;
@@ -19,6 +20,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -54,7 +56,8 @@ public class ProjectController {
     @PostMapping("/projects")
     @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<ProjectDTO> insertProject
-            (@RequestParam("file_pdf") MultipartFile mf, ProjectDTO projectDTO) throws IOException, NotSupportedException, AuthException {
+            (@RequestParam(value = "file_pdf") MultipartFile mf, ProjectDTO projectDTO)
+            throws IOException, NotSupportedException, AuthException {
 
         ProjectVO projectVO = projectService.saveWithPdf(projectDTO, mf);
         ProjectDTO resultDTO = objectConverter.projectVOToDTOWithPdf(projectVO);

@@ -1,6 +1,7 @@
 package com.curioud.signclass.controller;
 
 import com.curioud.signclass.domain.user.UserVO;
+import com.curioud.signclass.dto.ValidationGroups;
 import com.curioud.signclass.dto.user.UserDTO;
 import com.curioud.signclass.service.user.UserService;
 import com.curioud.signclass.util.ObjectConverter;
@@ -10,10 +11,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.security.auth.message.AuthException;
-import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/api")
@@ -33,7 +34,8 @@ public class UserController {
      */
     @PostMapping("/user")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<UserDTO> getSignUp(@Valid @RequestBody UserDTO userDTO) throws DuplicateMemberException, NotFoundException {
+    public ResponseEntity<UserDTO> getSignUp(@RequestBody @Validated(ValidationGroups.userSignUpGroup.class) UserDTO userDTO)
+            throws DuplicateMemberException, NotFoundException {
 
         UserVO registeredUserVO = userService.signUp(userDTO);
         UserDTO convertedUserDTO = objectConverter.userVOToDTO(registeredUserVO);

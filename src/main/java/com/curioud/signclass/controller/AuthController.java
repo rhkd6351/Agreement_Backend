@@ -1,5 +1,6 @@
 package com.curioud.signclass.controller;
 
+import com.curioud.signclass.dto.ValidationGroups;
 import com.curioud.signclass.dto.user.TokenDTO;
 import com.curioud.signclass.dto.user.UserDTO;
 import com.curioud.signclass.jwt.TokenProvider;
@@ -9,6 +10,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -29,7 +31,7 @@ public class AuthController {
      * @return access token (jwt)
      */
     @PostMapping("/user/authentication")
-    public ResponseEntity<TokenDTO> authorize(@RequestBody UserDTO userDTO) {
+    public ResponseEntity<TokenDTO> authorize(@RequestBody @Validated({ValidationGroups.userAuthenticationGroup.class}) UserDTO userDTO) {
 
         UsernamePasswordAuthenticationToken authenticationToken =
                 new UsernamePasswordAuthenticationToken(userDTO.getId(), userDTO.getPassword());
