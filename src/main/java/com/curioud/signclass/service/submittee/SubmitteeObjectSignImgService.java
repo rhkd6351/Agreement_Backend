@@ -33,10 +33,9 @@ public class SubmitteeObjectSignImgService {
     @Transactional
     public SubmitteeObjectSignImgVO save(MultipartFile mf) throws NotSupportedException, IOException {
 
-        int i = Objects.requireNonNull(mf.getOriginalFilename()).lastIndexOf(".");
-        String extension = mf.getOriginalFilename().substring(i);
+        String extension = Objects.requireNonNull(mf.getContentType()).split("/")[1];
 
-        if(!(extension.equals(".jpg") || extension.equals(".jpeg") || extension.equals(".png") || extension.equals(".bmp")))
+        if(!(extension.equals("jpg") || extension.equals("jpeg") || extension.equals("png") || extension.equals("bmp")))
             throw new NotSupportedException("not supported extension : " + extension);
 
         if (mf.getSize() > maxFileSize) //10메가 용량제한

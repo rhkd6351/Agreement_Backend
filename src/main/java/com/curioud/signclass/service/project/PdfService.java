@@ -5,6 +5,7 @@ import com.curioud.signclass.dto.project.PdfDTO;
 import com.curioud.signclass.repository.project.PdfRepository;
 import com.curioud.signclass.util.FileUtil;
 import javassist.NotFoundException;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageTree;
@@ -22,6 +23,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Service
+@Slf4j
 public class PdfService {
 
     PdfRepository pdfRepository;
@@ -63,11 +65,9 @@ public class PdfService {
     @Transactional
     public PdfVO save(MultipartFile mf) throws NotSupportedException, IOException {
 
-        int i = Objects.requireNonNull(mf.getOriginalFilename()).lastIndexOf(".");
-        //TODO 확장자 없는 파일 업로드시 예외처리 어떻게되나 확인하기
-        String extension = mf.getOriginalFilename().substring(i);
+        String extension = Objects.requireNonNull(mf.getContentType()).split("/")[1];
 
-        if(!extension.equals(".pdf"))
+        if(!extension.equals("pdf"))
             throw new NotSupportedException("not supported extension : " + extension);
 
         if (mf.getSize() > maxFileSize) //10메가 용량제한
@@ -81,7 +81,7 @@ public class PdfService {
         PdfVO pdf = PdfVO.builder()
                 .name(saveName.toString())
                 .originalName(mf.getOriginalFilename())
-                .saveName(saveName + extension)
+                .saveName(saveName + "." + extension)
                 .size(mf.getSize())
                 .totalPage(doc.getNumberOfPages())
                 .uploadPath("/pdf")
