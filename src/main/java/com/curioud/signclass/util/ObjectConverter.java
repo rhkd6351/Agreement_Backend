@@ -43,7 +43,7 @@ public class ObjectConverter {
                 .totalPage(vo.getTotalPage())
                 .extension(vo.getExtension())
                 .regDate(vo.getRegDate())
-                .url(serverUrl + "/api/project/pdf/" + vo.getName())
+                .url(serverUrl + "/api/projects/pdf/" + vo.getName())
                 .build();
     }
 
@@ -57,7 +57,7 @@ public class ObjectConverter {
                 .totalPage(vo.getTotalPage())
                 .extension(vo.getExtension())
                 .regDate(vo.getRegDate())
-                .url(serverUrl + "/api/submittee/pdf/" + vo.getName())
+                .url(serverUrl + "/api/submittees/pdf/" + vo.getName())
                 .build();
     }
 
@@ -235,7 +235,7 @@ public class ObjectConverter {
                 .size(vo.getSize())
                 .uploadPath("*")
                 .extension(vo.getExtension())
-                .url(serverUrl + "/api/submittee/object/img/" + vo.getName())
+                .url(serverUrl + "/api/submittees/objects/img/" + vo.getName())
                 .regDate(vo.getRegDate())
                 .build();
     }

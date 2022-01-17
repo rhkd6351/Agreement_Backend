@@ -2,6 +2,7 @@ package com.curioud.signclass.controller;
 
 import com.curioud.signclass.domain.project.ProjectVO;
 import com.curioud.signclass.dto.etc.MessageDTO;
+import com.curioud.signclass.dto.project.PagingProjectDTO;
 import com.curioud.signclass.dto.project.ProjectDTO;
 import com.curioud.signclass.dto.submittee.SubmitteeDTO;
 import com.curioud.signclass.exception.BadRequestException;
@@ -10,6 +11,9 @@ import com.curioud.signclass.service.project.ProjectService;
 import com.curioud.signclass.service.submittee.SubmitteeService;
 import com.curioud.signclass.util.ObjectConverter;
 import javassist.NotFoundException;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -65,11 +69,12 @@ public class ProjectController {
      */
     @GetMapping("/projects")
     @PreAuthorize("hasRole('ROLE_USER')")
-    public ResponseEntity<List<ProjectDTO>> getProjects() throws AuthException {
+    public ResponseEntity<PagingProjectDTO> getProjects(@PageableDefault(size = 10, sort = "idx", direction = Sort.Direction.DESC) Pageable pageable)
+            throws AuthException {
 
-        List<ProjectDTO> projectDTOs = projectService.getMyProjects();
+        PagingProjectDTO pagingProjectDTO = projectService.getMyProjects(pageable);
 
-        return new ResponseEntity<>(projectDTOs, HttpStatus.OK);
+        return new ResponseEntity<>(pagingProjectDTO, HttpStatus.OK);
     }
 
     /** Get Project

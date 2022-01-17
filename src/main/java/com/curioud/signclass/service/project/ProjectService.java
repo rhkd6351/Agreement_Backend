@@ -11,6 +11,8 @@ import com.curioud.signclass.util.ObjectConverter;
 import javassist.NotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.catalina.User;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -306,17 +308,22 @@ public class ProjectService {
     }
 
     @Transactional(readOnly = true)
-    public List<ProjectDTO> getMyProjects() throws AuthException {
+    public PagingProjectDTO getMyProjects(Pageable pageable) throws AuthException {
 
         UserVO user = userService.getMyUserWithAuthorities();
-        List<ProjectVO> projects = projectRepository.findWithSubmitteesByUser(user);
-        List<ProjectDTO> projectDTOs = projects.stream().map(i -> {
+        Page<ProjectVO> projects = projectRepository.findWithSubmitteesByUser(user, pageable);
+
+        List<ProjectDTO> projectDTOList = projects.stream().map(i -> {
             ProjectDTO dto = objectConverter.projectVOToDTO(i);
             dto.setSubmitteeCount(i.getSubmittees().size());
             return dto;
         }).collect(Collectors.toList());
 
-        return projectDTOs;
+        return PagingProjectDTO.builder()
+                .projects(projectDTOList)
+                .totalPage(projects.getTotalPages() - 1)
+                .currentPage(projects.getPageable().getPageNumber())
+                .build();
     }
 
 }

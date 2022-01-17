@@ -58,10 +58,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
 //                .antMatchers(HttpMethod.POST, "/api/user").permitAll() //회원가입
-                .antMatchers(HttpMethod.POST, "/api/user/login").permitAll() // 로그인
-                .antMatchers(HttpMethod.GET, "/api/project/pdf/**").permitAll() //pdf
-                .antMatchers(HttpMethod.GET, "/api/object/img/**").permitAll() //img
-                .antMatchers("/api/submittee/**").permitAll() //submittee api
+                .antMatchers(HttpMethod.POST, "/api/user/authentication").permitAll() // 로그인
+                .antMatchers(HttpMethod.GET, "/api/projects/pdf/**").permitAll() //pdf
+                .antMatchers(HttpMethod.GET, "/api/objects/img/**").permitAll() //img
+                .antMatchers("/api/submittees/**").permitAll() //submittee api
 
                 .anyRequest().authenticated()
                 .and()
