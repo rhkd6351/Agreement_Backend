@@ -6,10 +6,7 @@ import com.curioud.signclass.domain.project.ProjectVO;
 import com.curioud.signclass.domain.submittee.*;
 import com.curioud.signclass.domain.user.UserVO;
 import com.curioud.signclass.dto.project.PdfDTO;
-import com.curioud.signclass.dto.submittee.SubmitteeDTO;
-import com.curioud.signclass.dto.submittee.SubmitteeObjectCheckboxDTO;
-import com.curioud.signclass.dto.submittee.SubmitteeObjectSignDTO;
-import com.curioud.signclass.dto.submittee.SubmitteeObjectTextDTO;
+import com.curioud.signclass.dto.submittee.*;
 import com.curioud.signclass.exception.BadRequestException;
 import com.curioud.signclass.repository.submittee.SubmitteeRepository;
 import com.curioud.signclass.service.project.PdfService;
@@ -17,6 +14,8 @@ import com.curioud.signclass.service.project.ProjectService;
 import com.curioud.signclass.service.user.UserService;
 import com.curioud.signclass.util.ObjectConverter;
 import javassist.NotFoundException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.NotAcceptableStatusException;
@@ -29,6 +28,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class SubmitteeService {
@@ -195,6 +195,7 @@ public class SubmitteeService {
         return submitteeDTO;
     }
 
+    @Transactional(readOnly = true)
     private SubmitteeVO getByName(String name) throws NotFoundException {
         Optional<SubmitteeVO> optional = submitteeRepository.findByName(name);
 
@@ -202,6 +203,25 @@ public class SubmitteeService {
             throw new NotFoundException("invalid submittee name");
 
         return optional.get();
+
+    }
+
+    @Transactional(readOnly = true)
+    public PagingSubmitteeDTO getByProjectName(String projectName, Pageable pageable) throws NotFoundException, AuthException {
+
+        ProjectVO project = projectService.getByName(projectName);
+        UserVO user = userService.getMyUserWithAuthorities();
+
+        if(project.getUser() != user)
+            throw new AuthException("not your own project");
+
+        Page<SubmitteeVO> submitteePage = submitteeRepository.getByProject(project, pageable);
+
+        return PagingSubmitteeDTO.builder()
+                .submittees(submitteePage.stream().map(objectConverter::submitteeVOToDTO).collect(Collectors.toList()))
+                .totalPage(submitteePage.getTotalPages() - 1)
+                .currentPage(pageable.getPageNumber())
+                .build();
 
     }
 }

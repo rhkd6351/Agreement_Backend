@@ -4,6 +4,7 @@ import com.curioud.signclass.domain.project.ProjectVO;
 import com.curioud.signclass.dto.etc.MessageDTO;
 import com.curioud.signclass.dto.project.PagingProjectDTO;
 import com.curioud.signclass.dto.project.ProjectDTO;
+import com.curioud.signclass.dto.submittee.PagingSubmitteeDTO;
 import com.curioud.signclass.dto.submittee.SubmitteeDTO;
 import com.curioud.signclass.exception.BadRequestException;
 import com.curioud.signclass.service.project.PdfService;
@@ -164,10 +165,11 @@ public class ProjectController {
      */
     @GetMapping("/projects/{project-name}/submittees")
     @PreAuthorize("hasRole('ROLE_USER')")
-    public List<SubmitteeDTO> getSubmitteesByProjectName(
-            @PathVariable("project-name") String projectName) throws NotFoundException, AuthException {
+    public PagingSubmitteeDTO getSubmitteesByProjectName(
+            @PathVariable("project-name") String projectName,
+            @PageableDefault(size = 10, sort = "idx", direction = Sort.Direction.DESC)Pageable pageable) throws NotFoundException, AuthException {
 
-        return projectService.getSubmitteesByProjectName(projectName);
+        return submitteeService.getByProjectName(projectName, pageable);
     }
 
     /** Get Submittee

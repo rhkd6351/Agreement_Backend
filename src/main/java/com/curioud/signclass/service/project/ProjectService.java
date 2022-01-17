@@ -3,6 +3,7 @@ package com.curioud.signclass.service.project;
 import com.curioud.signclass.domain.project.*;
 import com.curioud.signclass.domain.user.UserVO;
 import com.curioud.signclass.dto.project.*;
+import com.curioud.signclass.dto.submittee.PagingSubmitteeDTO;
 import com.curioud.signclass.dto.submittee.SubmitteeDTO;
 import com.curioud.signclass.exception.BadRequestException;
 import com.curioud.signclass.repository.project.ProjectRepository;
@@ -322,7 +323,7 @@ public class ProjectService {
         return PagingProjectDTO.builder()
                 .projects(projectDTOList)
                 .totalPage(projects.getTotalPages() - 1)
-                .currentPage(projects.getPageable().getPageNumber())
+                .currentPage(pageable.getPageNumber())
                 .build();
     }
 
