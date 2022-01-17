@@ -47,9 +47,9 @@ public class ProjectController {
      * @throws NotSupportedException 승인되지 않은 파일 확장자
      * @throws AuthException 유효하지 않은 토큰
      */
-    @PostMapping("/project")
+    @PostMapping("/projects")
     @PreAuthorize("hasRole('ROLE_USER')")
-    public ResponseEntity<ProjectDTO> save
+    public ResponseEntity<ProjectDTO> insertProject
             (@RequestParam("file_pdf") MultipartFile mf, ProjectDTO projectDTO) throws IOException, NotSupportedException, AuthException {
 
         ProjectVO projectVO = projectService.saveWithPdf(projectDTO, mf);
@@ -65,7 +65,7 @@ public class ProjectController {
      */
     @GetMapping("/projects")
     @PreAuthorize("hasRole('ROLE_USER')")
-    public ResponseEntity<List<ProjectDTO>> getMyProjects() throws AuthException {
+    public ResponseEntity<List<ProjectDTO>> getProjects() throws AuthException {
 
         List<ProjectDTO> projectDTOs = projectService.getMyProjects();
 
@@ -80,7 +80,7 @@ public class ProjectController {
      * @throws NotFoundException 유효하지 않은 object 및 pdf (DB)
      * @throws IOException 파일 입출력 오류
      */
-    @GetMapping("/project/{project-name}")
+    @GetMapping("/projects/{project-name}")
     @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<ProjectDTO> getProjectByName(@PathVariable(value = "project-name")String projectName) throws AuthException, NotFoundException, IOException {
 
@@ -102,9 +102,9 @@ public class ProjectController {
      * @throws IllegalAccessException 수정이 불가능한 프로젝트에 오브젝트 저장 시도
      * @throws BadRequestException 같은 상태로의 변경 시도
      */
-    @PostMapping("/project/{project-name}/objects")
+    @PostMapping("/projects/{project-name}/objects")
     @PreAuthorize("hasRole('ROLE_USER')")
-    public ResponseEntity<ProjectDTO> saveObjects(
+    public ResponseEntity<ProjectDTO> insertObjects(
             @RequestBody ProjectDTO projectDTO, @PathVariable("project-name") String projectName) throws NotFoundException, AuthException, IllegalAccessException, BadRequestException {
 
         projectDTO.setName(projectName);
@@ -122,9 +122,9 @@ public class ProjectController {
      * @throws AuthException 소유하지 않은 프로젝트
      * @throws BadRequestException 잘못된 상태로의 변경시도
      */
-    @PutMapping("/project/{project-name}/state")
+    @PutMapping("/projects/{project-name}/state")
     @PreAuthorize("hasRole('ROLE_USER')")
-    public ResponseEntity<MessageDTO> changeState(
+    public ResponseEntity<MessageDTO> updateProjectState(
             @RequestParam int state,
             @PathVariable("project-name")String projectName) throws NotFoundException, AuthException, BadRequestException {
 
@@ -143,7 +143,7 @@ public class ProjectController {
      * @throws AuthException 유효하지 않은 토큰, 소유하지 않은 프로젝트의 제출자
      * @throws IOException 파일 입출력 오류
      */
-    @GetMapping(path = "/project/submittee/{submittee-name}/pdf", produces = MediaType.APPLICATION_PDF_VALUE)
+    @GetMapping(path = "/projects/submittees/{submittee-name}/pdf", produces = MediaType.APPLICATION_PDF_VALUE)
     @PreAuthorize("hasRole('ROLE_USER')")
     public byte[] getSubmitteePdf(@PathVariable("submittee-name")String submitteeName) throws NotFoundException, AuthException, IOException {
 
@@ -157,9 +157,9 @@ public class ProjectController {
      * @throws NotFoundException 유효하지 않은 프로젝트 이름
      * @throws AuthException 유효하지 않은 프로젝트, 소유하지 않은 프로젝트
      */
-    @GetMapping("/project/{project-name}/submittees")
+    @GetMapping("/projects/{project-name}/submittees")
     @PreAuthorize("hasRole('ROLE_USER')")
-    public List<SubmitteeDTO> getSubmitteeListByProjectName(
+    public List<SubmitteeDTO> getSubmitteesByProjectName(
             @PathVariable("project-name") String projectName) throws NotFoundException, AuthException {
 
         return projectService.getSubmitteesByProjectName(projectName);
@@ -173,7 +173,7 @@ public class ProjectController {
      * @throws NotFoundException 유효하지 않은 pdf 혹은 object 혹은 submittee
      * @throws IOException pdf file 입출력 오류
      */
-    @GetMapping("/project/submittee/{submittee-name}")
+    @GetMapping("/projects/submittees/{submittee-name}")
     @PreAuthorize("hasAnyRole('ROLE_USER')")
     public ResponseEntity<SubmitteeDTO> getSubmitteeWithPdfAndObjectsByName(@PathVariable("submittee-name") String name) throws AuthException, NotFoundException, IOException {
 

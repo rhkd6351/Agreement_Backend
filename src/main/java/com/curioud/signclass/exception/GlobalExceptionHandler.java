@@ -19,11 +19,6 @@ import java.nio.file.NoSuchFileException;
 @Slf4j
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(IOException.class)
-    public ResponseEntity<MessageDTO> IOException(IOException e){
-        return new ResponseEntity<>(new MessageDTO(e.getMessage()), HttpStatus.NOT_FOUND);
-    }
-
     @ExceptionHandler(NotFoundException.class)
     public ResponseEntity<MessageDTO> NotFoundException(NotFoundException e){
         return new ResponseEntity<>(new MessageDTO(e.getMessage()), HttpStatus.NOT_FOUND);
@@ -58,10 +53,16 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(new MessageDTO(e.getMessage()), HttpStatus.NOT_ACCEPTABLE);
     }
 
+    @ExceptionHandler(IOException.class)
+    public ResponseEntity<MessageDTO> IOException(IOException e){
+        return new ResponseEntity<>(new MessageDTO(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<MessageDTO> Exception(Exception e){
+        log.error(e.getMessage());
         e.printStackTrace();
-        return new ResponseEntity<>(new MessageDTO(e.getMessage()), HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(new MessageDTO(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
 

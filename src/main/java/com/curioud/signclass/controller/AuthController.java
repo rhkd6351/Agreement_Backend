@@ -23,12 +23,12 @@ public class AuthController {
         this.authenticationManagerBuilder = authenticationManagerBuilder;
     }
 
-    /** Login
+    /** Authentication
      *
      * @param userDTO user id, password
      * @return access token (jwt)
      */
-    @PostMapping("/user/login")
+    @PostMapping("/user/authentication")
     public ResponseEntity<TokenDTO> authorize(@RequestBody UserDTO userDTO) {
 
         UsernamePasswordAuthenticationToken authenticationToken =

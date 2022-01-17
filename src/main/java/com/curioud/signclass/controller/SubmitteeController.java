@@ -16,13 +16,12 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 
-import javax.security.auth.message.AuthException;
 import javax.transaction.NotSupportedException;
 import java.io.IOException;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/submittee")
+@RequestMapping("/api/submittees")
 public class SubmitteeController {
 
 
@@ -43,7 +42,7 @@ public class SubmitteeController {
      * @throws NotFoundException 유효하지 않은 pdf 혹은 object
      * @throws IOException pdf file 입출력 오류
      */
-    @GetMapping("/project/{project-name}")
+    @GetMapping("/projects/{project-name}")
     public ResponseEntity<ProjectDTO> getProjectByNameWithoutAuthority(@PathVariable("project-name")String projectName) throws NotFoundException, IOException {
 
         ProjectDTO projectDTO = projectService.getWithProjectObjectsAndPdfByNameWithoutAuthority(projectName);
@@ -63,7 +62,7 @@ public class SubmitteeController {
      * @throws NotSupportedException 지원하지 않는 이미지 및 pdf 확장자
      * @throws BadRequestException 이미지와 sign 오브젝트의 네이밍 규칙 위반
      */
-    @PostMapping(path = "/project/{project-name}", produces = MediaType.APPLICATION_PDF_VALUE)
+    @PostMapping(path = "/projects/{project-name}", produces = MediaType.APPLICATION_PDF_VALUE)
     public byte[] submitProject(
             @PathVariable("project-name")String projectName,
             @RequestPart(value = "sign_img", required = false) List<MultipartFile> mfList,
@@ -80,7 +79,7 @@ public class SubmitteeController {
      * @throws NotFoundException 유효하지 않은 이미지
      * @throws IOException 파일 입출력 오류
      */
-    @GetMapping(path = "/object/img/{img-name}", produces = MediaType.IMAGE_JPEG_VALUE)
+    @GetMapping(path = "/objects/img/{img-name}", produces = MediaType.IMAGE_JPEG_VALUE)
 //    @PreAuthorize("hasRole('ROLE_USER')")
     public byte[] getObjectImage(@PathVariable(name = "img-name") String imgName) throws NotFoundException, IOException {
         return submitteeObjectSignImgService.getByteByName(imgName);
