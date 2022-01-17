@@ -65,9 +65,9 @@ public class PdfService {
     @Transactional
     public PdfVO save(MultipartFile mf) throws NotSupportedException, IOException {
 
-        String extension = Objects.requireNonNull(mf.getContentType()).split("/")[1];
+        String extension = Objects.requireNonNull(mf.getContentType()).split("/")[1]+ ".";
 
-        if(!extension.equals("pdf"))
+        if(!extension.equals(".pdf"))
             throw new NotSupportedException("not supported extension : " + extension);
 
         if (mf.getSize() > maxFileSize) //10메가 용량제한
@@ -81,7 +81,7 @@ public class PdfService {
         PdfVO pdf = PdfVO.builder()
                 .name(saveName.toString())
                 .originalName(mf.getOriginalFilename())
-                .saveName(saveName + "." + extension)
+                .saveName(saveName + extension)
                 .size(mf.getSize())
                 .totalPage(doc.getNumberOfPages())
                 .uploadPath("/pdf")
