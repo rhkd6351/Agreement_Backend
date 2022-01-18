@@ -65,7 +65,7 @@ public class PdfService {
     @Transactional
     public PdfVO save(MultipartFile mf) throws NotSupportedException, IOException {
 
-        String extension = Objects.requireNonNull(mf.getContentType()).split("/")[1]+ ".";
+        String extension = "." + Objects.requireNonNull(mf.getContentType()).split("/")[1];
 
         if(!extension.equals(".pdf"))
             throw new NotSupportedException("not supported extension : " + extension);
