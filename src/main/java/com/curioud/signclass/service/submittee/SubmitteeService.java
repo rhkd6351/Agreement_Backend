@@ -86,20 +86,19 @@ public class SubmitteeService {
             }
         }
 
+        SubmitteePdfVO savedPdf = submitteePdfService.save(pdf);
+
         SubmitteeVO submittee = SubmitteeVO.builder()
                 .name(UUID.randomUUID().toString())
                 .studentName(dto.getStudentName())
                 .studentId(dto.getStudentId())
                 .activated(1)
                 .project(project)
+                .submitteePdf(savedPdf)
                 .build();
 
-        //pdf 등록
-        SubmitteePdfVO savedPdf = submitteePdfService.save(pdf);
-        submittee.setSubmitteePdf(savedPdf);
-
         SubmitteeVO submitteeVO = this.save(submittee);
-        SubmitteeDTO submitteeDTO = objectConverter.submitteeVOToDTO(submitteeVO);
+        SubmitteeDTO submitteeDTO = submitteeVO.dto();
 
         //이미지 파일 이름과 json data(sign object)의 일치 확인, 일치하면 object 저장
         for(SubmitteeObjectSignDTO signDTO : dto.getSubmitteeObjectSigns()){
@@ -109,8 +108,8 @@ public class SubmitteeService {
                 String fileName = mf.getOriginalFilename().substring(0, i);
                 if(fileName.equals(signDTO.getName())){
                     SubmitteeObjectSignVO savedSignVO = submitteeObjectSignService.save(signDTO, mf, submitteeVO);
-                    SubmitteeObjectSignDTO convertedSignDTO = objectConverter.submitteeObjectSignVOToDTO(savedSignVO);
-                    convertedSignDTO.setSubmitteeObjectSignImg(objectConverter.submitteeObjectSignImgVOToDTO(savedSignVO.getSubmitteeObjectSignImg()));
+                    SubmitteeObjectSignDTO convertedSignDTO = savedSignVO.dto();
+                    convertedSignDTO.setSubmitteeObjectSignImg(savedSignVO.getSubmitteeObjectSignImg().dto());
                     submitteeDTO.getSubmitteeObjectSigns().add(convertedSignDTO);
 
                     isPresent = true;
@@ -124,17 +123,16 @@ public class SubmitteeService {
 
         for(SubmitteeObjectTextDTO textDTO : dto.getSubmitteeObjectTexts()){
             SubmitteeObjectTextVO savedTestDTO = submitteeObjectTextService.save(textDTO, submitteeVO);
-            submitteeDTO.getSubmitteeObjectTexts().add(objectConverter.submitteeObjectTextVOToDTO(savedTestDTO));
+            submitteeDTO.getSubmitteeObjectTexts().add(savedTestDTO.dto());
         }
 
         for(SubmitteeObjectCheckboxDTO checkboxDTO : dto.getSubmitteeObjectCheckboxes()){
             SubmitteeObjectCheckboxVO savedCheckboxDTO = submitteeObjectCheckboxService.save(checkboxDTO, submitteeVO);
-            submitteeDTO.getSubmitteeObjectCheckboxes().add(objectConverter.submitteeObjectCheckboxVOToDTO(savedCheckboxDTO));
+            submitteeDTO.getSubmitteeObjectCheckboxes().add(savedCheckboxDTO.dto());
         }
 
         return submitteePdfService.getByteByName(savedPdf.getName());
     }
-
 
     @Transactional(readOnly = true)
     public byte[] getSubmitteePdfFileByNameWithAuthority(String name) throws NotFoundException, AuthException, IOException {
@@ -162,13 +160,13 @@ public class SubmitteeService {
 
         UserVO user = userService.getMyUserWithAuthorities();
         SubmitteeVO submittee = this.getByName(name);
-        SubmitteeDTO submitteeDTO = objectConverter.submitteeVOToDTO(submittee);
+        SubmitteeDTO submitteeDTO = submittee.dto();
 
         if(submittee.getProject().getUser() != user)
             throw new AuthException("not your own submittee");
 
         PdfVO pdfVO = submittee.getProject().getPdf();
-        PdfDTO pdfDTO = objectConverter.pdfVOToDTO(pdfVO);
+        PdfDTO pdfDTO = pdfVO.dto();
 
         float[] originalWidthArray = pdfService.getOriginalWidthArray(pdfVO);
         pdfDTO.setOriginalWidth(originalWidthArray);
@@ -180,15 +178,15 @@ public class SubmitteeService {
             switch(object.getObjectType().getName()){
                 case "OBJECT_TYPE_SIGN":
                     SubmitteeObjectSignVO signEm = submitteeObjectSignService.getByIdx(object.getIdx());
-                    submitteeDTO.getSubmitteeObjectSigns().add(objectConverter.submitteeObjectSignVOToDTO(signEm));
+                    submitteeDTO.getSubmitteeObjectSigns().add(signEm.dto());
                     break;
                 case "OBJECT_TYPE_CHECKBOX":
                     SubmitteeObjectCheckboxVO checkboxEm = submitteeObjectCheckboxService.getByIdx(object.getIdx());
-                    submitteeDTO.getSubmitteeObjectCheckboxes().add(objectConverter.submitteeObjectCheckboxVOToDTO(checkboxEm));
+                    submitteeDTO.getSubmitteeObjectCheckboxes().add(checkboxEm.dto());
                     break;
                 case "OBJECT_TYPE_TEXT":
                     SubmitteeObjectTextVO textEm = submitteeObjectTextService.getByIdx(object.getIdx());
-                    submitteeDTO.getSubmitteeObjectTexts().add(objectConverter.submitteeObjectTextVOToDTO(textEm));
+                    submitteeDTO.getSubmitteeObjectTexts().add(textEm.dto());
                     break;
             }
         }
@@ -196,14 +194,13 @@ public class SubmitteeService {
     }
 
     @Transactional(readOnly = true)
-    private SubmitteeVO getByName(String name) throws NotFoundException {
+    public SubmitteeVO getByName(String name) throws NotFoundException {
         Optional<SubmitteeVO> optional = submitteeRepository.findByName(name);
 
         if(optional.isEmpty())
             throw new NotFoundException("invalid submittee name");
 
         return optional.get();
-
     }
 
     @Transactional(readOnly = true)
@@ -218,7 +215,7 @@ public class SubmitteeService {
         Page<SubmitteeVO> submitteePage = submitteeRepository.getByProject(project, pageable);
 
         return PagingSubmitteeDTO.builder()
-                .submittees(submitteePage.stream().map(objectConverter::submitteeVOToDTO).collect(Collectors.toList()))
+                .submittees(submitteePage.stream().map(SubmitteeVO::dto).collect(Collectors.toList()))
                 .totalPage(submitteePage.getTotalPages() - 1)
                 .currentPage(pageable.getPageNumber())
                 .build();

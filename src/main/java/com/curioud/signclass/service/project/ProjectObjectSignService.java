@@ -1,7 +1,9 @@
 package com.curioud.signclass.service.project;
 
 
+import com.curioud.signclass.domain.etc.ObjectType;
 import com.curioud.signclass.domain.etc.ObjectTypeVO;
+import com.curioud.signclass.domain.project.Disposition;
 import com.curioud.signclass.domain.project.ProjectObjectSignVO;
 import com.curioud.signclass.domain.project.ProjectVO;
 import com.curioud.signclass.dto.project.ProjectObjectSignDTO;
@@ -31,18 +33,13 @@ public class ProjectObjectSignService {
     @Transactional
     public ProjectObjectSignVO save(ProjectObjectSignDTO dto, ProjectVO project) throws NotFoundException {
 
-        ObjectTypeVO objectType = objectTypeService.getByName("OBJECT_TYPE_SIGN");
+        ObjectTypeVO objectType = objectTypeService.getByName(ObjectType.SIGN.getName());
 
         if(dto.getIdx() == null){
             ProjectObjectSignVO vo = ProjectObjectSignVO.builder()
                     .name(dto.getName())
-                    .xPosition(dto.getXPosition())
-                    .yPosition(dto.getYPosition())
-                    .width(dto.getWidth())
-                    .height(dto.getHeight())
-                    .rotate(dto.getRotate())
+                    .disposition(new Disposition(dto.getXPosition(), dto.getYPosition(), dto.getWidth(), dto.getHeight(), dto.getRotate(), dto.getPage()))
                     .objectType(objectType)
-                    .page(dto.getPage())
                     .project(project)
                     .type(dto.getType())
                     .build();

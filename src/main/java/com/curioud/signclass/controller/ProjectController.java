@@ -60,7 +60,7 @@ public class ProjectController {
             throws IOException, NotSupportedException, AuthException {
 
         ProjectVO projectVO = projectService.saveWithPdf(projectDTO, mf);
-        ProjectDTO resultDTO = objectConverter.projectVOToDTOWithPdf(projectVO);
+        ProjectDTO resultDTO = projectVO.dto(true);
 
         return new ResponseEntity<>(resultDTO, HttpStatus.CREATED);
     }

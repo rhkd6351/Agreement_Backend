@@ -10,18 +10,15 @@ import javax.persistence.Table;
 
 @Entity
 @Getter
-@Setter
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "OBJECT_TYPE_TB")
 public class ObjectTypeVO {
 
     @Id
-    @Column(name = "name")
-    String name;
+    @Column(name = "name", updatable = false, length = 45)
+    private String name;
 
-    @Column(name = "description")
-    String description;
+    @Column(name = "description", nullable = false, length = 45)
+    private String description;
     
 }

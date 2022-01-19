@@ -27,20 +27,20 @@ public class UserController {
 
     /** Sign Up
      *
-     * @param userDTO 유저 id, password, name
+     * @param requestUserDTO 유저 id, password, name
      * @return 가입된 유저 정보
      * @throws DuplicateMemberException 중복된 유저 id
      * @throws NotFoundException 유효하지 않은 권한명
      */
     @PostMapping("/user")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<UserDTO> getSignUp(@RequestBody @Validated(ValidationGroups.userSignUpGroup.class) UserDTO userDTO)
+    public ResponseEntity<UserDTO> getSignUp(@RequestBody @Validated(ValidationGroups.userSignUpGroup.class) UserDTO requestUserDTO)
             throws DuplicateMemberException, NotFoundException {
 
-        UserVO registeredUserVO = userService.signUp(userDTO);
-        UserDTO convertedUserDTO = objectConverter.userVOToDTO(registeredUserVO);
+        UserVO userVO = userService.signUp(requestUserDTO);
+        UserDTO userDTO = userVO.dto();
 
-        return new ResponseEntity<>(convertedUserDTO, HttpStatus.OK);
+        return new ResponseEntity<>(userDTO, HttpStatus.OK);
     }
 
     /** Get User
@@ -53,7 +53,7 @@ public class UserController {
     public ResponseEntity<UserDTO> getUser() throws AuthException {
 
         UserVO user = userService.getMyUserWithAuthorities();
-        UserDTO userDTO = objectConverter.userVOToDTO(user);
+        UserDTO userDTO = user.dto();
 
         return new ResponseEntity<>(userDTO, HttpStatus.OK);
     }

@@ -1,6 +1,8 @@
 package com.curioud.signclass.service.submittee;
 
+import com.curioud.signclass.domain.etc.ObjectType;
 import com.curioud.signclass.domain.etc.ObjectTypeVO;
+import com.curioud.signclass.domain.project.Disposition;
 import com.curioud.signclass.domain.submittee.SubmitteeObjectCheckboxVO;
 import com.curioud.signclass.domain.submittee.SubmitteeObjectTextVO;
 import com.curioud.signclass.domain.submittee.SubmitteeVO;
@@ -36,18 +38,13 @@ public class SubmitteeObjectTextService {
     @Transactional
     public SubmitteeObjectTextVO save(SubmitteeObjectTextDTO dto , SubmitteeVO submitteeVO) throws NotFoundException, IOException, NotSupportedException {
 
-        ObjectTypeVO objectType = objectTypeService.getByName("OBJECT_TYPE_TEXT");
+        ObjectTypeVO objectType = objectTypeService.getByName(ObjectType.TEXT.getName());
 
         if(dto.getIdx() == null){
 
             SubmitteeObjectTextVO vo = SubmitteeObjectTextVO.builder()
                     .name(dto.getName())
-                    .xPosition(dto.getXPosition())
-                    .yPosition(dto.getYPosition())
-                    .width(dto.getWidth())
-                    .height(dto.getHeight())
-                    .rotate(dto.getRotate())
-                    .page(dto.getPage())
+                    .disposition(new Disposition(dto.getXPosition(), dto.getYPosition(), dto.getWidth(), dto.getHeight(), dto.getRotate(), dto.getPage()))
                     .submittee(submitteeVO)
                     .objectType(objectType)
                     .type(dto.getType())

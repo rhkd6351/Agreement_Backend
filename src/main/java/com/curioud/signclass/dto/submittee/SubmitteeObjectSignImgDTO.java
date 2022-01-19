@@ -1,12 +1,10 @@
 package com.curioud.signclass.dto.submittee;
 
 
-import com.curioud.signclass.domain.project.ProjectVO;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
-import org.hibernate.annotations.CreationTimestamp;
+import org.springframework.beans.factory.annotation.Value;
 
-import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Getter
@@ -38,4 +36,6 @@ public class SubmitteeObjectSignImgDTO {
     @JsonProperty("reg_date")
     LocalDateTime regDate;
 
+    @Value("${server.url}")
+    private String serverUrl;
 }

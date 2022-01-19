@@ -1,7 +1,9 @@
 package com.curioud.signclass.service.project;
 
 
+import com.curioud.signclass.domain.etc.ObjectType;
 import com.curioud.signclass.domain.etc.ObjectTypeVO;
+import com.curioud.signclass.domain.project.Disposition;
 import com.curioud.signclass.domain.project.ProjectObjectCheckboxVO;
 import com.curioud.signclass.domain.project.ProjectVO;
 import com.curioud.signclass.dto.project.ProjectObjectCheckboxDTO;
@@ -32,18 +34,13 @@ public class ProjectObjectCheckboxService {
     public ProjectObjectCheckboxVO save(ProjectObjectCheckboxDTO dto, ProjectVO project) throws NotFoundException {
 
         ProjectObjectCheckboxVO vo;
-        ObjectTypeVO objectType = objectTypeService.getByName("OBJECT_TYPE_CHECKBOX");
+        ObjectTypeVO objectType = objectTypeService.getByName(ObjectType.CHECKBOX.getName());
 
         if(dto.getIdx() == null){
 
             vo = ProjectObjectCheckboxVO.builder()
                     .name(dto.getName())
-                    .xPosition(dto.getXPosition())
-                    .yPosition(dto.getYPosition())
-                    .width(dto.getWidth())
-                    .height(dto.getHeight())
-                    .rotate(dto.getRotate())
-                    .page(dto.getPage())
+                    .disposition(new Disposition(dto.getXPosition(), dto.getYPosition(), dto.getWidth(), dto.getHeight(), dto.getRotate(), dto.getPage()))
                     .project(project)
                     .objectType(objectType)
                     .color(dto.getColor())
@@ -52,17 +49,6 @@ public class ProjectObjectCheckboxService {
 
         }else{
             throw new UnsupportedOperationException("you can't update exist project object");
-//            vo = this.getByIdx(dto.getIdx());
-//            vo.setXPosition(dto.getXPosition());
-//            vo.setYPosition(dto.getYPosition());
-//            vo.setWidth(dto.getWidth());
-//            vo.setHeight(dto.getHeight());
-//            vo.setRotate(dto.getRotate());
-//            vo.setPage(dto.getPage());
-//            vo.setObjectType(objectType);
-//            vo.setColor(dto.getColor());
-//            vo.setType(dto.getType());
-////            vo.setProject(); 프로젝트 수정불가
         }
 
         return this.save(vo);

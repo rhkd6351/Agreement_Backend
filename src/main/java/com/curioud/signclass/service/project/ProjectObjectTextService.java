@@ -1,7 +1,9 @@
 package com.curioud.signclass.service.project;
 
 
+import com.curioud.signclass.domain.etc.ObjectType;
 import com.curioud.signclass.domain.etc.ObjectTypeVO;
+import com.curioud.signclass.domain.project.Disposition;
 import com.curioud.signclass.domain.project.ProjectObjectTextVO;
 import com.curioud.signclass.domain.project.ProjectVO;
 import com.curioud.signclass.dto.project.ProjectObjectTextDTO;
@@ -32,18 +34,13 @@ public class ProjectObjectTextService {
     public ProjectObjectTextVO save(ProjectObjectTextDTO dto, ProjectVO project) throws NotFoundException {
 
         ProjectObjectTextVO vo;
-        ObjectTypeVO objectType = objectTypeService.getByName("OBJECT_TYPE_TEXT");
+        ObjectTypeVO objectType = objectTypeService.getByName(ObjectType.TEXT.getName());
 
         if(dto.getIdx() == null){
 
             vo = ProjectObjectTextVO.builder()
                     .name(dto.getName())
-                    .xPosition(dto.getXPosition())
-                    .yPosition(dto.getYPosition())
-                    .width(dto.getWidth())
-                    .height(dto.getHeight())
-                    .rotate(dto.getRotate())
-                    .page(dto.getPage())
+                    .disposition(new Disposition(dto.getXPosition(), dto.getYPosition(), dto.getWidth(), dto.getHeight(), dto.getRotate(), dto.getPage()))
                     .project(project)
                     .objectType(objectType)
                     .type(dto.getType())
@@ -53,18 +50,6 @@ public class ProjectObjectTextService {
 
         }else{
             throw new UnsupportedOperationException("you can't update exist project object");
-//            vo = this.getByIdx(dto.getIdx());
-//            vo.setXPosition(dto.getXPosition());
-//            vo.setYPosition(dto.getYPosition());
-//            vo.setWidth(dto.getWidth());
-//            vo.setHeight(dto.getHeight());
-//            vo.setRotate(dto.getRotate());
-//            vo.setPage(dto.getPage());
-//            vo.setObjectType(objectType);
-//            vo.setType(dto.getType());
-//            vo.setColor(dto.getColor());
-//            vo.setFontSize(dto.getFontSize());
-////            vo.setProject(); 프로젝트 수정불가
         }
 
         return this.save(vo);

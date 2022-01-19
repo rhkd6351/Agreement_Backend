@@ -18,9 +18,10 @@ import javax.persistence.Table;
 public class AuthVO {
 
     @Id
-    String name;
+    @Column(name = "name", updatable = false, length = 45)
+    private String name;
 
-    @Column(name = "description")
-    String description;
+    @Column(name = "description", length = 45, nullable = false)
+    private String description;
     
 }

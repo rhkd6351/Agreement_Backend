@@ -1,6 +1,7 @@
 package com.curioud.signclass.service.project;
 
 import com.curioud.signclass.domain.project.*;
+import com.curioud.signclass.domain.submittee.SubmitteeVO;
 import com.curioud.signclass.domain.user.UserVO;
 import com.curioud.signclass.dto.project.*;
 import com.curioud.signclass.dto.submittee.PagingSubmitteeDTO;
@@ -115,21 +116,21 @@ public class ProjectService {
             projectObjectService.remove(object);
         }
 
-        ProjectDTO projectDTO = objectConverter.projectVOToDTO(project);;
+        ProjectDTO projectDTO = project.dto(false);
 
         for(ProjectObjectSignDTO sign : dto.getProjectObjectSigns()){
             ProjectObjectSignVO save = projectObjectSignService.save(sign, project);
-            projectDTO.getProjectObjectSigns().add(objectConverter.projectObjectSignVOToDTO(save));
+            projectDTO.getProjectObjectSigns().add(save.dto());
         }
 
         for(ProjectObjectCheckboxDTO checkbox : dto.getProjectObjectCheckboxes()){
             ProjectObjectCheckboxVO save = projectObjectCheckboxService.save(checkbox, project);
-            projectDTO.getProjectObjectCheckboxes().add(objectConverter.projectObjectCheckboxVOToDTO(save));
+            projectDTO.getProjectObjectCheckboxes().add(save.dto());
         }
 
         for(ProjectObjectTextDTO text : dto.getProjectObjectTexts()){
             ProjectObjectTextVO save = projectObjectTextService.save(text, project);
-            projectDTO.getProjectObjectTexts().add(objectConverter.projectObjectTextVOToDTO(save));
+            projectDTO.getProjectObjectTexts().add(save.dto());
         }
 
         return projectDTO;
@@ -159,13 +160,11 @@ public class ProjectService {
 
         UserVO user = userService.getMyUserWithAuthorities();
 
-        if(vo.getUser().getIdx() != user.getIdx())
+        if(!user.isEqual(vo.getUser()))
             throw new AuthException("not your own project");
 
-        if(vo.getActivated() == state)
-            throw new BadRequestException("current state and changed state are the same");
+        vo.updateState(state);
 
-        vo.setActivated(state);
         this.save(vo);
     }
 
@@ -178,27 +177,27 @@ public class ProjectService {
         if(user != project.getUser())
             throw new AuthException("not owned project name");
 
-        ProjectDTO projectDTO = objectConverter.projectVOToDTO(project);
+        ProjectDTO projectDTO = project.dto(false);
 
         Set<ProjectObjectVO> projectObjects = project.getProjectObjects();
         for (ProjectObjectVO em: projectObjects) {
             switch (em.getObjectType().getName()){
                 case "OBJECT_TYPE_SIGN":
                     ProjectObjectSignVO signEm = projectObjectSignService.getByIdx(em.getIdx());
-                    projectDTO.getProjectObjectSigns().add(objectConverter.projectObjectSignVOToDTO(signEm));
+                    projectDTO.getProjectObjectSigns().add(signEm.dto());
                     break;
                 case "OBJECT_TYPE_CHECKBOX":
                     ProjectObjectCheckboxVO checkboxEm = projectObjectCheckboxService.getByIdx(em.getIdx());
-                    projectDTO.getProjectObjectCheckboxes().add(objectConverter.projectObjectCheckboxVOToDTO(checkboxEm));
+                    projectDTO.getProjectObjectCheckboxes().add(checkboxEm.dto());
                     break;
                 case "OBJECT_TYPE_TEXT":
                     ProjectObjectTextVO textEm = projectObjectTextService.getByIdx(em.getIdx());
-                    projectDTO.getProjectObjectTexts().add(objectConverter.projectObjectTextVOToDTO(textEm));
+                    projectDTO.getProjectObjectTexts().add(textEm.dto());
                     break;
             }
         }
-        projectDTO.setPdf(objectConverter.pdfVOToDTO(project.getPdf()));
-        projectDTO.setSubmittees(project.getSubmittees().stream().map(objectConverter::submitteeVOToDTO).collect(Collectors.toList()));
+        projectDTO.setPdf(project.getPdf().dto());
+        projectDTO.setSubmittees(project.getSubmittees().stream().map(SubmitteeVO::dto).collect(Collectors.toList()));
 
         return projectDTO;
     }
@@ -212,26 +211,26 @@ public class ProjectService {
         if(user != project.getUser())
             throw new AuthException("not owned project name");
 
-        ProjectDTO projectDTO = objectConverter.projectVOToDTO(project);
+        ProjectDTO projectDTO = project.dto(false);
 
         Set<ProjectObjectVO> projectObjects = project.getProjectObjects();
         for (ProjectObjectVO em: projectObjects) {
             switch (em.getObjectType().getName()){
                 case "OBJECT_TYPE_SIGN":
                     ProjectObjectSignVO signEm = projectObjectSignService.getByIdx(em.getIdx());
-                    projectDTO.getProjectObjectSigns().add(objectConverter.projectObjectSignVOToDTO(signEm));
+                    projectDTO.getProjectObjectSigns().add(signEm.dto());
                     break;
                 case "OBJECT_TYPE_CHECKBOX":
                     ProjectObjectCheckboxVO checkboxEm = projectObjectCheckboxService.getByIdx(em.getIdx());
-                    projectDTO.getProjectObjectCheckboxes().add(objectConverter.projectObjectCheckboxVOToDTO(checkboxEm));
+                    projectDTO.getProjectObjectCheckboxes().add(checkboxEm.dto());
                     break;
                 case "OBJECT_TYPE_TEXT":
                     ProjectObjectTextVO textEm = projectObjectTextService.getByIdx(em.getIdx());
-                    projectDTO.getProjectObjectTexts().add(objectConverter.projectObjectTextVOToDTO(textEm));
+                    projectDTO.getProjectObjectTexts().add(textEm.dto());
                     break;
             }
         }
-        projectDTO.setPdf(objectConverter.pdfVOToDTO(project.getPdf()));
+        projectDTO.setPdf(project.getPdf().dto());
         projectDTO.setSubmitteeCount(project.getSubmittees().size());
 
         //pdf 원본 width 길이 배열로 반환
@@ -249,26 +248,26 @@ public class ProjectService {
         if(project.getActivated() != 2)
             throw new NotAcceptableStatusException("project is not public");
 
-        ProjectDTO projectDTO = objectConverter.projectVOToDTO(project);
+        ProjectDTO projectDTO = project.dto(false);
 
         Set<ProjectObjectVO> projectObjects = project.getProjectObjects();
         for (ProjectObjectVO em: projectObjects) {
             switch (em.getObjectType().getName()){
                 case "OBJECT_TYPE_SIGN":
                     ProjectObjectSignVO signEm = projectObjectSignService.getByIdx(em.getIdx());
-                    projectDTO.getProjectObjectSigns().add(objectConverter.projectObjectSignVOToDTO(signEm));
+                    projectDTO.getProjectObjectSigns().add(signEm.dto());
                     break;
                 case "OBJECT_TYPE_CHECKBOX":
                     ProjectObjectCheckboxVO checkboxEm = projectObjectCheckboxService.getByIdx(em.getIdx());
-                    projectDTO.getProjectObjectCheckboxes().add(objectConverter.projectObjectCheckboxVOToDTO(checkboxEm));
+                    projectDTO.getProjectObjectCheckboxes().add(checkboxEm.dto());
                     break;
                 case "OBJECT_TYPE_TEXT":
                     ProjectObjectTextVO textEm = projectObjectTextService.getByIdx(em.getIdx());
-                    projectDTO.getProjectObjectTexts().add(objectConverter.projectObjectTextVOToDTO(textEm));
+                    projectDTO.getProjectObjectTexts().add(textEm.dto());
                     break;
             }
         }
-        projectDTO.setPdf(objectConverter.pdfVOToDTO(project.getPdf()));
+        projectDTO.setPdf(project.getPdf().dto());
         float[] originalWidthArray = pdfService.getOriginalWidthArray(project.getPdf());
         projectDTO.getPdf().setOriginalWidth(originalWidthArray);
 
@@ -284,7 +283,7 @@ public class ProjectService {
         if(project.getUser() != user)
             throw new AuthException("not your own project");
 
-        return project.getSubmittees().stream().map(objectConverter::submitteeVOToDTO).collect(Collectors.toList());
+        return project.getSubmittees().stream().map(SubmitteeVO::dto).collect(Collectors.toList());
 
     }
 
@@ -315,7 +314,7 @@ public class ProjectService {
         Page<ProjectVO> projects = projectRepository.findWithSubmitteesByUser(user, pageable);
 
         List<ProjectDTO> projectDTOList = projects.stream().map(i -> {
-            ProjectDTO dto = objectConverter.projectVOToDTO(i);
+            ProjectDTO dto = i.dto(false);
             dto.setSubmitteeCount(i.getSubmittees().size());
             return dto;
         }).collect(Collectors.toList());

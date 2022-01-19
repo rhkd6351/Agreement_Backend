@@ -1,6 +1,7 @@
 package com.curioud.signclass.service.user;
 
 
+import com.curioud.signclass.domain.user.AuthType;
 import com.curioud.signclass.domain.user.AuthVO;
 import com.curioud.signclass.domain.user.UserVO;
 import com.curioud.signclass.dto.user.UserDTO;
@@ -34,7 +35,7 @@ public class UserService {
         if (userRepository.findOneById(userDto.getId()).orElse(null) != null)
             throw new DuplicateMemberException("이미 가입되어 있는 유저입니다.");
 
-        Optional<AuthVO> authOptional = authRepository.findById("ROLE_USER");
+        Optional<AuthVO> authOptional = authRepository.findById(AuthType.USER.getName());
         if(authOptional.isEmpty())
             throw new NotFoundException("Invalid auth name");
 
