@@ -70,7 +70,7 @@ public class PdfVO {
                 .regDate(regDate)
                 .build();
 
-        pdfDTO.setUrl(pdfDTO.getServerUrl() + "/api/projects/pdf/" + name);
+        pdfDTO.setUrl("/api/projects/pdf/" + name);
         return pdfDTO;
     }
 

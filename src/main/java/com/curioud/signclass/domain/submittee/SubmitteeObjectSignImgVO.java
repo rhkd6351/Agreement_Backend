@@ -57,7 +57,7 @@ public class SubmitteeObjectSignImgVO {
                 .regDate(regDate)
                 .build();
 
-        submitteeObjectSignImgDTO.setUrl(submitteeObjectSignImgDTO.getServerUrl() + "/api/submittees/objects/img/" + name);
+        submitteeObjectSignImgDTO.setUrl("/api/submittees/objects/img/" + name);
         return submitteeObjectSignImgDTO;
     }
 }
