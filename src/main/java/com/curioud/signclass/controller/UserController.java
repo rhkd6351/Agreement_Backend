@@ -3,7 +3,8 @@ package com.curioud.signclass.controller;
 import com.curioud.signclass.domain.user.UserVO;
 import com.curioud.signclass.dto.ValidationGroups;
 import com.curioud.signclass.dto.user.UserDTO;
-import com.curioud.signclass.service.user.UserService;
+import com.curioud.signclass.service.user.UserFindService;
+import com.curioud.signclass.service.user.UserSignUpService;
 import com.curioud.signclass.util.ObjectConverter;
 import javassist.NotFoundException;
 import javassist.bytecode.DuplicateMemberException;
@@ -21,7 +22,11 @@ import javax.security.auth.message.AuthException;
 public class UserController {
 
     @Autowired
-    UserService userService;
+    UserFindService userFindService;
+
+    @Autowired
+    UserSignUpService userSignUpService;
+
     @Autowired
     ObjectConverter objectConverter;
 
@@ -37,8 +42,7 @@ public class UserController {
     public ResponseEntity<UserDTO> getSignUp(@RequestBody @Validated(ValidationGroups.userSignUpGroup.class) UserDTO requestUserDTO)
             throws DuplicateMemberException, NotFoundException {
 
-        UserVO userVO = userService.signUp(requestUserDTO);
-        UserDTO userDTO = userVO.dto();
+        UserDTO userDTO = userSignUpService.signUp(requestUserDTO);
 
         return new ResponseEntity<>(userDTO, HttpStatus.OK);
     }
@@ -52,9 +56,8 @@ public class UserController {
     @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<UserDTO> getUser() throws AuthException {
 
-        UserVO user = userService.getMyUserWithAuthorities();
-        UserDTO userDTO = user.dto();
+        UserVO user = userFindService.getMyUserWithAuthorities();
 
-        return new ResponseEntity<>(userDTO, HttpStatus.OK);
+        return new ResponseEntity<>(user.dto(), HttpStatus.OK);
     }
 }

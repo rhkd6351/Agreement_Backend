@@ -4,7 +4,7 @@ import com.curioud.signclass.dto.ValidationGroups;
 import com.curioud.signclass.dto.project.ProjectDTO;
 import com.curioud.signclass.dto.submittee.SubmitteeDTO;
 import com.curioud.signclass.exception.BadRequestException;
-import com.curioud.signclass.service.project.ProjectService;
+import com.curioud.signclass.service.project.ProjectFindService;
 import com.curioud.signclass.service.submittee.SubmitteeObjectSignImgService;
 import com.curioud.signclass.service.submittee.SubmitteeService;
 import javassist.NotFoundException;
@@ -27,7 +27,7 @@ public class SubmitteeController {
 
 
     @Autowired
-    ProjectService projectService;
+    ProjectFindService projectFindService;
 
     @Autowired
     SubmitteeService submitteeService;
@@ -46,7 +46,7 @@ public class SubmitteeController {
     @GetMapping("/projects/{project-name}")
     public ResponseEntity<ProjectDTO> getProjectByNameWithoutAuthority(@PathVariable("project-name")String projectName) throws NotFoundException, IOException {
 
-        ProjectDTO projectDTO = projectService.getWithProjectObjectsAndPdfByNameWithoutAuthority(projectName);
+        ProjectDTO projectDTO = projectFindService.getWithProjectObjectsAndPdfByNameWithoutAuth(projectName);
 
         return new ResponseEntity<>(projectDTO, HttpStatus.OK);
     }

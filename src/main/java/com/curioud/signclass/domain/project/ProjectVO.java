@@ -14,7 +14,9 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Entity
 @Getter
@@ -60,10 +62,10 @@ public class ProjectVO {
     private PdfVO pdf;
 
     @OneToMany(mappedBy = "project", fetch = FetchType.LAZY, orphanRemoval = true)
-    private final Set<ProjectObjectVO> projectObjects = new HashSet<>();
-
-    @OneToMany(mappedBy = "project", fetch = FetchType.LAZY, orphanRemoval = true)
     private final Set<SubmitteeVO> submittees = new HashSet<>();
+
+    @OneToMany(mappedBy = "project", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private final Set<ProjectObjectVO> projectObjects = new HashSet<>();
 
     @Builder
     public ProjectVO(String name, String title, String description, int activated, UserVO user, PdfVO pdf) {
@@ -76,14 +78,36 @@ public class ProjectVO {
     }
 
     public void updateState(int state) throws BadRequestException {
-        if (this.activated == state) {
+
+        if (this.activated == state)
             throw new BadRequestException("current state and changed state are the same");
-        } else {
-            this.activated = state;
-        }
+
+        if(state < 1 || state > 3)
+            throw new BadRequestException("invalid state : " + state);
+
+        if(state == 3 && activated == 1)
+            throw new BadRequestException("it is not a shared project.");
+
+
+        this.activated = state;
     }
 
-    public ProjectDTO dto(boolean pdf){
+    public ProjectDTO dto(boolean pdf, boolean submittees, boolean objects){
+        List<ProjectObjectSignVO> projectObjectSigns = new ArrayList<>();
+        List<ProjectObjectTextVO> projectObjectTexts = new ArrayList<>();
+        List<ProjectObjectCheckboxVO> projectObjectCheckboxes = new ArrayList<>();
+
+        if(objects){
+            for(ProjectObjectVO vo : projectObjects){
+                if(vo instanceof ProjectObjectSignVO)
+                    projectObjectSigns.add((ProjectObjectSignVO) vo);
+                else if(vo instanceof ProjectObjectCheckboxVO)
+                    projectObjectCheckboxes.add((ProjectObjectCheckboxVO) vo);
+                else if(vo instanceof ProjectObjectTextVO)
+                    projectObjectTexts.add((ProjectObjectTextVO) vo);
+            }
+        }
+
         return ProjectDTO.builder()
                 .idx(idx)
                 .name(name)
@@ -93,22 +117,37 @@ public class ProjectVO {
                 .endDate(endDate)
                 .upDate(upDate)
                 .activated(activated)
-                .projectObjectCheckboxes(new ArrayList<>())
-                .projectObjectSigns(new ArrayList<>())
-                .projectObjectTexts(new ArrayList<>())
-                .submittees(new ArrayList<>())
+                .projectObjectCheckboxes(projectObjectCheckboxes.stream().map(ProjectObjectCheckboxVO::dto).collect(Collectors.toList()))
+                .projectObjectSigns(projectObjectSigns.stream().map(ProjectObjectSignVO::dto).collect(Collectors.toList()))
+                .projectObjectTexts(projectObjectTexts.stream().map(ProjectObjectTextVO::dto).collect(Collectors.toList()))
+                .submittees(submittees ? this.submittees.stream().map(SubmitteeVO::dto).collect(Collectors.toList()) : new ArrayList<>())
+                .submitteeCount(this.submittees.size())
                 .pdf(pdf ? this.pdf.dto() : null)
                 .build();
     }
 
+
+    public void removeAllObjects() {
+        this.getProjectObjects().clear();
+    }
+
+    public void addObject(ProjectObjectVO vo) {
+        this.getProjectObjects().add(vo);
+        vo.setProject(this);
+    }
+
+    public void addAllObjects(List<ProjectObjectVO> objects) {
+        for(ProjectObjectVO vo : objects){
+            this.addObject(vo);
+        }
+    }
+
+    //1: 생성됨, 2: 공유됨, 3: 공유 중단됨
+    public boolean isEditable() throws IllegalAccessException {
+        return activated != 2 && activated != 3;
+    }
+
+    public boolean ownershipCheck(UserVO user){
+        return this.user.getIdx() == user.getIdx();
+    }
 }
-
-
-//    @OneToMany(mappedBy = "project", fetch = FetchType.LAZY, orphanRemoval = true)
-//    Set<ProjectObjectCheckboxVO> projectObjectCheckboxes = new HashSet<>();
-//
-//    @OneToMany(mappedBy = "project", fetch = FetchType.LAZY, orphanRemoval = true)
-//    Set<ProjectObjectTextVO> projectObjectTexts = new HashSet<>();
-//
-//    @OneToMany(mappedBy = "project", fetch = FetchType.LAZY, orphanRemoval = true)
-//    Set<ProjectObjectSignVO> projectObjectSigns = new HashSet<>();

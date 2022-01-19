@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Getter
-@Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -40,9 +39,6 @@ public class ProjectDTO {
 
     UserDTO user;
 
-    @JsonProperty("project_objects")
-    List<ProjectObjectDTO> projectObjects = new ArrayList<>();
-
     @JsonProperty("project_object_checkboxes")
     List<ProjectObjectCheckboxDTO> projectObjectCheckboxes = new ArrayList<>();
 
@@ -57,4 +53,11 @@ public class ProjectDTO {
     @JsonProperty("submittee_count")
     int submitteeCount;
 
+    public void setSubmitteeCount(int size){
+        this.submitteeCount = size;
+    }
+
 }
+
+//    @JsonProperty("project_objects")
+//    List<ProjectObjectDTO> projectObjects = new ArrayList<>();

@@ -1,7 +1,5 @@
 package com.curioud.signclass.controller;
 
-import com.curioud.signclass.domain.project.ProjectVO;
-import com.curioud.signclass.dto.ValidationGroups;
 import com.curioud.signclass.dto.etc.MessageDTO;
 import com.curioud.signclass.dto.project.PagingProjectDTO;
 import com.curioud.signclass.dto.project.ProjectDTO;
@@ -9,9 +7,9 @@ import com.curioud.signclass.dto.submittee.PagingSubmitteeDTO;
 import com.curioud.signclass.dto.submittee.SubmitteeDTO;
 import com.curioud.signclass.exception.BadRequestException;
 import com.curioud.signclass.service.project.PdfService;
-import com.curioud.signclass.service.project.ProjectService;
+import com.curioud.signclass.service.project.ProjectFindService;
+import com.curioud.signclass.service.project.ProjectUpdateService;
 import com.curioud.signclass.service.submittee.SubmitteeService;
-import com.curioud.signclass.util.ObjectConverter;
 import javassist.NotFoundException;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -20,7 +18,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -33,15 +30,15 @@ import java.io.IOException;
 public class ProjectController {
 
     PdfService pdfService;
-    ProjectService projectService;
+    ProjectFindService projectFindService;
     SubmitteeService submitteeService;
-    ObjectConverter objectConverter;
+    ProjectUpdateService projectUpdateService;
 
-    public ProjectController(PdfService pdfService, ProjectService projectService, ObjectConverter objectConverter, SubmitteeService submitteeService) {
+    public ProjectController(PdfService pdfService, ProjectFindService projectFindService, SubmitteeService submitteeService, ProjectUpdateService projectUpdateService) {
         this.pdfService = pdfService;
-        this.projectService = projectService;
-        this.objectConverter = objectConverter;
+        this.projectFindService = projectFindService;
         this.submitteeService = submitteeService;
+        this.projectUpdateService = projectUpdateService;
     }
 
     /** Post Project
@@ -59,10 +56,9 @@ public class ProjectController {
             (@RequestParam(value = "file_pdf") MultipartFile mf, ProjectDTO projectDTO)
             throws IOException, NotSupportedException, AuthException {
 
-        ProjectVO projectVO = projectService.saveWithPdf(projectDTO, mf);
-        ProjectDTO resultDTO = projectVO.dto(true);
+        ProjectDTO project = projectUpdateService.saveWithPdf(projectDTO, mf);
 
-        return new ResponseEntity<>(resultDTO, HttpStatus.CREATED);
+        return new ResponseEntity<>(project, HttpStatus.CREATED);
     }
 
     /** Get Project List
@@ -75,7 +71,7 @@ public class ProjectController {
     public ResponseEntity<PagingProjectDTO> getProjects(@PageableDefault(size = 10, sort = "idx", direction = Sort.Direction.DESC) Pageable pageable)
             throws AuthException {
 
-        PagingProjectDTO pagingProjectDTO = projectService.getMyProjects(pageable);
+        PagingProjectDTO pagingProjectDTO = projectFindService.getPageByAuth(pageable);
 
         return new ResponseEntity<>(pagingProjectDTO, HttpStatus.OK);
     }
@@ -92,10 +88,7 @@ public class ProjectController {
     @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<ProjectDTO> getProjectByName(@PathVariable(value = "project-name")String projectName) throws AuthException, NotFoundException, IOException {
 
-//        ProjectDTO projectDTO = projectService.getWithSubmitteesAndProjectObjectsAndPdfByName(projectName);
-
-
-        ProjectDTO projectDTO = projectService.getWithProjectObjectsAndPdfByName(projectName);
+        ProjectDTO projectDTO = projectFindService.getWithProjectObjectsAndPdfByName(projectName);
 
         return new ResponseEntity<>(projectDTO, HttpStatus.OK);
     }
@@ -115,8 +108,7 @@ public class ProjectController {
     public ResponseEntity<ProjectDTO> insertObjects(
             @RequestBody ProjectDTO projectDTO, @PathVariable("project-name") String projectName) throws NotFoundException, AuthException, IllegalAccessException, BadRequestException {
 
-        projectDTO.setName(projectName);
-        ProjectDTO resultProjectDTO = projectService.saveObjects(projectDTO);
+        ProjectDTO resultProjectDTO = projectUpdateService.saveObjectsByName(projectDTO, projectName);
 
         return new ResponseEntity<>(resultProjectDTO, HttpStatus.CREATED);
     }
@@ -136,8 +128,7 @@ public class ProjectController {
             @RequestParam int state,
             @PathVariable("project-name")String projectName) throws NotFoundException, AuthException, BadRequestException {
 
-        ProjectVO project = projectService.getByName(projectName);
-        projectService.changeState(project, state);
+        projectUpdateService.updateState(projectName, state);
 
         return new ResponseEntity<>(new MessageDTO("state changed"), HttpStatus.OK);
 

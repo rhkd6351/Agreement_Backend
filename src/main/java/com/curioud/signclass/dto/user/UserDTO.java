@@ -1,6 +1,8 @@
 package com.curioud.signclass.dto.user;
 
 
+import com.curioud.signclass.domain.user.AuthVO;
+import com.curioud.signclass.domain.user.UserVO;
 import com.curioud.signclass.dto.ValidationGroups;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
@@ -32,5 +34,15 @@ public class UserDTO {
 
     @JsonProperty("reg_date")
     LocalDateTime regDate;
+
+    public UserVO toEntity(String encodedPassword, AuthVO auth){
+        return UserVO.builder()
+                .id(id)
+                .password(password)
+                .name(name)
+                .auth(auth)
+                .activated(true)
+                .build();
+    }
 
 }

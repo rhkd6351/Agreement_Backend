@@ -1,6 +1,9 @@
 package com.curioud.signclass.dto.project;
 
 
+import com.curioud.signclass.domain.project.Disposition;
+import com.curioud.signclass.domain.project.ProjectObjectSignVO;
+import com.curioud.signclass.domain.project.ProjectObjectVO;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
@@ -34,5 +37,4 @@ public class ProjectObjectDTO {
 
     @JsonProperty("object_type")
     String objectType;
-    
 }

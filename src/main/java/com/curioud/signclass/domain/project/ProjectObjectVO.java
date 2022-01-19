@@ -45,6 +45,9 @@ public abstract class ProjectObjectVO {
         this.project = project;
     }
 
+    public void setProject(ProjectVO vo){
+        this.project = vo;
+    }
 
 
 
