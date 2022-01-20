@@ -113,7 +113,7 @@ public class ProjectController {
         return new ResponseEntity<>(resultProjectDTO, HttpStatus.CREATED);
     }
 
-    /** Change State
+    /** update State
      *
      * @param state 변경하고자 하는 상태
      * @param projectName 프로젝트 이름

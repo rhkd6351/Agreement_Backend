@@ -1,9 +1,6 @@
 package com.curioud.signclass.dto.submittee;
 
 
-import com.curioud.signclass.domain.etc.ObjectTypeVO;
-import com.curioud.signclass.domain.submittee.SubmitteeVO;
-import com.curioud.signclass.dto.etc.ObjectTypeDTO;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

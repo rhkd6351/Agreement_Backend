@@ -22,27 +22,6 @@ public class FileController {
         this.objectConverter = objectConverter;
     }
 
-//    /**
-//     *
-//     * @param mf pdf file
-//     * @return 저장된 pdf 정보
-//     * @throws IOException 파일 입출력 오류
-//     * @throws NotSupportedException 승인되지 않은 파일 확장자
-//     */
-//    @PostMapping("/project/pdf")
-//    @PreAuthorize("hasRole('ROLE_USER')")
-//    public ResponseEntity<PdfDTO> savePdf(
-//            @RequestParam(value = "file_pdf") MultipartFile mf) throws IOException, NotSupportedException {
-//
-//        if(mf.isEmpty())
-//            throw new NoSuchFileException("Empty file"); //TODO 예외 바꾸기
-//
-//        PdfVO savedPdf = pdfService.save(mf);
-//        PdfDTO pdfDTO = objectConverter.pdfVOToDTO(savedPdf);
-//
-//        return new ResponseEntity<>(pdfDTO, HttpStatus.OK);
-//    }
-
 
     /**
      *

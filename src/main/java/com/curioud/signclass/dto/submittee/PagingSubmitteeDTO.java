@@ -1,6 +1,5 @@
 package com.curioud.signclass.dto.submittee;
 
-import com.curioud.signclass.dto.project.ProjectDTO;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 

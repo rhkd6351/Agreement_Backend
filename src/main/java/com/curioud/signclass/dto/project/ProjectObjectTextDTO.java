@@ -2,10 +2,12 @@ package com.curioud.signclass.dto.project;
 
 
 import com.curioud.signclass.domain.project.Disposition;
-import com.curioud.signclass.domain.project.ProjectObjectCheckboxVO;
 import com.curioud.signclass.domain.project.ProjectObjectTextVO;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 
