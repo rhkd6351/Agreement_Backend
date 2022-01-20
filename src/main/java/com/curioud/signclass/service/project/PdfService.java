@@ -7,8 +7,6 @@ import com.curioud.signclass.util.FileUtil;
 import javassist.NotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.pdmodel.PDPage;
-import org.apache.pdfbox.pdmodel.PDPageTree;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,7 +15,6 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.transaction.NotSupportedException;
 import java.io.File;
 import java.io.IOException;
-import java.util.Iterator;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
@@ -98,16 +95,6 @@ public class PdfService {
 
         if(pdfOptional.isEmpty())
             throw new NotFoundException("Invalid pdf name");
-
-        return pdfOptional.get();
-    }
-
-    @Transactional(readOnly = true)
-    public PdfVO getByIdx(Long idx) throws NotFoundException {
-        Optional<PdfVO> pdfOptional = pdfRepository.findById(idx);
-
-        if(pdfOptional.isEmpty())
-            throw new NotFoundException("Invalid pdf idx");
 
         return pdfOptional.get();
     }

@@ -4,7 +4,6 @@ package com.curioud.signclass.util;
 import com.curioud.signclass.domain.project.PdfVO;
 import com.curioud.signclass.domain.submittee.SubmitteeObjectSignImgVO;
 import com.curioud.signclass.domain.submittee.SubmitteePdfVO;
-import com.curioud.signclass.dto.submittee.SubmitteeObjectSignImgDTO;
 import javassist.NotFoundException;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
@@ -36,11 +35,17 @@ public class FileUtil {
         return byfile;
     }
 
-    public byte[] getFile(SubmitteePdfVO fvo) throws IOException {
+    public byte[] getFile(SubmitteePdfVO fvo, String fileName) throws IOException {
         File file = new File(originPath + fvo.getUploadPath() +"/"+ fvo.getSaveName());
-        byte[] byfile = null;
+        File renamedFile = new File(originPath + fvo.getUploadPath() +"/"+ fileName + fvo.getExtension());
+        boolean success = file.renameTo(renamedFile);
+        if(!success) throw new IOException("파일 이름 변경에 실패하였습니다");
 
-        byfile = Files.readAllBytes(file.toPath());
+        byte[] byfile = Files.readAllBytes(file.toPath());
+
+        File originalFile = new File(originPath + fvo.getUploadPath() +"/"+ fvo.getSaveName());
+        boolean success2 = renamedFile.renameTo(originalFile);
+        if(!success2) throw new IOException("파일 이름 변경에 실패하였습니다");
 
         return byfile;
     }

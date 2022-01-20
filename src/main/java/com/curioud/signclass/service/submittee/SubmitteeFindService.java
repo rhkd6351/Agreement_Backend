@@ -1,14 +1,13 @@
 package com.curioud.signclass.service.submittee;
 
 
-import com.curioud.signclass.domain.project.PdfVO;
 import com.curioud.signclass.domain.project.ProjectVO;
-import com.curioud.signclass.domain.submittee.*;
+import com.curioud.signclass.domain.submittee.SubmitteePdfVO;
+import com.curioud.signclass.domain.submittee.SubmitteeVO;
 import com.curioud.signclass.domain.user.UserVO;
-import com.curioud.signclass.dto.project.PdfDTO;
-import com.curioud.signclass.dto.submittee.*;
+import com.curioud.signclass.dto.submittee.PagingSubmitteeDTO;
+import com.curioud.signclass.dto.submittee.SubmitteeDTO;
 import com.curioud.signclass.repository.submittee.SubmitteeRepository;
-import com.curioud.signclass.service.project.PdfService;
 import com.curioud.signclass.service.project.ProjectFindService;
 import com.curioud.signclass.service.user.UserFindService;
 import com.curioud.signclass.util.FileUtil;
@@ -75,14 +74,17 @@ public class SubmitteeFindService {
     public byte[] getSubmitteePdfByName(String name, Boolean authCheck) throws NotFoundException, AuthException, IOException {
 
         SubmitteeVO submittee = this.getByName(name);
+        SubmitteePdfVO submitteePdfVO = submittee.getSubmitteePdf();
 
         if(authCheck && !submittee.getProject().ownershipCheck(userFindService.getMyUserWithAuthorities()))
             throw new AuthException("it's not your own project's submittee");
 
-        if(submittee.getSubmitteePdf() == null)
+        if(submitteePdfVO == null)
             throw new NotFoundException("there's no pdf file connected to submittee");
 
-        return submitteePdfService.getByteByName(submittee.getSubmitteePdf().getName());
+        String fileName = submittee.getProject().getName() + "_" + submittee.getStudentName() + "_" + submittee.getRegDate();
+
+        return fileUtil.getFile(submitteePdfVO, fileName);
     }
 
     @Transactional(readOnly = true)

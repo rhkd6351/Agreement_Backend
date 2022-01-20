@@ -146,7 +146,7 @@ public class ProjectController {
     @PreAuthorize("hasRole('ROLE_USER')")
     public byte[] getSubmitteePdf(@PathVariable("submittee-name")String submitteeName) throws NotFoundException, AuthException, IOException {
 
-        return submitteeFindService.getSubmitteePdfByName(submitteeName, false);
+        return submitteeFindService.getSubmitteePdfByName(submitteeName, true);
     }
 
     /** Get Submittees
