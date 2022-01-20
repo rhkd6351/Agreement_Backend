@@ -42,6 +42,7 @@ public class SubmitteeObjectVO {
         this.objectType = objectType;
     }
 
-
-
+    public void setSubmittee(SubmitteeVO submittee) {
+        this.submittee = submittee;
+    }
 }

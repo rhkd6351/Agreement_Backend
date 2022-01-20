@@ -119,25 +119,4 @@ public class PdfService {
 
         return fileUtil.getFile(pdf);
     }
-
-    public float[] getOriginalWidthArray(PdfVO pdf) throws NotFoundException, IOException {
-
-
-        byte[] byteFile = this.getByteByName(pdf.getName());
-        PDDocument doc = PDDocument.load(byteFile);
-        float[] widthArray = new float[doc.getNumberOfPages()];
-
-        PDPageTree pages = doc.getPages();
-        Iterator<PDPage> iterator = pages.iterator();
-
-        int index = 0;
-        while(iterator.hasNext()){
-            PDPage page = iterator.next();
-            widthArray[index] = page.getMediaBox().getWidth();
-            index += 1;
-        }
-
-        return widthArray;
-
-    }
 }

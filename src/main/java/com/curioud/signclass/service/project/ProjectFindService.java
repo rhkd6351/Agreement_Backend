@@ -5,6 +5,7 @@ import com.curioud.signclass.domain.user.UserVO;
 import com.curioud.signclass.dto.project.*;
 import com.curioud.signclass.repository.project.ProjectRepository;
 import com.curioud.signclass.service.user.UserFindService;
+import com.curioud.signclass.util.FileUtil;
 import javassist.NotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -27,11 +28,13 @@ public class ProjectFindService {
 
     UserFindService userFindService;
     PdfService pdfService;
+    FileUtil fileUtil;
 
-    public ProjectFindService(ProjectRepository projectRepository, UserFindService userFindService, PdfService pdfService) {
+    public ProjectFindService(ProjectRepository projectRepository, UserFindService userFindService, PdfService pdfService, FileUtil fileUtil) {
         this.projectRepository = projectRepository;
         this.userFindService = userFindService;
         this.pdfService = pdfService;
+        this.fileUtil = fileUtil;
     }
 
     @Transactional(readOnly = true)
@@ -71,7 +74,7 @@ public class ProjectFindService {
         ProjectDTO projectDTO = project.dto(true, false, true);
 
         //pdf 원본 width 길이 배열로 반환
-        float[] originalWidthArray = pdfService.getOriginalWidthArray(project.getPdf());
+        float[] originalWidthArray = fileUtil.getOriginalWidthArray(project.getPdf());
         projectDTO.getPdf().setOriginalWidth(originalWidthArray);
 
         return projectDTO;
@@ -88,7 +91,7 @@ public class ProjectFindService {
         ProjectDTO projectDTO = project.dto(true, false, true);
 
         //pdf 원본 width 길이 배열로 반환
-        float[] originalWidthArray = pdfService.getOriginalWidthArray(project.getPdf());
+        float[] originalWidthArray = fileUtil.getOriginalWidthArray(project.getPdf());
         projectDTO.getPdf().setOriginalWidth(originalWidthArray);
 
         return projectDTO;

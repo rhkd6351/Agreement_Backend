@@ -11,6 +11,7 @@ import com.curioud.signclass.repository.submittee.SubmitteeRepository;
 import com.curioud.signclass.service.project.PdfService;
 import com.curioud.signclass.service.project.ProjectFindService;
 import com.curioud.signclass.service.user.UserFindService;
+import com.curioud.signclass.util.FileUtil;
 import javassist.NotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -19,7 +20,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.security.auth.message.AuthException;
 import java.io.IOException;
-import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -28,73 +28,18 @@ public class SubmitteeFindService {
 
     SubmitteeRepository submitteeRepository;
 
-    SubmitteeObjectSignService submitteeObjectSignService;
-    SubmitteeObjectTextService submitteeObjectTextService;
-    SubmitteeObjectCheckboxService submitteeObjectCheckboxService;
-
     ProjectFindService projectFindService;
     UserFindService userFindService;
     SubmitteePdfService submitteePdfService;
-    PdfService pdfService;
+    FileUtil fileUtil;
 
-    public SubmitteeFindService(SubmitteeRepository submitteeRepository, SubmitteeObjectSignService submitteeObjectSignService, SubmitteeObjectTextService submitteeObjectTextService, SubmitteeObjectCheckboxService submitteeObjectCheckboxService, ProjectFindService projectFindService, UserFindService userFindService, SubmitteePdfService submitteePdfService, PdfService pdfService) {
+
+    public SubmitteeFindService(SubmitteeRepository submitteeRepository, ProjectFindService projectFindService, UserFindService userFindService, SubmitteePdfService submitteePdfService, FileUtil fileUtil) {
         this.submitteeRepository = submitteeRepository;
-        this.submitteeObjectSignService = submitteeObjectSignService;
-        this.submitteeObjectTextService = submitteeObjectTextService;
-        this.submitteeObjectCheckboxService = submitteeObjectCheckboxService;
         this.projectFindService = projectFindService;
         this.userFindService = userFindService;
         this.submitteePdfService = submitteePdfService;
-        this.pdfService = pdfService;
-    }
-
-    @Transactional(readOnly = true)
-    public byte[] getSubmitteePdfFileByNameWithAuthority(String name) throws NotFoundException, AuthException, IOException {
-
-        UserVO user = userFindService.getMyUserWithAuthorities();
-        SubmitteeVO submittee = this.getByName(name);
-        if(submittee.getProject().getUser() != user)
-            throw new AuthException("it's not your own project's submittee");
-
-        return submitteePdfService.getByteByName(submittee.getSubmitteePdf().getName());
-    }
-
-    @Transactional(readOnly = true)
-    public SubmitteeDTO getWithPdfAndObjectsByName(String name) throws AuthException, NotFoundException, IOException {
-
-        UserVO user = userFindService.getMyUserWithAuthorities();
-        SubmitteeVO submittee = this.getByName(name);
-        SubmitteeDTO submitteeDTO = submittee.dto();
-
-        if(submittee.getProject().getUser() != user)
-            throw new AuthException("not your own submittee");
-
-        PdfVO pdfVO = submittee.getProject().getPdf();
-        PdfDTO pdfDTO = pdfVO.dto();
-
-        float[] originalWidthArray = pdfService.getOriginalWidthArray(pdfVO);
-        pdfDTO.setOriginalWidth(originalWidthArray);
-
-        submitteeDTO.setPdf(pdfDTO);
-
-        List<SubmitteeObjectVO> submitteeObjects = submittee.getSubmitteeObjects();
-        for(SubmitteeObjectVO object : submitteeObjects){
-            switch(object.getObjectType().getName()){
-                case "OBJECT_TYPE_SIGN":
-                    SubmitteeObjectSignVO signEm = submitteeObjectSignService.getByIdx(object.getIdx());
-                    submitteeDTO.getSubmitteeObjectSigns().add(signEm.dto());
-                    break;
-                case "OBJECT_TYPE_CHECKBOX":
-                    SubmitteeObjectCheckboxVO checkboxEm = submitteeObjectCheckboxService.getByIdx(object.getIdx());
-                    submitteeDTO.getSubmitteeObjectCheckboxes().add(checkboxEm.dto());
-                    break;
-                case "OBJECT_TYPE_TEXT":
-                    SubmitteeObjectTextVO textEm = submitteeObjectTextService.getByIdx(object.getIdx());
-                    submitteeDTO.getSubmitteeObjectTexts().add(textEm.dto());
-                    break;
-            }
-        }
-        return submitteeDTO;
+        this.fileUtil = fileUtil;
     }
 
     @Transactional(readOnly = true)
@@ -108,21 +53,51 @@ public class SubmitteeFindService {
     }
 
     @Transactional(readOnly = true)
-    public PagingSubmitteeDTO getByProjectName(String projectName, Pageable pageable) throws NotFoundException, AuthException {
+    public PagingSubmitteeDTO getPageByProjectName(String projectName, Pageable pageable) throws NotFoundException, AuthException {
 
         ProjectVO project = projectFindService.getByName(projectName);
         UserVO user = userFindService.getMyUserWithAuthorities();
 
-        if(project.getUser() != user)
+        if(!project.ownershipCheck(user))
             throw new AuthException("not your own project");
 
         Page<SubmitteeVO> submitteePage = submitteeRepository.getByProject(project, pageable);
 
         return PagingSubmitteeDTO.builder()
-                .submittees(submitteePage.stream().map(SubmitteeVO::dto).collect(Collectors.toList()))
-                .totalPage(submitteePage.getTotalPages() - 1)
+                .submittees(submitteePage.stream().map(i -> i.dto(false, null)).collect(Collectors.toList()))
+                .totalPage(submitteePage.getTotalPages() - 1) //TODO totalpage.. 관리 어떻게할지 고민
                 .currentPage(pageable.getPageNumber())
                 .build();
 
+    }
+
+    @Transactional(readOnly = true)
+    public byte[] getSubmitteePdfByName(String name, Boolean authCheck) throws NotFoundException, AuthException, IOException {
+
+        SubmitteeVO submittee = this.getByName(name);
+
+        if(authCheck && !submittee.getProject().ownershipCheck(userFindService.getMyUserWithAuthorities()))
+            throw new AuthException("it's not your own project's submittee");
+
+        if(submittee.getSubmitteePdf() == null)
+            throw new NotFoundException("there's no pdf file connected to submittee");
+
+        return submitteePdfService.getByteByName(submittee.getSubmitteePdf().getName());
+    }
+
+    @Transactional(readOnly = true)
+    public SubmitteeDTO getWithPdfAndObjectsByName(String name) throws AuthException, NotFoundException, IOException {
+
+        UserVO user = userFindService.getMyUserWithAuthorities();
+        SubmitteeVO submittee = this.getByName(name);
+
+        if(!submittee.getProject().ownershipCheck(user))
+            throw new AuthException("not your own project");
+
+        SubmitteeDTO submitteeDTO = submittee.dto(true, submittee.getProject().getPdf());
+        float[] originalWidthArray = fileUtil.getOriginalWidthArray(submittee.getProject().getPdf());
+        submitteeDTO.getPdf().setOriginalWidth(originalWidthArray);
+
+        return submitteeDTO;
     }
 }

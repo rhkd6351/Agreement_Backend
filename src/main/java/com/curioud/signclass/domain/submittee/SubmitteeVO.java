@@ -1,6 +1,9 @@
 package com.curioud.signclass.domain.submittee;
 
+import com.curioud.signclass.domain.project.PdfVO;
+import com.curioud.signclass.domain.project.ProjectObjectVO;
 import com.curioud.signclass.domain.project.ProjectVO;
+import com.curioud.signclass.dto.project.PdfDTO;
 import com.curioud.signclass.dto.submittee.SubmitteeDTO;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -9,6 +12,7 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 @Getter
@@ -45,7 +49,7 @@ public class SubmitteeVO {
     @JoinColumn(name = "submittee_pdf_idx_fk", nullable = false)
     private SubmitteePdfVO submitteePdf;
 
-    @OneToMany(mappedBy = "submittee")
+    @OneToMany(mappedBy = "submittee", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<SubmitteeObjectVO> submitteeObjects;
 
 
@@ -57,9 +61,26 @@ public class SubmitteeVO {
         this.activated = activated;
         this.project = project;
         this.submitteePdf = submitteePdf;
+        submitteeObjects = new ArrayList<>();
     }
 
-    public SubmitteeDTO dto(){
+    public SubmitteeDTO dto(Boolean objects, PdfVO pdf){
+
+        List<SubmitteeObjectSignVO> submitteeObjectSigns = new ArrayList<>();
+        List<SubmitteeObjectTextVO> submitteeObjectTexts = new ArrayList<>();
+        List<SubmitteeObjectCheckboxVO> submitteeObjectCheckboxes = new ArrayList<>();
+
+        if(objects){
+            for(SubmitteeObjectVO vo : submitteeObjects){
+                if(vo instanceof SubmitteeObjectSignVO)
+                    submitteeObjectSigns.add((SubmitteeObjectSignVO) vo);
+                else if(vo instanceof SubmitteeObjectTextVO)
+                    submitteeObjectTexts.add((SubmitteeObjectTextVO) vo);
+                else if(vo instanceof SubmitteeObjectCheckboxVO)
+                    submitteeObjectCheckboxes.add((SubmitteeObjectCheckboxVO) vo);
+            }
+        }
+
         return SubmitteeDTO.builder()
                 .idx(idx)
                 .name(name)
@@ -67,11 +88,29 @@ public class SubmitteeVO {
                 .studentId(studentId)
                 .activated(activated)
                 .regDate(regDate)
-                .submitteeObjectSigns(new ArrayList<>())
-                .submitteeObjectTexts(new ArrayList<>())
-                .submitteeObjectCheckboxes(new ArrayList<>())
+                .submitteeObjectSigns(submitteeObjectSigns.stream().map(SubmitteeObjectSignVO::dto).collect(Collectors.toList()))
+                .submitteeObjectTexts(submitteeObjectTexts.stream().map(SubmitteeObjectTextVO::dto).collect(Collectors.toList()))
+                .submitteeObjectCheckboxes(submitteeObjectCheckboxes.stream().map(SubmitteeObjectCheckboxVO::dto).collect(Collectors.toList()))
+                .pdf(pdf != null ? pdf.dto() : new PdfDTO())
                 .build();
     }
+
+    public void addObject(SubmitteeObjectVO vo) {
+        this.getSubmitteeObjects().add(vo);
+        vo.setSubmittee(this);
+    }
+
+    public void addAllObjects(List<SubmitteeObjectVO> objects) {
+        for (SubmitteeObjectVO vo : objects) this.addObject(vo);
+    }
+
+
+
+
+
+
+
+
 }
 
 //    @OneToMany(mappedBy = "submittee")

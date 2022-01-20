@@ -9,7 +9,7 @@ import com.curioud.signclass.exception.BadRequestException;
 import com.curioud.signclass.service.project.PdfService;
 import com.curioud.signclass.service.project.ProjectFindService;
 import com.curioud.signclass.service.project.ProjectUpdateService;
-import com.curioud.signclass.service.submittee.SubmitteeService;
+import com.curioud.signclass.service.submittee.SubmitteeFindService;
 import javassist.NotFoundException;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -31,14 +31,14 @@ public class ProjectController {
 
     PdfService pdfService;
     ProjectFindService projectFindService;
-    SubmitteeService submitteeService;
     ProjectUpdateService projectUpdateService;
+    SubmitteeFindService submitteeFindService;
 
-    public ProjectController(PdfService pdfService, ProjectFindService projectFindService, SubmitteeService submitteeService, ProjectUpdateService projectUpdateService) {
+    public ProjectController(PdfService pdfService, ProjectFindService projectFindService, ProjectUpdateService projectUpdateService, SubmitteeFindService submitteeFindService) {
         this.pdfService = pdfService;
         this.projectFindService = projectFindService;
-        this.submitteeService = submitteeService;
         this.projectUpdateService = projectUpdateService;
+        this.submitteeFindService = submitteeFindService;
     }
 
     /** Post Project
@@ -146,7 +146,7 @@ public class ProjectController {
     @PreAuthorize("hasRole('ROLE_USER')")
     public byte[] getSubmitteePdf(@PathVariable("submittee-name")String submitteeName) throws NotFoundException, AuthException, IOException {
 
-        return submitteeService.getSubmitteePdfFileByNameWithAuthority(submitteeName);
+        return submitteeFindService.getSubmitteePdfByName(submitteeName, false);
     }
 
     /** Get Submittees
@@ -162,7 +162,7 @@ public class ProjectController {
             @PathVariable("project-name") String projectName,
             @PageableDefault(size = 10, sort = "idx", direction = Sort.Direction.DESC)Pageable pageable) throws NotFoundException, AuthException {
 
-        return submitteeService.getByProjectName(projectName, pageable);
+        return submitteeFindService.getPageByProjectName(projectName, pageable);
     }
 
     /** Get Submittee
@@ -177,7 +177,7 @@ public class ProjectController {
     @PreAuthorize("hasAnyRole('ROLE_USER')")
     public ResponseEntity<SubmitteeDTO> getSubmitteeWithPdfAndObjectsByName(@PathVariable("submittee-name") String name) throws AuthException, NotFoundException, IOException {
 
-        SubmitteeDTO dto = submitteeService.getWithPdfAndObjectsByName(name);
+        SubmitteeDTO dto = submitteeFindService.getWithPdfAndObjectsByName(name);
 
         return new ResponseEntity<>(dto, HttpStatus.OK);
     }

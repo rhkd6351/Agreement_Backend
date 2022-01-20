@@ -68,7 +68,7 @@ public class ProjectUpdateService {
         if(!project.ownershipCheck(user))
             throw new AuthException("not owned project name");
 
-        if(project.isEditable())
+        if(!project.isEditable())
             throw new IllegalAccessException("Editing is not possible while sharing.");
 
         project.removeAllObjects();

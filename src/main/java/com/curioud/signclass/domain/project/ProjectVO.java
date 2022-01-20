@@ -82,28 +82,28 @@ public class ProjectVO {
         if (this.activated == state)
             throw new BadRequestException("current state and changed state are the same");
 
-        if(state < 1 || state > 3)
+        if (state < 1 || state > 3)
             throw new BadRequestException("invalid state : " + state);
 
-        if(state == 3 && activated == 1)
+        if (state == 3 && activated == 1)
             throw new BadRequestException("it is not a shared project.");
 
 
         this.activated = state;
     }
 
-    public ProjectDTO dto(boolean pdf, boolean submittees, boolean objects){
+    public ProjectDTO dto(boolean pdf, boolean submittees, boolean objects) {
         List<ProjectObjectSignVO> projectObjectSigns = new ArrayList<>();
         List<ProjectObjectTextVO> projectObjectTexts = new ArrayList<>();
         List<ProjectObjectCheckboxVO> projectObjectCheckboxes = new ArrayList<>();
 
-        if(objects){
-            for(ProjectObjectVO vo : projectObjects){
-                if(vo instanceof ProjectObjectSignVO)
+        if (objects) {
+            for (ProjectObjectVO vo : projectObjects) {
+                if (vo instanceof ProjectObjectSignVO)
                     projectObjectSigns.add((ProjectObjectSignVO) vo);
-                else if(vo instanceof ProjectObjectCheckboxVO)
+                else if (vo instanceof ProjectObjectCheckboxVO)
                     projectObjectCheckboxes.add((ProjectObjectCheckboxVO) vo);
-                else if(vo instanceof ProjectObjectTextVO)
+                else if (vo instanceof ProjectObjectTextVO)
                     projectObjectTexts.add((ProjectObjectTextVO) vo);
             }
         }
@@ -120,7 +120,7 @@ public class ProjectVO {
                 .projectObjectCheckboxes(projectObjectCheckboxes.stream().map(ProjectObjectCheckboxVO::dto).collect(Collectors.toList()))
                 .projectObjectSigns(projectObjectSigns.stream().map(ProjectObjectSignVO::dto).collect(Collectors.toList()))
                 .projectObjectTexts(projectObjectTexts.stream().map(ProjectObjectTextVO::dto).collect(Collectors.toList()))
-                .submittees(submittees ? this.submittees.stream().map(SubmitteeVO::dto).collect(Collectors.toList()) : new ArrayList<>())
+                .submittees(submittees ? this.submittees.stream().map(i -> i.dto(false, null)).collect(Collectors.toList()) : new ArrayList<>())
                 .submitteeCount(this.submittees.size())
                 .pdf(pdf ? this.pdf.dto() : null)
                 .build();
@@ -137,7 +137,7 @@ public class ProjectVO {
     }
 
     public void addAllObjects(List<ProjectObjectVO> objects) {
-        for(ProjectObjectVO vo : objects){
+        for (ProjectObjectVO vo : objects) {
             this.addObject(vo);
         }
     }
@@ -147,7 +147,12 @@ public class ProjectVO {
         return activated != 2 && activated != 3;
     }
 
-    public boolean ownershipCheck(UserVO user){
+    public boolean ownershipCheck(UserVO user) {
         return this.user.getIdx() == user.getIdx();
     }
+
+    public boolean isPublished() {
+        return activated == 2;
+    }
+
 }

@@ -1,6 +1,7 @@
 package com.curioud.signclass.domain.submittee;
 
 
+import com.curioud.signclass.dto.submittee.SubmitteePdfDTO;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 

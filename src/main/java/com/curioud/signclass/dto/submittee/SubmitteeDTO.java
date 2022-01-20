@@ -2,6 +2,8 @@ package com.curioud.signclass.dto.submittee;
 
 
 import com.curioud.signclass.domain.project.ProjectVO;
+import com.curioud.signclass.domain.submittee.SubmitteePdfVO;
+import com.curioud.signclass.domain.submittee.SubmitteeVO;
 import com.curioud.signclass.dto.ValidationGroups;
 import com.curioud.signclass.dto.project.PdfDTO;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -12,6 +14,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 @Getter
 @Setter
@@ -42,6 +45,8 @@ public class SubmitteeDTO {
 
     PdfDTO pdf;
 
+    SubmitteePdfDTO submitteePdfDTO;
+
     @JsonProperty("submittee_object_checkboxes")
     List<SubmitteeObjectCheckboxDTO> submitteeObjectCheckboxes;
 
@@ -50,5 +55,27 @@ public class SubmitteeDTO {
 
     @JsonProperty("submittee_object_signs")
     List<SubmitteeObjectSignDTO> submitteeObjectSigns;
+
+    public SubmitteeVO toEntity(ProjectVO project, SubmitteePdfVO pdf){
+        return SubmitteeVO.builder()
+                .name(this.name == null ? UUID.randomUUID().toString() : name)
+                .studentName(studentName)
+                .studentId(studentId)
+                .activated(1)
+                .project(project)
+                .submitteePdf(pdf)
+                .build();
+    }
+
+
     
 }
+
+
+
+
+
+
+
+
+

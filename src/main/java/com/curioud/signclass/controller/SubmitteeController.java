@@ -5,10 +5,10 @@ import com.curioud.signclass.dto.project.ProjectDTO;
 import com.curioud.signclass.dto.submittee.SubmitteeDTO;
 import com.curioud.signclass.exception.BadRequestException;
 import com.curioud.signclass.service.project.ProjectFindService;
+import com.curioud.signclass.service.submittee.SubmitteeFindService;
 import com.curioud.signclass.service.submittee.SubmitteeObjectSignImgService;
-import com.curioud.signclass.service.submittee.SubmitteeService;
+import com.curioud.signclass.service.submittee.SubmitteeUpdateService;
 import javassist.NotFoundException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 
+import javax.security.auth.message.AuthException;
 import javax.transaction.NotSupportedException;
 import java.io.IOException;
 import java.util.List;
@@ -26,15 +27,17 @@ import java.util.List;
 public class SubmitteeController {
 
 
-    @Autowired
     ProjectFindService projectFindService;
-
-    @Autowired
-    SubmitteeService submitteeService;
-
-    @Autowired
     SubmitteeObjectSignImgService submitteeObjectSignImgService;
+    SubmitteeUpdateService submitteeUpdateService;
+    SubmitteeFindService submitteeFindService;
 
+    public SubmitteeController(ProjectFindService projectFindService, SubmitteeObjectSignImgService submitteeObjectSignImgService, SubmitteeUpdateService submitteeUpdateService, SubmitteeFindService submitteeFindService) {
+        this.projectFindService = projectFindService;
+        this.submitteeObjectSignImgService = submitteeObjectSignImgService;
+        this.submitteeUpdateService = submitteeUpdateService;
+        this.submitteeFindService = submitteeFindService;
+    }
 
     /** Get Project
      *
@@ -68,9 +71,11 @@ public class SubmitteeController {
             @PathVariable("project-name")String projectName,
             @RequestPart(value = "sign_img", required = false) List<MultipartFile> mfList,
             @RequestPart(value = "file_pdf", required = true) MultipartFile pdf,
-            @RequestPart(value = "data") @Validated(ValidationGroups.submitteeSubmitGroup.class) SubmitteeDTO submitteeDTO) throws NotFoundException, IOException, NotSupportedException, BadRequestException {
+            @RequestPart(value = "data") @Validated(ValidationGroups.submitteeSubmitGroup.class) SubmitteeDTO submitteeDTO) throws NotFoundException, IOException, NotSupportedException, BadRequestException, AuthException {
 
-        return submitteeService.saveWithObjectsAndPdf(projectName, submitteeDTO, mfList, pdf);
+        SubmitteeDTO submittee = submitteeUpdateService.saveWithObjectsAndPdf(projectName, submitteeDTO, mfList, pdf);
+
+        return submitteeFindService.getSubmitteePdfByName(submittee.getName(), false);
     }
 
     /**
@@ -81,7 +86,6 @@ public class SubmitteeController {
      * @throws IOException 파일 입출력 오류
      */
     @GetMapping(path = "/objects/img/{img-name}", produces = MediaType.IMAGE_JPEG_VALUE)
-//    @PreAuthorize("hasRole('ROLE_USER')")
     public byte[] getObjectImage(@PathVariable(name = "img-name") String imgName) throws NotFoundException, IOException {
         return submitteeObjectSignImgService.getByteByName(imgName);
     }
