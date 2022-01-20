@@ -1,6 +1,8 @@
 package com.curioud.signclass.dto.etc;
 
+import lombok.Getter;
 
+@Getter
 public class MessageDTO {
 
     String message;
