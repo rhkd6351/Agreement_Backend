@@ -80,7 +80,7 @@ public class SubmitteeFindService {
 
     }
 
-    @Transactional(readOnly = true)
+    @Transactional(readOnly = true) //TODO 권한 -> pdfservice로 옮기기
     public byte[] getSubmitteePdfByName(String name, Boolean authCheck) throws NotFoundException, AuthException, IOException {
 
         SubmitteeVO submittee = this.getByName(name);
@@ -112,4 +112,6 @@ public class SubmitteeFindService {
 
         return submitteeDTO;
     }
+
+
 }

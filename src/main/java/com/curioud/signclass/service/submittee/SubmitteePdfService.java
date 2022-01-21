@@ -1,5 +1,6 @@
 package com.curioud.signclass.service.submittee;
 
+import com.curioud.signclass.domain.project.ProjectVO;
 import com.curioud.signclass.domain.submittee.SubmitteePdfVO;
 import com.curioud.signclass.repository.submittee.SubmitteePdfRepository;
 import com.curioud.signclass.util.FileUtil;
@@ -12,6 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.transaction.NotSupportedException;
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -62,5 +64,13 @@ public class SubmitteePdfService {
 
         return submitteePdfRepository.save(submitteePdf);
     }
+
+//    @Transactional(readOnly = true)
+//    public List<SubmitteePdfVO> getByProject(ProjectVO project){
+//        List<SubmitteePdfVO> pdfs = submitteePdfRepository.findAllByProject(project);
+//
+//
+//
+//    }
 
 }

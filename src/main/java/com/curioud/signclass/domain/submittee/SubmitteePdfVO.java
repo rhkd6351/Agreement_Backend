@@ -1,6 +1,7 @@
 package com.curioud.signclass.domain.submittee;
 
 
+import com.curioud.signclass.domain.project.ProjectVO;
 import com.curioud.signclass.dto.submittee.SubmitteePdfDTO;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -46,6 +47,14 @@ public class SubmitteePdfVO {
 
     @OneToOne(mappedBy = "submitteePdf")
     private SubmitteeVO submitteeVO;
+
+    @ManyToOne
+    @JoinTable( name = "SUBMITTEE_TB",
+        joinColumns = @JoinColumn(name = "submittee_pdf_idx_fk"),
+        inverseJoinColumns = @JoinColumn(name = "project_idx_fk")
+    )
+    private ProjectVO project;
+
 
     @Builder
     public SubmitteePdfVO(String name, String originalName, String saveName, Long size, int totalPage, String uploadPath, String extension) {

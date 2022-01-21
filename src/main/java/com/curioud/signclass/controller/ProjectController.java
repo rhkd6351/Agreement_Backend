@@ -162,8 +162,6 @@ public class ProjectController {
         headers.setContentDisposition(contentDisposition);
 
         return new ResponseEntity<>(submitteeFindService.getSubmitteePdfByName(submitteeName, true), headers, HttpStatus.OK);
-
-
     }
 
     /** Get Submittees
@@ -202,15 +200,3 @@ public class ProjectController {
 
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
