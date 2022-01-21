@@ -41,7 +41,7 @@ public class SubmitteeVO {
     @CreationTimestamp
     private LocalDateTime regDate;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "project_idx_fk", nullable = false)
     private ProjectVO project;
 
@@ -64,7 +64,7 @@ public class SubmitteeVO {
         submitteeObjects = new ArrayList<>();
     }
 
-    public SubmitteeDTO dto(Boolean objects, PdfVO pdf){
+    public SubmitteeDTO dto(Boolean objects, PdfVO pdf, Boolean project){
 
         List<SubmitteeObjectSignVO> submitteeObjectSigns = new ArrayList<>();
         List<SubmitteeObjectTextVO> submitteeObjectTexts = new ArrayList<>();
@@ -92,6 +92,7 @@ public class SubmitteeVO {
                 .submitteeObjectTexts(submitteeObjectTexts.stream().map(SubmitteeObjectTextVO::dto).collect(Collectors.toList()))
                 .submitteeObjectCheckboxes(submitteeObjectCheckboxes.stream().map(SubmitteeObjectCheckboxVO::dto).collect(Collectors.toList()))
                 .pdf(pdf != null ? pdf.dto() : new PdfDTO())
+                .project(project ? this.project.dto(false, false, false) : null)
                 .build();
     }
 

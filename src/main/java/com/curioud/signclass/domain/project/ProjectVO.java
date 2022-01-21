@@ -120,7 +120,7 @@ public class ProjectVO {
                 .projectObjectCheckboxes(projectObjectCheckboxes.stream().map(ProjectObjectCheckboxVO::dto).collect(Collectors.toList()))
                 .projectObjectSigns(projectObjectSigns.stream().map(ProjectObjectSignVO::dto).collect(Collectors.toList()))
                 .projectObjectTexts(projectObjectTexts.stream().map(ProjectObjectTextVO::dto).collect(Collectors.toList()))
-                .submittees(submittees ? this.submittees.stream().map(i -> i.dto(false, null)).collect(Collectors.toList()) : new ArrayList<>())
+                .submittees(submittees ? this.submittees.stream().map(i -> i.dto(false, null, false)).collect(Collectors.toList()) : new ArrayList<>())
                 .submitteeCount(this.submittees.size())
                 .pdf(pdf ? this.pdf.dto() : null)
                 .build();

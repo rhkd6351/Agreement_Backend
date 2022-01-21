@@ -89,7 +89,7 @@ public class SubmitteeUpdateService {
 
         submitteeRepository.save(submitteeVO);
 
-        return submitteeVO.dto(false, null);
+        return submitteeVO.dto(false, null, true);
     }
 
 }

@@ -35,17 +35,11 @@ public class FileUtil {
         return byfile;
     }
 
-    public byte[] getFile(SubmitteePdfVO fvo, String fileName) throws IOException {
+    public byte[] getFile(SubmitteePdfVO fvo) throws IOException {
         File file = new File(originPath + fvo.getUploadPath() +"/"+ fvo.getSaveName());
-        File renamedFile = new File(originPath + fvo.getUploadPath() +"/"+ fileName + fvo.getExtension());
-        boolean success = file.renameTo(renamedFile);
-        if(!success) throw new IOException("파일 이름 변경에 실패하였습니다");
+        byte[] byfile = null;
 
-        byte[] byfile = Files.readAllBytes(file.toPath());
-
-        File originalFile = new File(originPath + fvo.getUploadPath() +"/"+ fvo.getSaveName());
-        boolean success2 = renamedFile.renameTo(originalFile);
-        if(!success2) throw new IOException("파일 이름 변경에 실패하였습니다");
+        byfile = Files.readAllBytes(file.toPath());
 
         return byfile;
     }

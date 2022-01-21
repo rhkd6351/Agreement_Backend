@@ -1,5 +1,7 @@
 package com.curioud.signclass.controller;
 
+import com.curioud.signclass.domain.project.ProjectVO;
+import com.curioud.signclass.domain.submittee.SubmitteeVO;
 import com.curioud.signclass.dto.etc.MessageDTO;
 import com.curioud.signclass.dto.project.PagingProjectDTO;
 import com.curioud.signclass.dto.project.ProjectDTO;
@@ -14,9 +16,7 @@ import javassist.NotFoundException;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -24,6 +24,10 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.security.auth.message.AuthException;
 import javax.transaction.NotSupportedException;
 import java.io.IOException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
 
 @RestController
 @RequestMapping("/api")
@@ -144,9 +148,22 @@ public class ProjectController {
      */
     @GetMapping(path = "/projects/submittees/{submittee-name}/pdf", produces = MediaType.APPLICATION_PDF_VALUE)
     @PreAuthorize("hasRole('ROLE_USER')")
-    public byte[] getSubmitteePdf(@PathVariable("submittee-name")String submitteeName) throws NotFoundException, AuthException, IOException {
+    public ResponseEntity<byte[]> getSubmitteePdf(@PathVariable("submittee-name")String submitteeName) throws NotFoundException, AuthException, IOException {
 
-        return submitteeFindService.getSubmitteePdfByName(submitteeName, true);
+        SubmitteeVO submittee = submitteeFindService.getByName(submitteeName);
+        ProjectVO project = submittee.getProject();
+
+        String fileName = project.getTitle().replace(" ", "") +  "_" + submittee.getStudentId() + "_" + submittee.getStudentName() + "_" + submittee.getRegDate().format(DateTimeFormatter.ofPattern("yyMMdd_HHmmss"));
+        String encodedName = URLEncoder.encode(fileName, StandardCharsets.UTF_8);
+
+        //헤더 파일명 입력
+        HttpHeaders headers = new HttpHeaders();
+        ContentDisposition contentDisposition = ContentDisposition.attachment().filename(encodedName).build();
+        headers.setContentDisposition(contentDisposition);
+
+        return new ResponseEntity<>(submitteeFindService.getSubmitteePdfByName(submitteeName, true), headers, HttpStatus.OK);
+
+
     }
 
     /** Get Submittees

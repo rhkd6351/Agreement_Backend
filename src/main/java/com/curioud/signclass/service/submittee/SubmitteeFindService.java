@@ -52,6 +52,16 @@ public class SubmitteeFindService {
     }
 
     @Transactional(readOnly = true)
+    public SubmitteeDTO getDTOByName(String name) throws NotFoundException {
+        Optional<SubmitteeVO> optional = submitteeRepository.findByName(name);
+
+        if(optional.isEmpty())
+            throw new NotFoundException("invalid submittee name");
+
+        return optional.get().dto(false,null, false);
+    }
+
+    @Transactional(readOnly = true)
     public PagingSubmitteeDTO getPageByProjectName(String projectName, Pageable pageable) throws NotFoundException, AuthException {
 
         ProjectVO project = projectFindService.getByName(projectName);
@@ -63,7 +73,7 @@ public class SubmitteeFindService {
         Page<SubmitteeVO> submitteePage = submitteeRepository.getByProject(project, pageable);
 
         return PagingSubmitteeDTO.builder()
-                .submittees(submitteePage.stream().map(i -> i.dto(false, null)).collect(Collectors.toList()))
+                .submittees(submitteePage.stream().map(i -> i.dto(false, null, false)).collect(Collectors.toList()))
                 .totalPage(submitteePage.getTotalPages() - 1) //TODO totalpage.. 관리 어떻게할지 고민
                 .currentPage(pageable.getPageNumber())
                 .build();
@@ -82,9 +92,9 @@ public class SubmitteeFindService {
         if(submitteePdfVO == null)
             throw new NotFoundException("there's no pdf file connected to submittee");
 
-        String fileName = submittee.getProject().getName() + "_" + submittee.getStudentName() + "_" + submittee.getRegDate();
+//        String fileName = submittee.getProject().getName() + "_" + submittee.getStudentName() + "_" + submittee.getRegDate();
 
-        return fileUtil.getFile(submitteePdfVO, fileName);
+        return fileUtil.getFile(submitteePdfVO);
     }
 
     @Transactional(readOnly = true)
@@ -96,7 +106,7 @@ public class SubmitteeFindService {
         if(!submittee.getProject().ownershipCheck(user))
             throw new AuthException("not your own project");
 
-        SubmitteeDTO submitteeDTO = submittee.dto(true, submittee.getProject().getPdf());
+        SubmitteeDTO submitteeDTO = submittee.dto(true, submittee.getProject().getPdf(), false);
         float[] originalWidthArray = fileUtil.getOriginalWidthArray(submittee.getProject().getPdf());
         submitteeDTO.getPdf().setOriginalWidth(originalWidthArray);
 

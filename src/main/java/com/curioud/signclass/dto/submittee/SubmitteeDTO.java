@@ -6,6 +6,7 @@ import com.curioud.signclass.domain.submittee.SubmitteePdfVO;
 import com.curioud.signclass.domain.submittee.SubmitteeVO;
 import com.curioud.signclass.dto.ValidationGroups;
 import com.curioud.signclass.dto.project.PdfDTO;
+import com.curioud.signclass.dto.project.ProjectDTO;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 import org.hibernate.validator.constraints.Range;
@@ -41,7 +42,7 @@ public class SubmitteeDTO {
     @JsonProperty("reg_date")
     LocalDateTime regDate;
 
-    ProjectVO project;
+    ProjectDTO project;
 
     PdfDTO pdf;
 
