@@ -46,42 +46,46 @@ public class SubmitteeUpdateService {
 
         //project 활성화 여부 확인
         ProjectVO project = projectFindService.getByName(projectName);
-        if(!project.isPublished()) throw new NotAcceptableStatusException("project is closed");
-
-        //이미지 갯수, sign 오브젝트 갯수 비교
-        if(mfList.size() != dto.getSubmitteeObjectSigns().size()) throw new BadRequestException("img size and sign objects size should be same");
-
-        //이미지 이름 동일여부 확인
-        for(int i = 0; i < mfList.size(); i++){
-            MultipartFile imf = mfList.get(i);
-            int p = Objects.requireNonNull(imf.getOriginalFilename()).lastIndexOf(".");
-            String iFileName = imf.getOriginalFilename().substring(0, p);
-            for(int k = i + 1; k < mfList.size(); k++){
-                MultipartFile kmf = mfList.get(k);
-                int t = Objects.requireNonNull(kmf.getOriginalFilename()).lastIndexOf(".");
-                String kFileName = kmf.getOriginalFilename().substring(0, t);
-
-                if(iFileName.equals(kFileName)) throw new BadRequestException("file name should be different to each other");
-            }
-        }
+        if (!project.isPublished()) throw new NotAcceptableStatusException("project is closed");
 
         SubmitteePdfVO savedPdf = submitteePdfService.save(pdf);
         SubmitteeVO submitteeVO = dto.toEntity(project, savedPdf);
 
-        //이미지 파일 이름과 sign object 이름의 일치 확인, 일치하면 object 저장
-        for(SubmitteeObjectSignDTO signDTO : dto.getSubmitteeObjectSigns()){
-            boolean isPresent = false;
-            for(MultipartFile mf : mfList){
-                if(signDTO.isNameEqual(mf)){
-                    SubmitteeObjectSignImgVO savedImgVO = submitteeObjectSignImgService.save(mf);
-                    submitteeVO.addObject(signDTO.toEntity(savedImgVO));
-                    isPresent = true;
-                    break;
+        //이미지 이름 동일여부 확인
+        if (mfList != null) {
+            //이미지 갯수, sign 오브젝트 갯수 비교
+            if (mfList.size() != dto.getSubmitteeObjectSigns().size())
+                throw new BadRequestException("img size and sign objects size should be same");
+
+            for (int i = 0; i < mfList.size(); i++) {
+                MultipartFile imf = mfList.get(i);
+                int p = Objects.requireNonNull(imf.getOriginalFilename()).lastIndexOf(".");
+                String iFileName = imf.getOriginalFilename().substring(0, p);
+                for (int k = i + 1; k < mfList.size(); k++) {
+                    MultipartFile kmf = mfList.get(k);
+                    int t = Objects.requireNonNull(kmf.getOriginalFilename()).lastIndexOf(".");
+                    String kFileName = kmf.getOriginalFilename().substring(0, t);
+
+                    if (iFileName.equals(kFileName))
+                        throw new BadRequestException("file name should be different to each other");
                 }
             }
 
-            if(!isPresent)
-                throw new BadRequestException("there's no connection between file and data");
+            //이미지 파일 이름과 sign object 이름의 일치 확인, 일치하면 object 저장
+            for (SubmitteeObjectSignDTO signDTO : dto.getSubmitteeObjectSigns()) {
+                boolean isPresent = false;
+                for (MultipartFile mf : mfList) {
+                    if (signDTO.isNameEqual(mf)) {
+                        SubmitteeObjectSignImgVO savedImgVO = submitteeObjectSignImgService.save(mf);
+                        submitteeVO.addObject(signDTO.toEntity(savedImgVO));
+                        isPresent = true;
+                        break;
+                    }
+                }
+
+                if (!isPresent)
+                    throw new BadRequestException("there's no connection between file and data");
+            }
         }
 
         submitteeVO.addAllObjects(dto.getSubmitteeObjectTexts().stream().map(SubmitteeObjectTextDTO::toEntity).collect(Collectors.toList()));

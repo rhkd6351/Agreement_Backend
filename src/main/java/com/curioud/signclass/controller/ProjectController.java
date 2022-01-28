@@ -175,7 +175,7 @@ public class ProjectController {
     @PreAuthorize("hasRole('ROLE_USER')")
     public PagingSubmitteeDTO getSubmitteesByProjectName(
             @PathVariable("project-name") String projectName,
-            @PageableDefault(size = 10, sort = "idx", direction = Sort.Direction.DESC)Pageable pageable) throws NotFoundException, AuthException {
+            @PageableDefault(size = 1000, sort = "idx", direction = Sort.Direction.DESC)Pageable pageable) throws NotFoundException, AuthException {
 
         return submitteeFindService.getPageByProjectName(projectName, pageable);
     }
