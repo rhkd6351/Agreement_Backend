@@ -95,4 +95,25 @@ public class ProjectUpdateService {
 
         projectRepository.save(project);
     }
+
+    @Transactional
+    public void updateTitle(String name, String title) throws NotFoundException, AuthException, BadRequestException {
+
+        ProjectVO project = projectFindService.getByName(name);
+        UserVO user = userFindService.getMyUserWithAuthorities();
+
+        if(!project.ownershipCheck(user))
+            throw new AuthException("not your own project");
+
+        project.updateTitle(title);
+
+        projectRepository.save(project);
+    }
+
+
 }
+
+
+
+
+

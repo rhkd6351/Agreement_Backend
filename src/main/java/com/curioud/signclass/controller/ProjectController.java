@@ -27,7 +27,6 @@ import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeFormatterBuilder;
 
 @RestController
 @RequestMapping("/api")
@@ -138,6 +137,17 @@ public class ProjectController {
 
     }
 
+    @PutMapping("/projects/{project-name}")
+    @PreAuthorize("hasRole('ROLE_USER')")
+    public ResponseEntity<MessageDTO> updateProjectTitle(
+            @RequestParam String title,
+            @PathVariable("project-name")String projectName) throws NotFoundException, AuthException, BadRequestException {
+
+        projectUpdateService.updateTitle(projectName, title);
+
+        return new ResponseEntity<>(new MessageDTO("title changed"), HttpStatus.OK);
+    }
+
     /** Get Submittee PDF
      *
      * @param submitteeName 제출자 이름
@@ -196,6 +206,8 @@ public class ProjectController {
 
         return new ResponseEntity<>(dto, HttpStatus.OK);
     }
+
+
 
 
 

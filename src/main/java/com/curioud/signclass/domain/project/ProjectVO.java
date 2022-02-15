@@ -77,6 +77,13 @@ public class ProjectVO {
         this.pdf = pdf;
     }
 
+    public void updateTitle(String title) throws BadRequestException {
+        if(title.length() >= 100)
+            throw new BadRequestException("too long length of title");
+
+        this.title = title;
+    }
+
     public void updateState(int state) throws BadRequestException {
 
         if (this.activated == state)
