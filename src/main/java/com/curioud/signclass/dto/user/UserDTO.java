@@ -38,7 +38,7 @@ public class UserDTO {
     public UserVO toEntity(String encodedPassword, AuthVO auth){
         return UserVO.builder()
                 .id(id)
-                .password(password)
+                .password(encodedPassword)
                 .name(name)
                 .auth(auth)
                 .activated(true)
