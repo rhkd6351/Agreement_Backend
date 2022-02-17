@@ -57,7 +57,7 @@ public class ProjectVO {
     @JoinColumn(name = "user_idx_fk")
     private UserVO user;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "pdf_idx_fk")
     private PdfVO pdf;
 

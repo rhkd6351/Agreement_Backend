@@ -44,9 +44,6 @@ public class PdfVO {
     @CreationTimestamp
     private LocalDateTime regDate;
 
-    @OneToOne(mappedBy = "pdf")
-    private ProjectVO project;
-
     @Builder
     public PdfVO(String name, String originalName, String saveName, Long size, int totalPage, String uploadPath, String extension) {
         this.name = name;
