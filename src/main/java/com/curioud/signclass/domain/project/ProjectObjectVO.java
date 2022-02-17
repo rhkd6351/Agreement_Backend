@@ -30,7 +30,7 @@ public abstract class ProjectObjectVO {
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "project_idx_fk")
-    private ProjectVO project;
+    private ProjectVO project; // 얘도 설정이 되야지 object의 fk가 올바르게 설정이 된 상태로 저장이 됨
 
     @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "object_type_fk", updatable = false, insertable = false)

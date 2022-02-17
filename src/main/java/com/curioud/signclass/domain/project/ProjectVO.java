@@ -89,6 +89,11 @@ public class ProjectVO {
         if (this.activated == state)
             throw new BadRequestException("current state and changed state are the same");
 
+        if(state == -1){
+            this.activated = -1;
+            return;
+        }
+
         if (state < 1 || state > 3)
             throw new BadRequestException("invalid state : " + state);
 
