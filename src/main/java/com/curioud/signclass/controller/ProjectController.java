@@ -207,8 +207,19 @@ public class ProjectController {
         return new ResponseEntity<>(dto, HttpStatus.OK);
     }
 
+    @PostMapping("/projects/{project-name}/copy")
+    @PreAuthorize("hasAnyRole('ROLE_USER')")
+    public ResponseEntity<MessageDTO> copyProject(@PathVariable("project-name") String projectName) throws AuthException, NotFoundException {
 
+        projectUpdateService.copyProject(projectName);
+
+        return new ResponseEntity<>(new MessageDTO("copy success"), HttpStatus.CREATED);
+
+    }
 
 
 
 }
+
+
+

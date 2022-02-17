@@ -18,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.security.auth.message.AuthException;
 import javax.transaction.NotSupportedException;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -108,6 +109,29 @@ public class ProjectUpdateService {
         project.updateTitle(title);
 
         projectRepository.save(project);
+    }
+
+    @Transactional
+    public void copyProject(String projectName) throws AuthException, NotFoundException {
+
+        ProjectVO project = projectFindService.getByName(projectName);
+        UserVO user = userFindService.getMyUserWithAuthorities();
+
+        if(!project.ownershipCheck(user))
+            throw new AuthException("not your own project");
+
+        ProjectVO projectVO = ProjectVO.builder()
+                .user(user)
+                .pdf(project.getPdf())
+                .name(UUID.randomUUID().toString())
+                .title(project.getTitle())
+                .description(project.getDescription())
+                .activated(1)
+                .build();
+
+        projectVO.addAllObjects(new ArrayList<>(project.getProjectObjects()));
+
+        projectRepository.save(projectVO);
     }
 
 
