@@ -71,6 +71,9 @@ public class ProjectFindService {
         if(!project.ownershipCheck(user))
             throw new AuthException("not owned project name");
 
+        if(project.getActivated() == -1)
+            throw new AuthException("deleted project");
+
         ProjectDTO projectDTO = project.dto(true, false, true);
 
         //pdf 원본 width 길이 배열로 반환
