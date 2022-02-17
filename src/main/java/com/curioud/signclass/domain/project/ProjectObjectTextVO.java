@@ -49,6 +49,19 @@ public class ProjectObjectTextVO extends ProjectObjectVO {
                 .objectType(getObjectType().getName())
                 .build();
     }
+
+    public ProjectObjectTextVO cloneObject(){
+
+        return ProjectObjectTextVO.builder()
+                .name(getName())
+                .disposition(getDisposition())
+                .objectType(getObjectType())
+                .color(color)
+                .fontSize(fontSize)
+                .type(type)
+                .build();
+
+    }
 }
 
 

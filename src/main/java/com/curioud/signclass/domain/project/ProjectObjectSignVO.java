@@ -39,4 +39,15 @@ public class ProjectObjectSignVO extends ProjectObjectVO {
                 .type(type)
                 .build();
     }
+
+    public ProjectObjectSignVO cloneObject(){
+
+        return ProjectObjectSignVO.builder()
+                .name(getName())
+                .disposition(getDisposition())
+                .objectType(getObjectType())
+                .type(type)
+                .build();
+
+    }
 }

@@ -43,4 +43,17 @@ public class ProjectObjectCheckboxVO extends ProjectObjectVO {
                 .type(type)
                 .build();
     }
+
+    public ProjectObjectCheckboxVO cloneObject(){
+
+        return ProjectObjectCheckboxVO.builder()
+                .name(getName())
+                .disposition(getDisposition())
+                .objectType(getObjectType())
+                .color(color)
+                .type(type)
+                .build();
+
+    }
+
 }

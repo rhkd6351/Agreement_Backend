@@ -19,6 +19,8 @@ import javax.security.auth.message.AuthException;
 import javax.transaction.NotSupportedException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -129,7 +131,19 @@ public class ProjectUpdateService {
                 .activated(1)
                 .build();
 
-        projectVO.addAllObjects(new ArrayList<>(project.getProjectObjects()));
+        //list로 변환
+        List<ProjectObjectVO> copyList = new ArrayList<>(project.getProjectObjects());
+
+        //object 복제
+        for(int i = 0; i < project.getProjectObjects().size(); i++ ){
+            if(copyList.get(i) instanceof ProjectObjectCheckboxVO){
+                projectVO.addObject(((ProjectObjectCheckboxVO) copyList.get(i)).cloneObject());
+            }else if(copyList.get(i) instanceof ProjectObjectSignVO){
+                projectVO.addObject(((ProjectObjectSignVO) copyList.get(i)).cloneObject());
+            }else if(copyList.get(i) instanceof ProjectObjectTextVO) {
+                projectVO.addObject(((ProjectObjectTextVO) copyList.get(i)).cloneObject());
+            }
+        }
 
         projectRepository.save(projectVO);
     }
