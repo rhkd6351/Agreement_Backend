@@ -126,7 +126,7 @@ public class ProjectUpdateService {
                 .user(user)
                 .pdf(project.getPdf())
                 .name(UUID.randomUUID().toString())
-                .title(project.getTitle())
+                .title(project.getTitle() + "_copy")
                 .description(project.getDescription())
                 .activated(1)
                 .build();
