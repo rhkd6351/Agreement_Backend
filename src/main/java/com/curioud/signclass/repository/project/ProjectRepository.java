@@ -7,7 +7,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.List;
 import java.util.Optional;
 
 public interface ProjectRepository extends JpaRepository<ProjectVO, Long> {
@@ -15,7 +14,7 @@ public interface ProjectRepository extends JpaRepository<ProjectVO, Long> {
     public Optional<ProjectVO> findOneByName(String name);
 
     @EntityGraph(attributePaths = "submittees")
-    public Page<ProjectVO> findWithSubmitteesByUser(UserVO user, Pageable pageable);
+    public Page<ProjectVO> findWithSubmitteesWhereByUserAndActivatedGreaterThan(UserVO user, Pageable pageable, int activated);
 
     @EntityGraph(attributePaths = {"submittees", "projectObjects", "pdf"})
     public ProjectVO findWithSubmitteesAndProjectObjectsAndPdfByName(String name);

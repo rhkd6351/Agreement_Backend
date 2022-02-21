@@ -51,7 +51,7 @@ public class ProjectFindService {
     public PagingProjectDTO getPageByAuth(Pageable pageable) throws AuthException {
 
         UserVO user = userFindService.getMyUserWithAuthorities();
-        Page<ProjectVO> projects = projectRepository.findWithSubmitteesByUser(user, pageable);
+        Page<ProjectVO> projects = projectRepository.findWithSubmitteesWhereByUserAndActivatedGreaterThan(user, pageable, 0);
 
         List<ProjectDTO> projectDTOList = projects.stream().map(i -> i.dto(false, false, false)).collect(Collectors.toList());
 
